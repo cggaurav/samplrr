@@ -76,8 +76,31 @@ window.onload = function() {
 
     }
 
+    function getCurrentTrack()
+    {
+        // Get the track that is currently playing
+        var currentTrack = player.track;
+        var currentTrackURI = player.track.uri;
+        var currentArtistList = player.track.artists;
+        var currentAlbum = player.track.album.name;
+        var currentAlbumURI = player.track.album.uri;
+
+        var currentHTML = document.getElementById('np');
+        // if nothing currently playing
+        if (currentTrack == null) {
+            currentHTML.innerHTML = 'No track currently playing';
+        } else {
+            currentHTML.innerHTML = 'Now playing: ' + currentTrack;
+            console.log(player);
+            console.log()
+            currentHTML.innerHTML += 'Artist: ' + currentArtistList;
+            currentHTML.innerHTML += 'Album: ' + currentAlbum;
+        }
+    }
+
     updateSampled('spotify:track:6sp8C1eiWlH0iklwcc8lWh');
-    updateSampling('spotify:track:4Avuu2wWdTUmMxYfXGexNj');
+    updateSampling('spotify:track:4Avuu2wWdTUmMxYfXGexNj'); 
+    getCurrentTrack();
     // // Handle drops
     // var drop_box = document.querySelector('#drop_box');
 
