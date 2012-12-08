@@ -1,6 +1,6 @@
 {
 	"AppDescription": {
-		"en": "The world of sampled music!"
+		"en": "Samplify makes it easy for you to find and submit music samples!"
 	},
 	"AppIcon": {
 		"36x18": "tutorial.png"
@@ -21,16 +21,30 @@
 		{
 			"arguments": "tabs",
 			"title": {
-				"en": "Submit Sample"
+				"en": "Contribute"
+			}
+        },
+        {
+			"arguments": "about",
+			"title": {
+				"en": "About Samplify"
 			}
         }
 	],
+	"Dependencies": {
+	  "api": "0.2.3",
+	  "util": "0.1.0",
+	  "resources": "0.2.2"
+  },
 	"RequiredInterface": 1,
 	"RequiredPermissions": [
 	    "http://api.twitter.com",
-	    "http://www.google-analytics.com",
 	    "http://o.scdn.co",
-	    "http://maps.googleapis.com",
+	    "https://*.googleapis.com",
+	    "https://*.gstatic.com",
+	    "https://*.gmaptiles.co.kr",
+	    "https://earthbuilder.google.com",
+	    "https://earthbuilder.googleapis.com",
 	    "https://raw.github.com",
 	    "http://tile.cloudmade.com",
 	    "http://*.tile.cloudmade.com",
@@ -44,5 +58,5 @@
 	"SupportedLanguages": [
 		"en"
 	],
-	"VendorIdentifier": "com.cggaurav"
+	"VendorIdentifier": "co.cggaurav"
 }

@@ -5,35 +5,32 @@
             @import url('sp://import/css/eve.css');
             @import url('sp://import/css/player.css');
             @import url('sp://import/css/ui.css');
+            @import url('sp://import/css/api.css');
             @import url('sp://samplify/css/main.css');
-            @import url('sp://samplify/css/github.css');
-            h1, ul {margin:0 0 30px;}
-            a:hover {color:#83be20;}
         </style>
-        <script src="sp://samplify/js/jquery.min.js"></script>
+        <script src="sp://samplify/js/jquery.js"></script>
+        <script src="sp://samplify/js/jquery.ui.js"></script>
         <script src="sp://samplify/js/rainbow-custom.min.js"></script>
-        <script>
-            $(document).ready(function() {
-                sp = getSpotifyApi(1);
-                var models = sp.require('sp://import/scripts/api/models');
-                var gtrack = sp.require("sp://import/scripts/googletracker");
-                var tracker = new gtrack.GoogleTracker('UA–xxxxxxx–1');
-
-                tabs();
-                models.application.observe(models.EVENT.ARGUMENTSCHANGED, tabs);
-
-                function tabs() {
-                    var args = models.application.arguments;
-                    console.log(args[0]);
-                    $('.section').hide();
-                    $('#'+args[0]).show();
-                }
-            });
-        </script>
+        <script src="sp://samplify/js/samplify.js"></script>
     </head>
     <body>
         <div id="wrapper">
             <h1>Samplify</h1>
+            <div id="index" class="section">
+                <div id="search">
+                    <input id="auto" />
+                </div>  
+                <div class="sample">
+                    <div id="sampling"></div>
+                    <div id="sampled"></div>
+                </div>
+            </div>
+            <div id="tabs" class="section">
+                <h1>Have a form here that submits to our rest API</h1>
+            </div>
+            <div id="about" class="section">
+                <h1>Samplify is blah </h1>
+            </div>
 
         </div><!-- /wrapper -->
     </body>
