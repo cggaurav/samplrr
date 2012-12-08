@@ -5,13 +5,13 @@
             @import url('sp://import/css/eve.css');
             @import url('sp://import/css/player.css');
             @import url('sp://import/css/ui.css');
-            @import url('sp://spotify-apps-tutorial/css/main.css');
-            @import url('sp://spotify-apps-tutorial/css/github.css');
+            @import url('sp://samplify/css/main.css');
+            @import url('sp://samplify/css/github.css');
             h1, ul {margin:0 0 30px;}
             a:hover {color:#83be20;}
         </style>
-        <script src="sp://spotify-apps-tutorial/js/jquery.min.js"></script>
-        <script src="sp://spotify-apps-tutorial/js/rainbow-custom.min.js"></script>
+        <script src="sp://samplify/js/jquery.min.js"></script>
+        <script src="sp://samplify/js/rainbow-custom.min.js"></script>
         <script>
             $(document).ready(function() {
                 sp = getSpotifyApi(1);
@@ -33,131 +33,7 @@
     </head>
     <body>
         <div id="wrapper">
-
-        <div id="index" class="section">
-
-            <h1>Spotify Apps API Tutorials</h1>
-            <img src="sp://spotify-apps-tutorial/img/spotify-char.png" class="right" />
-            <h4>Getting started</h4>
-            <ul>
-                <li><a href="sp://spotify-apps-tutorial/tutorials/manifest.html">Creating your manifest file</a></li>
-                <li><a href="spotify:app:spotify-apps-tutorial:tabs">Handling arguments and creating navigational tabs</a></li>
-                <li>Using the pager element (coming soon)</li>
-                <li>Dragging and dropping content into an app (coming soon)</li>
-                <li><a href="sp://spotify-apps-tutorial/tutorials/share.html">Show "Share" popup</a></li>
-            </ul>
-
-            <h4>UI</h4>
-            <ul>
-                <li>Using standard components for buttons</li>
-                <li>Track-listing components</li>
-            </ul>
-
-            <h4>Playing music</h4>
-            <ul>
-                <li><a href="sp://spotify-apps-tutorial/tutorials/Player.html">Play a single song</a></li>
-                <li><a href="sp://spotify-apps-tutorial/tutorials/Player+List.html">Play a list of songs</a></li>
-                <li><a href="sp://spotify-apps-tutorial/tutorials/carousel.html">Play songs in a carousel</a></li>
-                <li><a href="sp://spotify-apps-tutorial/tutorials/current_track.html">Get the currently-playing track</a></li>
-                <li><a href="sp://spotify-apps-tutorial/tutorials/click_to_play.html">Create a play/pause button with an HTML element</a></li>
-                <li><a href="sp://spotify-apps-tutorial/tutorials/skip_track.html">Skip to the next or previous track</a></li>
-                <li><a href="sp://spotify-apps-tutorial/tutorials/Toplist_for_user.html">Get a user's top tracks</a></li>
-				<li><a href="sp://spotify-apps-tutorial/tutorials/add_play_song_current_playlist.html">Add and play a song</a></li>
-            </ul>
-
-            <h4>Searching</h4>
-            <ul>
-                <li><a href="sp://spotify-apps-tutorial/tutorials/search.html">Returning all tracks with a given search query</a></li>
-                <li><a href="sp://spotify-apps-tutorial/tutorials/artist_top_tracks.html">Get the top 5 most popular tracks from 5 artists</a></li>
-            </ul>
-
-
-            <h4>Playlists</h4>
-            <ul>
-                <li><a href="sp://spotify-apps-tutorial/tutorials/get_songs_from_playlist.html">Get songs from a playlist URL</a></li>
-                <li><a href="sp://spotify-apps-tutorial/tutorials/subscribe.html">Subscribe to a playlist</a></li>
-                <li><a href="sp://spotify-apps-tutorial/tutorials/playlist_mosaic.html">Showing a playlist mosiac image</a></li>
-            </ul>
-
-            <h4>Interacting with Facebook</h4>
-            <ul>
-                <li><a href="sp://spotify-apps-tutorial/tutorials/Facebook_auth.html">Authenticate a user with Facebook</a></li>
-                <li><a href="sp://spotify-apps-tutorial/tutorials/Facebook_get_listening_history.html">Get a user's listening history from Facebook</a></li>
-            </ul>
-
-            <h4>Experimental</h4>
-            <ul>
-                <li><a href="sp://spotify-apps-tutorial/tutorials/twitter.html">Talking to Twitter</a></li>
-                <li><a href="sp://spotify-apps-tutorial/tutorials/echonest.html">Create an EchoNest radio station</a></li>
-                <li><a href="sp://spotify-apps-tutorial/tutorials/last_fm_realtime.html">Last.fm Realtime API</a></li>
-                <li><a href="sp://spotify-apps-tutorial/tutorials/polymaps.html">Display a Polymaps object</a></li>
-                <li><a href="sp://spotify-apps-tutorial/tutorials/storage.html">Use HTML5's local storage</a></li>
-                <li><a href="sp://spotify-apps-tutorial/tutorials/template.html">Template</a></li>
-            </ul>
-
-        </div><!-- /index -->
-
-        <div id="tabs" class="section">
-            <ul class="breadcrumb">
-                <li><a href="spotify:app:spotify-apps-tutorial:index">&laquo; Back to main page</a></li>
-            </ul>
-
-            <h1>Handling arguments and creating navigational tabs</h1>
-            <p class="description">In the manifest.json file, you can update the <code>DefaultTabs</code> property with arguments that corespond to nagivational tab names. In the <code>Application</code> class, when tabs are clicked, the arguments property is updated. In this example, we are simply showing and hiding a &lt;div /&gt; element each time the arguments are updated.</p>
-
-            <h3>The manifest.json snippet</h3>
-            <div id="the-json">
-<pre><code data-language="javascript">{
-    ...
-    "DefaultTabs": [
-        {
-            "arguments": "index",
-            "title": {
-                "en": "Home"
-            }
-        },
-        {
-            "arguments": "tabs",
-            "title": {
-                "en": "How to use tabs"
-            }
-        }
-    ],
-    ...
-}</code></pre>
-            </div>
-
-            <h3>The Javascript</h3>
-            <div id="the-js">
-<pre><code data-language="javascript">sp = getSpotifyApi(1);   
-var models = sp.require('sp://import/scripts/api/models');
-
-tabs(); // See function definition below
-
-/* When a user clicks a tab, the "arguments" property on the 
- * Application object changes, and the tabs() function fires */               
-models.application.observe(models.EVENT.ARGUMENTSCHANGED, tabs);  
-
-function tabs() {
-    var args = models.application.arguments;
-    $('.section').hide(); // Hide all sections
-    $('#'+args[0]).show(); // Show the current section
-}</code></pre>
-            </div>
-
-            <h3>The HTML</h3>
-            <div id="the-html">
-<pre><code data-language="html">&lt;div id="index"&gt;
-<!-- This content will show up in the "Home" tab -->
-&lt;/div&gt;
-
-&lt;div id="tabs"&gt;
-<!-- This content will show up in the "How to use tabs" tab -->
-&lt;/div&gt;</code></pre>
-            </div>
-
-        </div><!-- /tabs -->
-
+            <h1>Samplify</h1>
 
         </div><!-- /wrapper -->
     </body>

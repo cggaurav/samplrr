@@ -1,14 +1,14 @@
 {
 	"AppDescription": {
-		"en": "A tutorial app for Spotify Apps API"
+		"en": "The world of sampled music!"
 	},
 	"AppIcon": {
 		"36x18": "tutorial.png"
 	},
 	"AppName": {
-		"en": "Spotify Apps API Tutorial"
+		"en": "Samplify"
 	},
-	"BundleIdentifier": "spotify-apps-tutorial",
+	"BundleIdentifier": "samplify",
 	"BundleType": "Application",
 	"BundleVersion": "0.1",
 	"DefaultTabs": [
@@ -21,13 +21,14 @@
 		{
 			"arguments": "tabs",
 			"title": {
-				"en": "How to use tabs"
+				"en": "Submit Sample"
 			}
         }
 	],
 	"RequiredInterface": 1,
 	"RequiredPermissions": [
 	    "http://api.twitter.com",
+	    "http://www.google-analytics.com",
 	    "http://o.scdn.co",
 	    "http://maps.googleapis.com",
 	    "https://raw.github.com",
@@ -43,5 +44,5 @@
 	"SupportedLanguages": [
 		"en"
 	],
-	"VendorIdentifier": "co.mager"
+	"VendorIdentifier": "com.cggaurav"
 }
