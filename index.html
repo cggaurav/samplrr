@@ -22,15 +22,39 @@
                 <div id="console" class="description"></div> 
                 <div class="sampleView">
                     <div class="sampling" id="sampling"></div>
-                    <div class="relationship"><h4>Samples</h4></div>
+                    <div class="relationship" id="relationship"></div>
                     <div class="sampled" id="sampled"></div>
                 </div>
             </div>
             <div id="contribute" class="section">
-                <h1>Have a form here that submits to our rest API</h1>
+                <form method="post" action="http://samplify.herokuapp.com/submit">
+                    <p>Track URI(1)<input name="uri1"/></p>
+                    <p>Track URI(2)<input name="uri2"></p>
+                    <p>Time(1)<input name="time1"></p>
+                    <p>Time(2)<input name="time2"></p>
+                    <p>Sample Type(1)
+                     <select name="sampletype1">
+                     <option selected>chartreuse
+                     <option>ochre
+                     <option>opal
+                     <option>amber
+                     <option>mustard
+                     </select>
+                    </p>
+                    <p>Sample Type(2)
+                     <select name="sampletype2">
+                     <option selected>chartreuse
+                     <option>azure
+                     <option>puce
+                     <option>cornflower
+                     </select>
+                    </p>
+                    <input class="new-button" type="submit" value="Submit">
+                </form>
             </div>
             <div id="about" class="section">
-                <h2> Samplify is a Spotify app </h2>
+                <h1> Samplify is a Spotify app that makes it simple and easy for you to find samples, covers and remixes of songs</h1>
+                <img src="./img/samplify.jpg" width="300"/>
             </div>
             <div class="footer">
             <div>

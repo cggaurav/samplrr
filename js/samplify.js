@@ -8,12 +8,10 @@ window.onload = function() {
     var models = sp.require('sp://import/scripts/api/models');
     var views = sp.require('sp://import/scripts/api/views');
     var player = models.player;
-    
 
-
-    var currentTrackURI = getCurrent();
-    updateSampled(currentTrackURI);
-    updateSampling(currentTrackURI); 
+    updateSample();
+    // console.log(minutesFromSeconds(54));
+    // console.log(minutesFromSeconds(128));
     // Handle tabs
     tabs();
     models.application.observe(models.EVENT.ARGUMENTSCHANGED, tabs);
@@ -23,9 +21,7 @@ window.onload = function() {
       console.log('Event change');
       console.log(event);
       if(event.type == "playerStateChanged" && event.data.playstate == true)
-        var currentTrackURI = getCurrent();
-        updateSampled(currentTrackURI);
-        updateSampling(currentTrackURI); 
+        updateSample();
     });
 
     // // Handle share popup
@@ -52,8 +48,50 @@ window.onload = function() {
     // "India","Juliett","Juliet","Kilo","Lima","Mike","November","Oscar","Papa"]
     // });
 
-    function updateSampled(uri)
+    function updateSample(){
+        var currentTrackURI = getCurrent();
+        var foundAny = false;
+        // console.log(currentTrackURI);
+        $.getJSON("http://samplify.herokuapp.com/track/sampled?id=" + currentTrackURI.toString(),function(result){
+            console.log(result);
+            var count = result.samples.length;
+            console.log(count);
+            if(count!=0)
+            {
+                updateSampled(result.samples[0].track1,minutesFromSeconds(result.samples[0].time1),result.samples[0].artist1);
+                updateSampling(result.samples[0].track2,minutesFromSeconds(result.samples[0].time2),result.samples[0].artist2);
+
+                updateRelationship(result.samples[0].relationship.kind,result.samples[0].relationship.partSampled);
+            }
+        });
+
+        $.getJSON("http://samplify.herokuapp.com/track/sampling?id=" + currentTrackURI.toString(),function(result){
+            console.log(result);
+            var count = result.samples.length;
+            console.log(count);
+            if(count!=0)
+            {
+                updateSampled(result.samples[0].track1,minutesFromSeconds(result.samples[0].time1),result.samples[0].artist1);
+                updateSampling(result.samples[0].track2,minutesFromSeconds(result.samples[0].time2),result.samples[0].artist2);
+
+                updateRelationship(result.samples[0].relationship.kind,result.samples[0].relationship.partSampled);
+            }
+        });
+    }
+
+    function minutesFromSeconds(time)
     {
+        var minutes = Math.floor(time/60);
+        var seconds = time%60;
+        return (minutes.toString() + ":" + seconds.toString());
+
+    }
+    function updateRelationship(kind, partSampled){
+        var relationship_HTML = document.getElementById('relationship');
+        relationship_HTML.innerHTML = "<h4>" + kind + "</br>" + partSampled + "</h4>";
+    }
+
+    function updateSampled(uri,time,artist){
 
 
         // var single_track = models.Track.fromURI('spotify:track:0blzOIMnSXUKDsVSHpZtWL');
@@ -67,15 +105,16 @@ window.onload = function() {
 
 
         /* Pass the player HTML code to the #single-track-player <div /> */
-        var single_track_player_HTML = document.getElementById('sampled');
+        
         $(single_track_player.node).addClass('sp-image-extra-large');
-        single_track_player_HTML.appendChild(single_track_player.node);
+        var html = '<a href="' + uri + "#" + time + '"><button class="new-button">Play where Sampled</button></a>';
+        $("#sampled").html(single_track_player.node);
+        $("#sampled").append(html);
 
 
     }
 
-    function updateSampling(uri)
-    {
+    function updateSampling(uri,time,artist){
 
         // var single_track = models.Track.fromURI('spotify:track:0blzOIMnSXUKDsVSHpZtWL');
         var single_track = models.Track.fromURI(uri);
@@ -87,14 +126,14 @@ window.onload = function() {
         single_track_player.context = single_track_playlist;
 
         /* Pass the player HTML code to the #single-track-player <div /> */
-        var single_track_player_HTML = document.getElementById('sampling');
         $(single_track_player.node).addClass('sp-image-extra-large');
-        single_track_player_HTML.appendChild(single_track_player.node);
+        var html = '<a href="' + uri + "#" + time + '"><button class="new-button">Play where Sampled</button></a>';
+        $("#sampling").html(single_track_player.node);
+        $("#sampling").append(html);
 
     }
 
-    function getCurrent()
-    {
+    function getCurrent(){
         // Get the track that is currently playing
         var currentTrack = player.track;
         var currentTrackURI = player.track.uri;
@@ -117,6 +156,15 @@ window.onload = function() {
         }
     }
 
+
+    function getCurrentArtistList(){
+        var currentArtistList = player.track.artists;
+        var currentArtistListURI = []
+        for(var i=0; i< currentArtistList.length; i++)
+            currentArtistListURI.push(currentArtistList[i].uri);
+        return currentArtistListURI
+
+    }
     
     // // Handle drops
     // var drop_box = document.querySelector('#drop_box');

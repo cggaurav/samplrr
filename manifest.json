@@ -1,6 +1,6 @@
 {
 	"AppDescription": {
-		"en": "Samplify makes it easy for you to find and submit music samples!"
+		"en": "Samplify makes it easy for you to find and submit music samples,covers and remixes!"
 	},
 	"AppIcon": {
 		"36x18": "samplify36x18.png",
@@ -11,7 +11,7 @@
 		"en": "Samplify"
 	},
 	"AppURL": {
-		"en" : "http://samplify.heroku.com"
+		"en" : "http://samplify.herokuapp.com"
 	},
 	"BundleIdentifier": "samplify",
 	"BundleType": "Application",

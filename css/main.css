@@ -29,6 +29,7 @@ section {
 .sampling{
 	float: left;
 	width : 300px;
+	margin-bottom: 10px;
 }
 .relationship{
 	width: 5px;
@@ -38,6 +39,7 @@ section {
 
 }
 .sampled{
-	float: right;
+	float:right;
 	width: 300px;
+	margin-bottom : 10px;
 }
