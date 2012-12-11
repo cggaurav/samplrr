@@ -61,7 +61,7 @@ window.onload = function() {
                 updateSampled(result.samples[0].track1,minutesFromSeconds(result.samples[0].time1),result.samples[0].artist1);
                 updateSampling(result.samples[0].track2,minutesFromSeconds(result.samples[0].time2),result.samples[0].artist2);
 
-                updateRelationship(result.samples[0].relationship.kind,result.samples[0].relationship.partSampled);
+                updateRelationship(result.samples[0].relationship.kind,result.samples[0].relationship.partsampled);
             }
         });
 
@@ -74,7 +74,7 @@ window.onload = function() {
                 updateSampled(result.samples[0].track1,minutesFromSeconds(result.samples[0].time1),result.samples[0].artist1);
                 updateSampling(result.samples[0].track2,minutesFromSeconds(result.samples[0].time2),result.samples[0].artist2);
 
-                updateRelationship(result.samples[0].relationship.kind,result.samples[0].relationship.partSampled);
+                updateRelationship(result.samples[0].relationship.kind,result.samples[0].relationship.partsampled);
             }
         });
     }
