@@ -3,7 +3,6 @@
 *  Spotify green: #74c043
 *
 **/
-
 window.onload = function() {
     sp = getSpotifyApi(1);
     var models = sp.require('sp://import/scripts/api/models');
@@ -11,9 +10,23 @@ window.onload = function() {
     var player = models.player;
     
 
+
+    var currentTrackURI = getCurrent();
+    updateSampled(currentTrackURI);
+    updateSampling(currentTrackURI); 
     // Handle tabs
     tabs();
     models.application.observe(models.EVENT.ARGUMENTSCHANGED, tabs);
+
+
+    models.player.observe(models.EVENT.CHANGE, function(event) {
+      console.log('Event change');
+      console.log(event);
+      if(event.type == "playerStateChanged" && event.data.playstate == true)
+        var currentTrackURI = getCurrent();
+        updateSampled(currentTrackURI);
+        updateSampling(currentTrackURI); 
+    });
 
     // // Handle share popup
     // var share_element = document.getElementById('share-popup');
@@ -34,13 +47,14 @@ window.onload = function() {
     }
 
     //Autocomplete
-    $("#auto").autocomplete({
-        source: ["Alfa","Alpha","Bravo","Charlie","Delta","Echo","Foxtrot","Golf","Hotel",
-    "India","Juliett","Juliet","Kilo","Lima","Mike","November","Oscar","Papa"]
-    });
+    // $("#auto").autocomplete({
+    //     source: ["Alfa","Alpha","Bravo","Charlie","Delta","Echo","Foxtrot","Golf","Hotel",
+    // "India","Juliett","Juliet","Kilo","Lima","Mike","November","Oscar","Papa"]
+    // });
 
     function updateSampled(uri)
     {
+
 
         // var single_track = models.Track.fromURI('spotify:track:0blzOIMnSXUKDsVSHpZtWL');
         var single_track = models.Track.fromURI(uri);
@@ -51,8 +65,10 @@ window.onload = function() {
         single_track_player.track = null; // Don't play the track right away
         single_track_player.context = single_track_playlist;
 
+
         /* Pass the player HTML code to the #single-track-player <div /> */
         var single_track_player_HTML = document.getElementById('sampled');
+        $(single_track_player.node).addClass('sp-image-extra-large');
         single_track_player_HTML.appendChild(single_track_player.node);
 
 
@@ -72,11 +88,12 @@ window.onload = function() {
 
         /* Pass the player HTML code to the #single-track-player <div /> */
         var single_track_player_HTML = document.getElementById('sampling');
+        $(single_track_player.node).addClass('sp-image-extra-large');
         single_track_player_HTML.appendChild(single_track_player.node);
 
     }
 
-    function getCurrentTrack()
+    function getCurrent()
     {
         // Get the track that is currently playing
         var currentTrack = player.track;
@@ -85,22 +102,22 @@ window.onload = function() {
         var currentAlbum = player.track.album.name;
         var currentAlbumURI = player.track.album.uri;
 
-        var currentHTML = document.getElementById('np');
+        var currentHTML = document.getElementById('console');
         // if nothing currently playing
         if (currentTrack == null) {
             currentHTML.innerHTML = 'No track currently playing';
+            return null;
         } else {
-            currentHTML.innerHTML = 'Now playing: ' + currentTrack;
-            console.log(player);
-            console.log()
-            currentHTML.innerHTML += 'Artist: ' + currentArtistList;
-            currentHTML.innerHTML += 'Album: ' + currentAlbum;
+            currentHTML.innerHTML = 'Now playing: ' + "<a href='" + currentTrackURI  + "'>" + currentTrack + "</a></br>";
+            currentHTML.innerHTML += 'Artist: '
+            for(var i=0; i< currentArtistList.length; i++)
+                currentHTML.innerHTML += '        ' + "<a href='" + currentArtistList[i].uri+ "'>" + currentArtistList[i].name +  "</a></br>";
+            currentHTML.innerHTML += 'Album: ' + "<a href='" + currentAlbumURI + "'>"  + currentAlbum + "</a></br>";
+            return currentTrackURI;
         }
     }
 
-    updateSampled('spotify:track:6sp8C1eiWlH0iklwcc8lWh');
-    updateSampling('spotify:track:4Avuu2wWdTUmMxYfXGexNj'); 
-    getCurrentTrack();
+    
     // // Handle drops
     // var drop_box = document.querySelector('#drop_box');
 
