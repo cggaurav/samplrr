@@ -43,3 +43,10 @@ section {
 	width: 300px;
 	margin-bottom : 10px;
 }
+
+#sampleView{
+	padding-top:20px;
+	padding-bottom:20px;
+	margin-top:20px;
+	margin-bottom:20px;
+}
