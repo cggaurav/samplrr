@@ -3,9 +3,15 @@ body {
 	min-height: 100%;
 	padding: 10px 0 20px;
 }
+h1 { 
+	font-family: 'Chela One', cursive; 
+	font-size: 2.5em;
+	padding-bottom: 10px;
+	text-align:center;
+}
 .wrapper {
 	position: relative;
-	z-index: 3;
+	z-index: 2;
 	height: auto !important;
 	min-height: 100%;
 	margin: 0;
@@ -25,6 +31,7 @@ section {
 	font-family:Georgia;
 	padding:0 0 25px;
 	line-height:25px;
+	position: relative;
 }
 .sampling{
 	float: left;
@@ -43,10 +50,27 @@ section {
 	width: 300px;
 	margin-bottom : 10px;
 }
+.trackSampleView, .artistSampleView{
 
-#sampleView{
-	padding-top:20px;
-	padding-bottom:20px;
-	margin-top:20px;
-	margin-bottom:20px;
+
+}
+.artistSamples, .trackSamples{
+	position: relative;
+}
+
+.footer {
+	clear:both;
+	float: bottom;
+	text-align:center;
+	border-top: 1px solid #999;
+	margin-top: 5px;
+	padding-top: 10px;
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1.1em;
+}
+p {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1.1em;
+	padding-top: 7px;
+	padding-bottom: 7px;
 }

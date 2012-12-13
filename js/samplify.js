@@ -8,9 +8,11 @@ window.onload = function() {
     var models = sp.require('sp://import/scripts/api/models');
     var views = sp.require('sp://import/scripts/api/views');
     var player = models.player;
+    var library = models.library;
+    var application = models.application;
+
+
     var currentTrackSampled;
-
-
 
     // Test minutesFromSeconds
     // console.log(minutesFromSeconds(54));
@@ -24,8 +26,10 @@ window.onload = function() {
     models.player.observe(models.EVENT.CHANGE, function(event) {
         console.log('Event change');
         console.log(event);
-        $('#sampleView').empty();
-        updateTrackSample();
+        if(event.data.curtrack) {
+            $('#sampleView').empty();
+            updateTrackSample();
+        }
     });
 
     // // Handle share popup
