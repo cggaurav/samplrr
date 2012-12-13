@@ -22,10 +22,10 @@ window.onload = function() {
     models.player.observe(models.EVENT.CHANGE, function(event) {
         console.log('Event change');
         console.log(event);
-        // if(event.data.curtrack) {
-        //     clearTracks();
-        //     updateTracks();
-        // }
+        if(event.data.curtrack) {
+            clearTracks();
+            updateTracks();
+        }
     });
 
 
@@ -53,14 +53,14 @@ window.onload = function() {
 
     function updateTracks(){
         var currentTrackURI = getCurrentTrackURI();
-        var tracksFound = "true";
+        var tracksFound = "AMIFUCKINGSTUPID";
         // console.log(currentTrackURI);
         $.getJSON("http://samplify.herokuapp.com/track/sampled?id=" + currentTrackURI.toString(),function(result){
             var count = result.samples.length;
             console.log(count);
             for(var i=0; i<count;i++)
             {
-                tracksFound = "false";
+                tracksFound = "NO";
                 updateTrackSample(result.samples[i]);
             }
         });
@@ -70,14 +70,14 @@ window.onload = function() {
             console.log(count);
             for(var i=0; i<count;i++)
             {
-                tracksFound = "false";
+                tracksFound = "NO";
                 updateTrackSample(result.samples[i]);
             }
         });
 
-        if(tracksFound.indexOf("true") != -1)
-            updateArtistHeader();
-            updateArtists();
+        updateArtistHeader();
+        updateArtists();
+
     }
 
     function updateArtists(){
