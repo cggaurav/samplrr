@@ -5,7 +5,8 @@ window.onload = function() {
     var player = models.player;
     var library = models.library;
     var application = models.application;
-
+    var root = 'spotify:app:'+window.location.hostname + ":";
+    var server = 'http://samplify.herokuapp.com/';
 
     //Data values
     var currentTrackSampled;
@@ -22,13 +23,11 @@ window.onload = function() {
     models.player.observe(models.EVENT.CHANGE, function(event) {
         console.log(event);
         if(event.data.curtrack) {
-            console.log("curtrack Event");
-            // clearTracks();
-            // updateTracks();
+            console.log("CurTrack");
+            clearTracks();
+            updateTracks();
         }
-        if(event.data.playing){
-            console.log("playing Event");
-        }
+
     });
 
 
@@ -38,11 +37,11 @@ window.onload = function() {
     });
 
 
-    $(window).keypress(function(e) {
-      if (e.keyCode == 0) {
-        console.log('Space pressed');
-      }
-    });
+    // $(window).keypress(function(e) {
+    //   if (e.keyCode == 0) {
+    //     console.log('Space pressed');
+    //   }
+    // });
 
     function clearTracks(){
         $("#trackSamples").empty();
@@ -67,7 +66,7 @@ window.onload = function() {
 
         var currentTrackURI = getCurrentTrackURI();
         // console.log(currentTrackURI);
-        $.getJSON("http://samplify.herokuapp.com/track/sampled?id=" + currentTrackURI.toString(),function(result){
+        $.getJSON(server + "track/sampled?id=" + currentTrackURI.toString(),function(result){
             var count = result.samples.length;
             // console.log("Count of Sampled Tracks are " + count);
             for(var i=0; i<count;i++)
@@ -76,7 +75,7 @@ window.onload = function() {
             }
         });
 
-        $.getJSON("http://samplify.herokuapp.com/track/sampling?id=" + currentTrackURI.toString(),function(result){
+        $.getJSON(server  + "track/sampling?id=" + currentTrackURI.toString(),function(result){
             var count = result.samples.length;
             // console.log("Count of Sampling Tracks are " + count);
             for(var i=0; i<count;i++)
@@ -100,15 +99,14 @@ window.onload = function() {
             //Make calls with closure, how?
             (function(uri,j) 
             {
-                console.log(arguments);
-                $.getJSON("http://samplify.herokuapp.com/artist/sampling?id=" + uri,function(result){
+                $.getJSON(server + "artist/sampling?id=" + uri,function(result){
                     for(var i=0;i<result.samples.length;i++){
                         // console.log("We are being called!");
                         updateArtistSample(result.samples[i],j);
                     }
                 });
 
-                $.getJSON("http://samplify.herokuapp.com/artist/sampled?id=" + uri,function(result){
+                $.getJSON(server + "artist/sampled?id=" + uri,function(result){
                     for(var i=0;i<result.samples.length;i++){
                         // console.log("We are being called too!");
                         updateArtistSample(result.samples[i],j);
@@ -269,7 +267,8 @@ window.onload = function() {
         } 
         else {
 
-            $("#trackHeader").html("Tracks that sample or are sampled by " + "<a href='" + currentTrackURI + "'>" + currentTrack + "</a><div id='artist" + i.toString() + "'></div>")
+            $("#trackHeader").html("♫ " + "<a href='" + root + currentTrackURI + "'>" + currentTrack + "</a><div id='artist" + i.toString() + "'></div>");
+            // $("#trackHeader").html("♫ " + currentTrack + "<div id='artist" + i.toString() + "'></div>")
             return true;
         }
     }
@@ -280,7 +279,8 @@ window.onload = function() {
         var artistHeaderList = $("#artistHeaderList");
         for(var i=0;i<artistList.length; i++)
         {
-            artistHeaderList.append('<div class="header">Samples from <a href="' + artistList[i].uri + '">' + artistList[i].name + '</a></div><div id="artist' + i.toString() + '"></div>');
+            artistHeaderList.append('<div class="header"><a href="' + root + artistList[i].uri + '">' + artistList[i].name + '</a></div><div id="artist' + i.toString() + '"></div>');
+            // artistHeaderList.append('<div class="header">'  + artistList[i].name + '</div><div id="artist' + i.toString() + '"></div>');
 
         }
     }
