@@ -1,5 +1,10 @@
+
+
+// var initTime = ISODateString(new Date());
+// var dawn = (new Date()).getTime();
+
+sp = getSpotifyApi(1);
 window.onload = function() {
-    sp = getSpotifyApi(1);
     var models = sp.require('sp://import/scripts/api/models');
     var views = sp.require('sp://import/scripts/api/views');
     var player = models.player;
@@ -18,18 +23,37 @@ window.onload = function() {
     clearTracks();
     updateTracks();
 
-    models.application.observe(models.EVENT.ARGUMENTSCHANGED, tabs);
+    application.observe(models.EVENT.ARGUMENTSCHANGED, tabs);
 
-    models.player.observe(models.EVENT.CHANGE, function(event) {
+    player.observe(models.EVENT.CHANGE, function(event) {
         console.log(event);
         if(event.data.curtrack) {
-            console.log("CurTrack");
+            // console.log("CurTrack");
             clearTracks();
             updateTracks();
         }
 
     });
 
+
+    //Handle Arguments
+    application.observe(models.EVENT.ARGUMENTSCHANGED, handleArgs);
+
+    // Handle items 'dropped' on your icon
+    application.observe(models.EVENT.LINKSCHANGED, handleLinks);
+    
+
+    function handleArgs() {
+        var args = models.application.arguments;
+        console.log(args);
+        $.each(args,function(i,arg){ args[i] = decodeURI(arg.decodeForText()); });  //decode crazy swede characters
+        args = $.grep(args,function(n){ return(n); }); // remove empty
+    }
+
+    function handleLinks(){
+        var links = models.application.links;
+        console.log(links);
+    }
 
     $("#refresh").click(function() {
         clearTracks();
@@ -138,7 +162,8 @@ window.onload = function() {
         sampling_track_playlist.add(sampling_track);
         var sampling_track_player = new views.Player();
         sampling_track_player.track = null; // Don't play the track right away
-        sampling_track_player.position = minutesFromSeconds(sample.time1);
+        // sampling_track_player.position = minutesFromSeconds(sample.time1);
+        sampling_track_player.position = 25;
         sampling_track_player.context = sampling_track_playlist;
 
         //Update Sample
