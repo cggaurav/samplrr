@@ -38,6 +38,12 @@ window.onload = function() {
     });
 
 
+    $(window).keypress(function(e) {
+      if (e.keyCode == 0) {
+        console.log('Space pressed');
+      }
+    });
+
     function clearTracks(){
         $("#trackSamples").empty();
         $("#trackHeader").empty();
@@ -60,24 +66,21 @@ window.onload = function() {
         updateTrackHeader();
 
         var currentTrackURI = getCurrentTrackURI();
-        var tracksFound = "AMIFUCKINGSTUPID";
         // console.log(currentTrackURI);
         $.getJSON("http://samplify.herokuapp.com/track/sampled?id=" + currentTrackURI.toString(),function(result){
             var count = result.samples.length;
-            console.log("Count of Sampled Tracks are " + count);
+            // console.log("Count of Sampled Tracks are " + count);
             for(var i=0; i<count;i++)
             {
-                tracksFound = "NO";
                 updateTrackSample(result.samples[i]);
             }
         });
 
         $.getJSON("http://samplify.herokuapp.com/track/sampling?id=" + currentTrackURI.toString(),function(result){
             var count = result.samples.length;
-            console.log("Count of Sampling Tracks are " + count);
+            // console.log("Count of Sampling Tracks are " + count);
             for(var i=0; i<count;i++)
             {
-                tracksFound = "NO";
                 updateTrackSample(result.samples[i]);
             }
         });
@@ -92,40 +95,29 @@ window.onload = function() {
     function updateArtists(){
 
         var artistList = getCurrentArtistList();
-        var artistFlag = "Artist Header Not Updated";
-        var j;
-        for(j=0;j< artistList.length; j++)
+        for(var j=0;j< artistList.length; j++)
         {    
-            $.ajax({
-              url: "http://samplify.herokuapp.com/artist/sampled?id=" + artistList[j].uri,
-              dataType: 'json',
-              async: true,
-              success: function(result) {
-                var count = result.samples.length;
-                // console.log("Count of Sampled tracks for " + artistList[j].name + " is " + count);
-                for(var i=0; i<count;i++)
-                {
-                    updateArtistSample(result.samples[i], j);
-                }
-              }
-            });
+            //Make calls with closure, how?
+            (function(uri,j) 
+            {
+                console.log(arguments);
+                $.getJSON("http://samplify.herokuapp.com/artist/sampling?id=" + uri,function(result){
+                    for(var i=0;i<result.samples.length;i++){
+                        // console.log("We are being called!");
+                        updateArtistSample(result.samples[i],j);
+                    }
+                });
 
-            $.ajax({
-              url: "http://samplify.herokuapp.com/artist/sampling?id=" + artistList[j].uri,
-              dataType: 'json',
-              async: true,
-              success: function(result) {
-                var count = result.samples.length;
-                // console.log("Count of Sampled tracks for " + artistList[j].name + " is " + count);
-                for(var i=0; i<count;i++)
-                {
-                    updateArtistSample(result.samples[i], j);
-                }
-              }
-            });
+                $.getJSON("http://samplify.herokuapp.com/artist/sampled?id=" + uri,function(result){
+                    for(var i=0;i<result.samples.length;i++){
+                        // console.log("We are being called too!");
+                        updateArtistSample(result.samples[i],j);
+                    }
+                });
+            })(artistList[j].uri,j);
+
         }
     }
-
     function minutesFromSeconds(time)
     {
         var minutes = Math.floor(time/60);
@@ -153,7 +145,7 @@ window.onload = function() {
 
         //Update Sample
         $(sampling_track_player.node).addClass('sp-image-large');
-        var samplingDiv = $("<div></div>").addClass("span5 sampling");
+        var samplingDiv = $("<div></div>").addClass("sampling");
         samplingDiv.append(sampling_track_player.node);
 
         //Create Sample Context
@@ -167,15 +159,15 @@ window.onload = function() {
 
         //Update Sample
         $(sampled_track_player.node).addClass('sp-image-large');
-        var sampledDiv = $("<div></div>").addClass("span5 sampled");
+        var sampledDiv = $("<div></div>").addClass("sampled");
         sampledDiv.append(sampled_track_player.node);
 
 
-        var relnDiv = $("<div></div>").addClass("span2 relationship");
+        var relnDiv = $("<div></div>").addClass("relationship");
         relnDiv.append(sample.relationship.partsampled + "</br>" + sample.relationship.kind);
         // Uppppppddddddaaaaaattttteeeeee!
 
-        var outerDiv = $("<div></div>").addClass("row-fluid");
+        var outerDiv = $("<div></div>").addClass("sample");
         outerDiv.append(samplingDiv);
         outerDiv.append(relnDiv);
         outerDiv.append(sampledDiv);
@@ -200,7 +192,7 @@ window.onload = function() {
 
         //Update Sample
         $(sampling_track_player.node).addClass('sp-image-large');
-        var samplingDiv = $("<div></div>").addClass("span5 sampling");
+        var samplingDiv = $("<div></div>").addClass("sampling");
         samplingDiv.append(sampling_track_player.node);
 
         //Create Sample Context
@@ -214,16 +206,21 @@ window.onload = function() {
 
         //Update Sample
         $(sampled_track_player.node).addClass('sp-image-large');
-        var sampledDiv = $("<div></div>").addClass("span5 sampled");
+        var sampledDiv = $("<div></div>").addClass("sampled");
         sampledDiv.append(sampled_track_player.node);
 
 
-        var relnDiv = $("<div></div>").addClass("span2 relationship");
+        var relnDiv = $("<div></div>").addClass("relationship");
         relnDiv.append(sample.relationship.partsampled + "</br>" + sample.relationship.kind + "</br>" + minutesFromSeconds(sample.time1) + "|" + minutesFromSeconds(sample.time2));
         // Uppppppddddddaaaaaattttteeeeee!
-        trackSamplesHTML.append(samplingDiv);
-        trackSamplesHTML.append(relnDiv);
-        trackSamplesHTML.append(sampledDiv);
+
+        var outerDiv = $("<div></div>").addClass("sample");
+        outerDiv.append(samplingDiv);
+        outerDiv.append(relnDiv);
+        outerDiv.append(sampledDiv);
+
+        trackSamplesHTML.append(outerDiv);
+
 
 
     }
@@ -283,7 +280,7 @@ window.onload = function() {
         var artistHeaderList = $("#artistHeaderList");
         for(var i=0;i<artistList.length; i++)
         {
-            artistHeaderList.append('<div class="header">Samples from <a href="' + artistList[i].uri + '"">' + artistList[i].name + '</a></div><div id="artist' + i.toString() + '" class="row"></div>');
+            artistHeaderList.append('<div class="header">Samples from <a href="' + artistList[i].uri + '">' + artistList[i].name + '</a></div><div id="artist' + i.toString() + '"></div>');
 
         }
     }

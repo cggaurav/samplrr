@@ -1,7 +1,6 @@
 /* Main Elements */
-body {
-	min-height: 100%;
-	padding: 10px 0 20px;
+body{
+	/*height: 96%;*/
 }
 h1 { 
 	font-family: 'Chela One', cursive; 
@@ -11,18 +10,17 @@ h1 {
 }
 
 .refresh{
-	margin:5px;
+	position : relative;
+	/*margin:5px;*/
 	text-align: center;
+
 }
 
-.wrapper {
+.container {
 	position: relative;
-	z-index: 2;
-	height: auto !important;
-	min-height: 100%;
-	margin: 0;
-	padding: 23px;
+	padding: 20px 10px 10px 20px;
 }
+
 p {
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 1.1em;
@@ -32,68 +30,76 @@ p {
 
 .section {
 	position: relative;
-	overflow: auto;
-	margin: 0px auto;
+	/*overflow: auto;*/
+	/*margin: 0px auto;*/
 }
 /* Text */
 .description {
 	font-size:1.5em;
 	font-style:italic;
 	font-family:Georgia;
-	padding:0 0 25px;
+	/*padding:0 0 25px;*/
 	line-height:25px;
 	position: relative;
 }
 
 .header{
-	padding-left: 10px;
-	padding-right: 10px;
-	padding-bottom: 10px;
-	padding-top: 10px;
+	position: relative;
+	padding: 10px 0 10px;
 	font-size: 1.3em;
 	font-family: Georgia;
-	position: relative;
-	clear:both;
 }
 
-.sampling{
-	float: left;
-	padding-left: 10px;
-	padding-bottom: 15px;
-	/*width: 40%;*/
+.sample{
+	position : relative;
+	height: 220px;
 }
+.sampling{
+	position : absolute;
+	text-align: left;
+	top:0;
+	left:0;
+	bottom:0;
+	right: 60%;
+	padding-left: 10px;
+}
+
 .relationship{
-	float:left;
+	position:absolute;
+	top:0;
+	left:40%;
+	right:40%;
+	bottom:0;
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 1.1em;
-	/*text-align: center;*/
+	text-align: center;
 	padding-left: 10px;
 	padding-right: 10px;
-	color: black;
+	color: #463E3F;
 }
 .sampled{
-	float:right;
+	position: absolute;
+	text-align: right;
+	top:0;
+	left:60%;
+	right:0;
+	bottom:0;
 	padding-right:10px;
-	padding-bottom: 15px;
-	/*width: 35%;*/
 }
 
 .footer {
-	clear:both;
-	float: bottom;
+	position : relative;
 	text-align:center;
-	border-top: 1px solid #999;
-	margin-top: 5px;
+	float: bottom;
+	/*border-top: 1px solid #999;*/
 	padding-top: 10px;
 	font-family: Arial, Helvetica, sans-serif;
 	font-size: 1.1em;
 }
 
 .right{
-
 	float: right;
 }
-
 .left{
 	float: left;
 }
