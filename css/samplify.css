@@ -3,13 +3,27 @@ body{
 	/*height: 96%;*/
 }
 h1 { 
-	font-family: 'Chela One', cursive; 
-	font-size: 2.5em;
-	padding-bottom: 5px;
-	color: #4d4d4d;
+	font-family: Arial;
+	padding-top: 15px;
+	font-size: 2em;
+	letter-spacing: 2px;
+	color: white;
 	text-align:center;
 }
 
+.navbar{
+	clear: left;
+	clear:right;
+	height: 63px;
+	/*background-position: 0px 0px;*/
+	background-image: url(nav.png);
+	background-size: auto;
+}
+
+.navitem{
+
+	float:left;
+}
 .refresh{
 	position : relative;
 	/*margin:5px;*/
@@ -53,7 +67,7 @@ p {
 
 .sample{
 	position : relative;
-	height: 220px;
+	height: 280px;
 }
 .sampling{
 	position : absolute;
