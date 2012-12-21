@@ -31,9 +31,8 @@ h1 {
 
 }
 
-.container {
-	position: relative;
-	padding: 20px 10px 10px 20px;
+.wrapper{
+	margin: 20px;
 }
 
 p {
