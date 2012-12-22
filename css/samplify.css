@@ -12,6 +12,12 @@ h1 {
 	text-align:center;
 }
 
+error{ 
+	font-family: Arial;
+	font-size: 1.1em;
+	text-align:center;
+}
+
 .navbar{
 	height: 63px;
 	/*background-position: 0px 0px;*/

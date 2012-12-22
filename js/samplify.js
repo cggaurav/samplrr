@@ -28,9 +28,9 @@ window.onload = function() {
     player.observe(models.EVENT.CHANGE, function(event) {
         console.log(event);
         if(event.data.curtrack) {
-            // console.log("CurTrack");
-            clearTracks();
-            updateTracks();
+            console.log("CurTrack");
+            // clearTracks();
+            // updateTracks();
         }
 
     });
@@ -88,6 +88,7 @@ window.onload = function() {
         //Make this smarter
         updateTrackHeader();
 
+        var updatedTracks;
         var currentTrackURI = getCurrentTrackURI();
         // console.log(currentTrackURI);
         $.getJSON(server + "track/sampled?id=" + currentTrackURI.toString(),function(result){
@@ -95,6 +96,7 @@ window.onload = function() {
             // console.log("Count of Sampled Tracks are " + count);
             for(var i=0; i<count;i++)
             {
+                updatedTracks = false;
                 updateTrackSample(result.samples[i]);
             }
         });
@@ -104,20 +106,23 @@ window.onload = function() {
             // console.log("Count of Sampling Tracks are " + count);
             for(var i=0; i<count;i++)
             {
+                updatedTracks = false;
                 updateTrackSample(result.samples[i]);
             }
         });
 
-
-        //Make this smarter
-        updateArtistHeader();
-        updateArtists();
-
+        // console.log(updatedTracks);
+        if(updatedTracks == undefined){
+            updateArtistHeader();
+            updateArtists();
+        }
     }
 
     function updateArtists(){
 
         var artistList = getCurrentArtistList();
+
+        var updatedArtists;
         for(var j=0;j< artistList.length; j++)
         {    
             //Make calls with closure, how?
@@ -126,6 +131,7 @@ window.onload = function() {
                 $.getJSON(server + "artist/sampling?id=" + uri,function(result){
                     for(var i=0;i<result.samples.length;i++){
                         // console.log("We are being called!");
+                        updatedArtists = false;
                         updateArtistSample(result.samples[i],j);
                     }
                 });
@@ -133,11 +139,16 @@ window.onload = function() {
                 $.getJSON(server + "artist/sampled?id=" + uri,function(result){
                     for(var i=0;i<result.samples.length;i++){
                         // console.log("We are being called too!");
+                        updatedArtists = false;
                         updateArtistSample(result.samples[i],j);
                     }
                 });
             })(artistList[j].uri,j);
 
+        }
+        // console.log(updatedArtists);
+        if(updatedArtists == undefined){
+            noSamples();
         }
     }
     function minutesFromSeconds(time)
@@ -205,6 +216,8 @@ window.onload = function() {
         var trackSamplesHTML = $("#trackSamples");
 
         //Create Sample Context
+
+        // console.log(sample.track1 + "#"  + minutesFromSeconds(sample.time1));
         var sampling_track = models.Track.fromURI(sample.track1 + "#" + minutesFromSeconds(sample.time1));
         var sampling_track_playlist = new models.Playlist();
         sampling_track_playlist.add(sampling_track);
@@ -308,6 +321,12 @@ window.onload = function() {
             // artistHeaderList.append('<div class="header">'  + artistList[i].name + '</div><div id="artist' + i.toString() + '"></div>');
 
         }
+    }
+
+    function noSamples()
+    {
+        var noSamples = $("#noSamples");
+        noSamples.html("<error> No Samples found! </error>");
     }
     function consolify(){
 
