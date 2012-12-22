@@ -20,19 +20,13 @@
 		{
 			"arguments": "index",
 			"title": {
-				"en": "        Home        "
+				"en": "Home"
 			}
 		},
-		{
-			"arguments": "contribute",
-			"title": {
-				"en": "    Contribute     "
-			}
-        },
         {
 			"arguments": "about",
 			"title": {
-				"en": "   About Samplify   "
+				"en": "About Samplify"
 			}
         }
 	],

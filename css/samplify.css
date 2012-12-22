@@ -1,6 +1,7 @@
 /* Main Elements */
 body{
 	/*height: 96%;*/
+	width: auto;
 }
 h1 { 
 	font-family: Arial;
@@ -12,17 +13,11 @@ h1 {
 }
 
 .navbar{
-	clear: left;
-	clear:right;
 	height: 63px;
 	/*background-position: 0px 0px;*/
 	background-image: url(nav.png);
 	background-size: auto;
-}
-
-.navitem{
-
-	float:left;
+	width: 100%;
 }
 .refresh{
 	position : relative;
@@ -33,6 +28,7 @@ h1 {
 
 .wrapper{
 	margin: 20px;
+	/*width: auto;*/
 }
 
 p {
