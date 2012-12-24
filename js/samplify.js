@@ -13,12 +13,13 @@ window.onload = function() {
     var root = 'spotify:app:'+window.location.hostname + ":";
     var server = 'http://samplify.herokuapp.com/';
 
+    var submitSample = {};
     //Data values
     var currentTrackSampled;
 
     // Handle tabs, do we need this?
     tabs();
-    
+    samples_drop();
     //First time use
     clearTracks();
     updateTracks();
@@ -61,11 +62,146 @@ window.onload = function() {
     });
 
 
+    $("#submitSample").click(function() {
+        console.log("Submitting Sample");
+        submitSample['time1'] = 0;
+        submitSample['time2'] = 0;
+        submitSample['relationship'] = {};
+        submitSample['relationship']['partsampled'] = $("#kind").val();
+        submitSample['relationship']['kind'] = $("#partsampled").val();
+
+        console.log(submitSample);
+        // data={'track1_uri': 'spotify:track:6Qb7gtV6Q4MnUjSbkFcopl', 'track2_uri': 'spotify:track:51bzMalhzAi8GyyPXBG8qV', 'time1': 0, 'time2': 3, 'relationship': {"partsampled" : "Whole Track", "kind" : "Direct Sample"}})
+        (function(data) 
+        {
+            $.ajax({
+                type: "PUT",
+                url: 'http://samplify.herokuapp.com/sample',
+                contentType: "application/json",
+                data: submitSample,
+            error: function(e){
+                console.log("Error Submitting!");
+                console.log(e);
+            },
+            success: function(e){
+                console.log("Success Submiting!");
+                console.log(e);
+            }
+            });
+        })(submitSample);
+
+    });
+
     // $(window).keypress(function(e) {
     //   if (e.keyCode == 0) {
     //     console.log('Space pressed');
     //   }
-    // });
+    // });    
+
+    function samples_drop(){
+
+        //Why do this?
+        $.event.props.push('dataTransfer');
+
+        $('#drop_box_sampling')
+            .live( 'dragenter', function( e ) {
+                console.log('Entered');
+                $(this).addClass('over');
+                // e.dataTransfer.setData('text/html', this.innerHTML);
+                e.dataTransfer.effectAllowed = 'copy';
+            })
+            .live( 'dragleave', function( e ) {
+                $(this).removeClass('over');
+                console.log('Leaving');
+                // $(this).removeClass('hovering');
+            })
+            .live( 'dragover', function( e ) {
+                console.log('Dragging over');
+                $(this).addClass('over');
+                e.preventDefault();
+                // e.dataTransfer.dropEffect = 'copy'; 
+                // $(this).addClass('hovering');
+                
+            })
+            .live( 'drop', function( e ) {
+
+                console.log('Drop!');
+                $(this).removeClass('over');
+                e.stopPropagation();
+                e.preventDefault();
+                var track = models.Track.fromURI(e.dataTransfer.getData('text'));
+                console.log(track);
+
+                //Set Submit
+                submitSample["track1_uri"] = track.uri;
+
+                //Create Sample Context
+                var sampling_track_playlist = new models.Playlist();
+                sampling_track_playlist.add(track.uri);
+                var sampling_track_player = new views.Player();
+                sampling_track_player.track = null;
+                sampling_track_player.context = sampling_track_playlist; 
+
+                //Update!
+                $(sampling_track_player.node).addClass('sp-image-extra-large');
+                $(this).html("<p>Drag sampling track here</p>");
+
+                $(this).append(sampling_track_player.node);
+
+            }); 
+        
+
+        $('#drop_box_sampled')
+            .live( 'dragenter', function( e ) {
+                console.log('Entered');
+                $(this).addClass('over');
+                // e.dataTransfer.setData('text/html', this.innerHTML);
+                e.dataTransfer.effectAllowed = 'copy';
+            })
+            .live( 'dragleave', function( e ) {
+                $(this).removeClass('over');
+                console.log('Leaving');
+                // $(this).removeClass('hovering');
+            })
+            .live( 'dragover', function( e ) {
+                console.log('Dragging over');
+                $(this).addClass('over');
+                e.preventDefault();
+                // e.dataTransfer.dropEffect = 'copy'; 
+                // $(this).addClass('hovering');
+                
+            })
+            .live( 'drop', function( e ) {
+
+                console.log('Drop!');
+                $(this).removeClass('over');
+                e.stopPropagation();
+                e.preventDefault();
+                var track = models.Track.fromURI(e.dataTransfer.getData('text'));
+                console.log(track);
+
+                //Set Submit
+                submitSample["track2_uri"] = track.uri;
+
+                //Create Sample Context
+                var sampled_track_playlist = new models.Playlist();
+                sampled_track_playlist.add(track.uri);
+                var sampled_track_player = new views.Player();
+                sampled_track_player.track = null;
+                sampled_track_player.context = sampled_track_playlist; 
+
+                //Update!
+                $(sampled_track_player.node).addClass('sp-image-extra-large');
+                $(this).html("<p>Drag sampled track here</p>");
+
+                $(this).append(sampled_track_player.node);
+
+            }); 
+        // $("#sampling_slider").slider({ animate: "slow", max: "50"});
+
+        // $("#sampled_slider").slider({ animate: "slow", max: "50"});
+    }
+
 
     function clearTracks(){
         $("#trackSamples").empty();
@@ -112,10 +248,10 @@ window.onload = function() {
         });
 
         // console.log(updatedTracks);
-        if(updatedTracks == undefined){
+        // if(!updatedTracks){
             updateArtistHeader();
             updateArtists();
-        }
+        // }
     }
 
     function updateArtists(){
@@ -147,9 +283,9 @@ window.onload = function() {
 
         }
         // console.log(updatedArtists);
-        if(updatedArtists == undefined){
-            noSamples();
-        }
+        // if(!updatedArtists){
+            // noSamples();
+        // }
     }
     function minutesFromSeconds(time)
     {

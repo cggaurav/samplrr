@@ -11,6 +11,7 @@
             @import url(http://fonts.googleapis.com/css?family=Englebert);
 
             @import url('sp://samplify/css/samplify.css');
+            @import url('sp://samplify/css/jquery.ui.css');
             @import url('sp://samplify/css/bootstrap.responsive.css');
         </style>
     </head>
@@ -38,8 +39,31 @@
             </div>
             <!-- Submit or Contribute Tab -->
             <div id="contribute" class="section">
-                <p> Form will come here soon </br></p>
-                <input class="new-button" type="submit" value="Submit">
+                <div class="sample">
+                    <div id="drop_box_sampling">
+                        <p>Drag sampling track here</p>
+                        <div id="sampling_slider"></div>
+                    </div>
+                    <div id="drop_box_sampled">
+                        <p>Drag sampled track here</p>
+                        <div id="sampled_slider"></div>
+                    </div>
+                </div>
+                <div class="submit">
+                    <select id="kind" name="kind">
+                        <option value="Direct Sample">Direct Sample</option>
+                        <option value="Replayed Sample (Interpolation)">Replayed Sample</option>
+                    </select>
+                    <select id="partsampled" name="partsampled">
+                        <option value="Whole Track">Whole Track</option>
+                        <option value="Vocals / Lyrics">Vocals / Lyrics</option>
+                        <option value="Hook / Riff">Hook / Riff</option>
+                        <option value="Drum Loop">Drum Loop</option>
+                        <option value="Bassline">Bassline</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <input class="new-button" type="submit" id="submitSample" value="Submit">
+                </div>
             </div>
             <!-- About Tab -->
             <div id="about" class="section ">
@@ -58,4 +82,5 @@
     <script src="sp://samplify/js/jquery.ui.js"></script>
     <script src="sp://samplify/js/rainbow-custom.min.js"></script>
     <script src="sp://samplify/js/samplify.js"></script>
+
 </html>
