@@ -67,7 +67,8 @@ window.onload = function() {
         submitSample['time1'] = "0";
         submitSample['time2'] = "0";
         submitSample['relationship'] = {};
-        submitSample['relationship']['partsampled'] = $("#kind").val();
+        if(!submitSample['relationship']['partsampled']) submitSample['relationship']['partsampled'] = "Other";
+        // submitSample['relationship']['partsampled'] = $("#kind").val();
         submitSample['relationship']['kind'] = $("#partsampled").val();
 
         console.log(submitSample);
@@ -86,8 +87,10 @@ window.onload = function() {
                 console.log(e);
             },
             success: function(e){
-                console.log("Success Submiting!");
+                console.log("Success Submitting!");
                 console.log(e);
+                $("#drop_box_sampling").empty();
+                $("#drop_box_sampled").empty();
             }
             });
         })(submitSample);
@@ -136,6 +139,7 @@ window.onload = function() {
 
                 //Set Submit
                 submitSample["track1_uri"] = track.uri;
+                console.log("Track1 " + track.uri);
 
                 //Create Sample Context
                 var sampling_track_playlist = new models.Playlist();
@@ -146,7 +150,7 @@ window.onload = function() {
 
                 //Update!
                 $(sampling_track_player.node).addClass('sp-image-extra-large');
-                $(this).html("<p>Drag sampling track here</p>");
+                $(this).html("<p>Drag sampled track here</p>");
 
                 $(this).append(sampling_track_player.node);
 
@@ -184,6 +188,7 @@ window.onload = function() {
 
                 //Set Submit
                 submitSample["track2_uri"] = track.uri;
+                console.log("Track2 " + track.uri);
 
                 //Create Sample Context
                 var sampled_track_playlist = new models.Playlist();
@@ -194,7 +199,7 @@ window.onload = function() {
 
                 //Update!
                 $(sampled_track_player.node).addClass('sp-image-extra-large');
-                $(this).html("<p>Drag sampled track here</p>");
+                $(this).html("<p>Drag sampling track here</p>");
 
                 $(this).append(sampled_track_player.node);
 
