@@ -64,8 +64,8 @@ window.onload = function() {
 
     $("#submitSample").click(function() {
         console.log("Submitting Sample");
-        submitSample['time1'] = 0;
-        submitSample['time2'] = 0;
+        submitSample['time1'] = "0";
+        submitSample['time2'] = "0";
         submitSample['relationship'] = {};
         submitSample['relationship']['partsampled'] = $("#kind").val();
         submitSample['relationship']['kind'] = $("#partsampled").val();
@@ -74,11 +74,13 @@ window.onload = function() {
         // data={'track1_uri': 'spotify:track:6Qb7gtV6Q4MnUjSbkFcopl', 'track2_uri': 'spotify:track:51bzMalhzAi8GyyPXBG8qV', 'time1': 0, 'time2': 3, 'relationship': {"partsampled" : "Whole Track", "kind" : "Direct Sample"}})
         (function(data) 
         {
+            console.log("Sending data");
+            console.log(data);
             $.ajax({
                 type: "PUT",
-                url: 'http://samplify.herokuapp.com/sample',
-                contentType: "application/json",
-                data: submitSample,
+                url: 'http://samplify.herokuapp.com/add',
+                dataType: "json",
+                data: data,
             error: function(e){
                 console.log("Error Submitting!");
                 console.log(e);
