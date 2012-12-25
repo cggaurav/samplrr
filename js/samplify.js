@@ -66,31 +66,32 @@ window.onload = function() {
         console.log("Submitting Sample");
         submitSample['time1'] = "0";
         submitSample['time2'] = "0";
-        submitSample['relationship'] = {};
-        if(!submitSample['relationship']['partsampled']) submitSample['relationship']['partsampled'] = "Other";
-        // submitSample['relationship']['partsampled'] = $("#kind").val();
-        submitSample['relationship']['kind'] = $("#partsampled").val();
+        // submitSample['relationship'] = {};
+        // if(!submitSample['relationship']['partsampled']) submitSample['relationship']['partsampled'] = "Other";
+        submitSample['kind'] = $("#kind").val();
+        // submitSample['relationship']['kind'] = $("#partsampled").val();
 
         console.log(submitSample);
         // data={'track1_uri': 'spotify:track:6Qb7gtV6Q4MnUjSbkFcopl', 'track2_uri': 'spotify:track:51bzMalhzAi8GyyPXBG8qV', 'time1': 0, 'time2': 3, 'relationship': {"partsampled" : "Whole Track", "kind" : "Direct Sample"}})
         (function(data) 
         {
-            console.log("Sending data");
-            console.log(data);
+            // console.log("Sending data");
+            // console.log(data);
             $.ajax({
                 type: "PUT",
                 url: 'http://samplify.herokuapp.com/add',
-                dataType: "json",
                 data: data,
             error: function(e){
-                console.log("Error Submitting!");
+                console.log("Error Submitting, try again!");
                 console.log(e);
             },
             success: function(e){
                 console.log("Success Submitting!");
-                console.log(e);
+                alert("Thanks for submitting!");
                 $("#drop_box_sampling").empty();
+                $("#drop_box_sampling").html("<p>Drag sampled track here</p>");
                 $("#drop_box_sampled").empty();
+                $("#drop_box_sampled").html("<p>Drag sampling track here</p>");
             }
             });
         })(submitSample);
@@ -110,18 +111,18 @@ window.onload = function() {
 
         $('#drop_box_sampling')
             .live( 'dragenter', function( e ) {
-                console.log('Entered');
+                // console.log('Entered');
                 $(this).addClass('over');
                 // e.dataTransfer.setData('text/html', this.innerHTML);
                 e.dataTransfer.effectAllowed = 'copy';
             })
             .live( 'dragleave', function( e ) {
-                $(this).removeClass('over');
+                // $(this).removeClass('over');
                 console.log('Leaving');
                 // $(this).removeClass('hovering');
             })
             .live( 'dragover', function( e ) {
-                console.log('Dragging over');
+                // console.log('Dragging over');
                 $(this).addClass('over');
                 e.preventDefault();
                 // e.dataTransfer.dropEffect = 'copy'; 
@@ -130,7 +131,7 @@ window.onload = function() {
             })
             .live( 'drop', function( e ) {
 
-                console.log('Drop!');
+                // console.log('Drop!');
                 $(this).removeClass('over');
                 e.stopPropagation();
                 e.preventDefault();
@@ -159,18 +160,18 @@ window.onload = function() {
 
         $('#drop_box_sampled')
             .live( 'dragenter', function( e ) {
-                console.log('Entered');
+                // console.log('Entered');
                 $(this).addClass('over');
                 // e.dataTransfer.setData('text/html', this.innerHTML);
                 e.dataTransfer.effectAllowed = 'copy';
             })
             .live( 'dragleave', function( e ) {
-                $(this).removeClass('over');
+                // $(this).removeClass('over');
                 console.log('Leaving');
                 // $(this).removeClass('hovering');
             })
             .live( 'dragover', function( e ) {
-                console.log('Dragging over');
+                // console.log('Dragging over');
                 $(this).addClass('over');
                 e.preventDefault();
                 // e.dataTransfer.dropEffect = 'copy'; 
@@ -341,7 +342,7 @@ window.onload = function() {
 
 
         var relnDiv = $("<div></div>").addClass("relationship");
-        relnDiv.append(sample.relationship.partsampled + "</br>" + sample.relationship.kind);
+        relnDiv.append((!sample.relationship.partsampled? "" : sample.relationship.partsampled) + "</br>" + sample.relationship.kind);
         // Uppppppddddddaaaaaattttteeeeee!
 
         var outerDiv = $("<div></div>").addClass("sample");
@@ -390,7 +391,7 @@ window.onload = function() {
 
 
         var relnDiv = $("<div></div>").addClass("relationship");
-        relnDiv.append(sample.relationship.partsampled + "</br>" + sample.relationship.kind + "</br>" + minutesFromSeconds(sample.time1) + "|" + minutesFromSeconds(sample.time2));
+        relnDiv.append((!sample.relationship.partsampled? "" : sample.relationship.partsampled) + "</br>" + sample.relationship.kind + "</br>" + minutesFromSeconds(sample.time1) + "|" + minutesFromSeconds(sample.time2));
         // Uppppppddddddaaaaaattttteeeeee!
 
         var outerDiv = $("<div></div>").addClass("sample");
