@@ -295,12 +295,61 @@ window.onload = function() {
             // noSamples();
         // }
     }
+    function addLeadingZero(number) {
+        return ((parseInt(number) < 10) ? "0" : "") + parseInt(number);
+    }
+    
     function minutesFromSeconds(time)
     {
         var minutes = Math.floor(time/60);
         var seconds = time%60;
-        return (minutes.toString() + ":" + seconds.toString());
-
+        var res = addLeadingZero(minutes.toString()) + ":" + addLeadingZero(seconds.toString());
+        console.log(res);
+        return res;
+    }
+    function Hi()
+    {
+        alert("psst");
+    }
+    function setupSampleContent(sample)
+    {
+        //Create Sample Context
+        var sampling_track = models.Track.fromURI(sample.track1 + "#"  + minutesFromSeconds(sample.time1) );
+        var sampling_track_playlist = new models.Playlist();
+        sampling_track_playlist.add(sampling_track);
+        var sampling_track_player = new views.Player();
+        sampling_track_player.track = null; // Don't play the track right away
+        // sampling_track_player.position = minutesFromSeconds(sample.time1);
+        sampling_track_player.context = sampling_track_playlist;
+        
+        //Update Sample
+        $(sampling_track_player.node).addClass('sp-image-extra-large');
+        var samplingDiv = $("<div></div>").addClass("sampling");
+        samplingDiv.append(sampling_track_player.node);
+        
+        //Create Sample Context
+        var sampled_track = models.Track.fromURI(sample.track2 + "#" + minutesFromSeconds(sample.time2));
+        var sampled_track_playlist = new models.Playlist();
+        sampled_track_playlist.add(sampled_track);
+        var sampled_track_player = new views.Player();
+        sampled_track_player.track = null; // Don't play the track right away
+        //sampled_track_player.position = minutesFromSeconds(sample.time2);
+        sampled_track_player.context = sampled_track_playlist;
+        
+        //Update Sample
+        $(sampled_track_player.node).addClass('sp-image-extra-large');
+        var sampledDiv = $("<div></div>").addClass("sampled");
+        sampledDiv.append(sampled_track_player.node);
+        
+        var relnDiv = $("<div></div>").addClass("relationship");
+        relnDiv.append((!sample.relationship.partsampled? "" : sample.relationship.partsampled) + "</br>" + sample.relationship.kind);
+        // Uppppppddddddaaaaaattttteeeeee!
+                
+        var outerDiv = $("<div></div>").addClass("sample");
+        outerDiv.append(samplingDiv);
+        outerDiv.append(relnDiv);
+        outerDiv.append(sampledDiv);
+        return outerDiv;
     }
 
     // Updates the sample, sampling and the relationship, samples from artists
@@ -310,47 +359,7 @@ window.onload = function() {
         var tag = "#artist" + (id).toString();
         // console.log("Tag is " + tag);
         var artistSamplesHTML = $(tag);
-
-        //Create Sample Context
-        var sampling_track = models.Track.fromURI(sample.track1 + "#"  + minutesFromSeconds(sample.time1) );
-        var sampling_track_playlist = new models.Playlist();
-        sampling_track_playlist.add(sampling_track);
-        var sampling_track_player = new views.Player();
-        sampling_track_player.track = null; // Don't play the track right away
-        // sampling_track_player.position = minutesFromSeconds(sample.time1);
-        sampling_track_player.position = 25;
-        sampling_track_player.context = sampling_track_playlist;
-
-        //Update Sample
-        $(sampling_track_player.node).addClass('sp-image-extra-large');
-        var samplingDiv = $("<div></div>").addClass("sampling");
-        samplingDiv.append(sampling_track_player.node);
-
-        //Create Sample Context
-        var sampled_track = models.Track.fromURI(sample.track2 + "#" + minutesFromSeconds(sample.time2));
-        var sampled_track_playlist = new models.Playlist();
-        sampled_track_playlist.add(sampled_track);
-        var sampled_track_player = new views.Player();
-        sampled_track_player.track = null; // Don't play the track right away
-        sampled_track_player.position = minutesFromSeconds(sample.time2);
-        sampled_track_player.context = sampled_track_playlist;
-
-        //Update Sample
-        $(sampled_track_player.node).addClass('sp-image-extra-large');
-        var sampledDiv = $("<div></div>").addClass("sampled");
-        sampledDiv.append(sampled_track_player.node);
-
-
-        var relnDiv = $("<div></div>").addClass("relationship");
-        relnDiv.append((!sample.relationship.partsampled? "" : sample.relationship.partsampled) + "</br>" + sample.relationship.kind);
-        // Uppppppddddddaaaaaattttteeeeee!
-
-        var outerDiv = $("<div></div>").addClass("sample");
-        outerDiv.append(samplingDiv);
-        outerDiv.append(relnDiv);
-        outerDiv.append(sampledDiv);
-        artistSamplesHTML.append(outerDiv);
-
+        artistSamplesHTML.append(setupSampleContent(sample));
     }
 
 
@@ -358,51 +367,7 @@ window.onload = function() {
     function updateTrackSample(sample){
 
         var trackSamplesHTML = $("#trackSamples");
-
-        //Create Sample Context
-
-        // console.log(sample.track1 + "#"  + minutesFromSeconds(sample.time1));
-        var sampling_track = models.Track.fromURI(sample.track1 + "#" + minutesFromSeconds(sample.time1));
-        var sampling_track_playlist = new models.Playlist();
-        sampling_track_playlist.add(sampling_track);
-        var sampling_track_player = new views.Player();
-        // sampling_track_player.track = null; // Don't play the track right away
-        sampling_track_player.position = minutesFromSeconds(sample.time1);
-        sampling_track_player.context = sampling_track_playlist;
-
-        //Update Sample
-        $(sampling_track_player.node).addClass('sp-image-extra-large');
-        var samplingDiv = $("<div></div>").addClass("sampling");
-        samplingDiv.append(sampling_track_player.node);
-
-        //Create Sample Context
-        var sampled_track = models.Track.fromURI(sample.track2 + "#" + minutesFromSeconds(sample.time2));
-        var sampled_track_playlist = new models.Playlist();
-        sampled_track_playlist.add(sampled_track);
-        var sampled_track_player = new views.Player();
-        // sampled_track_player.track = null; // Don't play the track right away
-        sampled_track_player.position = minutesFromSeconds(sample.time2);
-        sampled_track_player.context = sampled_track_playlist;
-
-        //Update Sample
-        $(sampled_track_player.node).addClass('sp-image-extra-large');
-        var sampledDiv = $("<div></div>").addClass("sampled");
-        sampledDiv.append(sampled_track_player.node);
-
-
-        var relnDiv = $("<div></div>").addClass("relationship");
-        relnDiv.append((!sample.relationship.partsampled? "" : sample.relationship.partsampled) + "</br>" + sample.relationship.kind + "</br>" + minutesFromSeconds(sample.time1) + "|" + minutesFromSeconds(sample.time2));
-        // Uppppppddddddaaaaaattttteeeeee!
-
-        var outerDiv = $("<div></div>").addClass("sample");
-        outerDiv.append(samplingDiv);
-        outerDiv.append(relnDiv);
-        outerDiv.append(sampledDiv);
-
-        trackSamplesHTML.append(outerDiv);
-
-
-
+        trackSamplesHTML.append(setupSampleContent(sample));
     }
 
     function getCurrentTrackURI(){
