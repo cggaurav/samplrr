@@ -49,6 +49,55 @@ p {
 	overflow: auto;
 	margin: 0px auto;
 }
+
+.sp-player {
+	float:left;
+	margin-right:10px;
+}
+.add-playlist {
+	margin-top:20px;
+}
+.sp-list {
+	width:inherit;
+	height:200px;
+}
+
+
+.sp-list > div {
+    background-color: #aac029;
+    background-image: -webkit-linear-gradient(#ecebe8, #ecebe8 50%, #d4d3d0 50%, #d4d3d0);
+    background-size: 40px 40px;
+    border-spacing: initial;
+    color: #aac029;
+    display: table;
+    font-size: 11px;
+    line-height: 20px;
+    position: relative;
+    table-layout: fixed;
+}
+/*bg grey  ecebe8
+bg fade d4d3d0 
+samplify green aac029
+ */
+.sp-list .sp-item {
+    color: #463E3F;
+    cursor: default;
+    display: table;
+    position: absolute;
+    table-layout: fixed;
+    text-decoration: none;
+    width: 100%;
+}		
+.sp-list .sp-track-playing { 
+    color: #463E3F; 
+    background-color: #aac029;
+    background-image: none;
+}
+.sp-list .sp-item.sp-track-selected { background-color: #6C6C6C;}
+.sp-list .sp-item.sp-track-selected { color: #ecebe8; }
+.sp-list:focus .sp-item.sp-track-selected { background-color: #aac029; }
+.sp-list:focus .sp-item.sp-track-selected { color: #463E3F; }
+	
 /* Text */
 .description {
 	font-size:1.5em;

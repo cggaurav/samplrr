@@ -3,6 +3,8 @@
 // var initTime = ISODateString(new Date());
 // var dawn = (new Date()).getTime();
 
+var MAX_NBR_REMIX_RESULT = 15;
+
 sp = getSpotifyApi(1);
 window.onload = function() {
     var models = sp.require('sp://import/scripts/api/models');
@@ -23,7 +25,6 @@ window.onload = function() {
     //First time use
     clearTracks();
     updateTracks();
-    updateTracksRemix();
 
     application.observe(models.EVENT.ARGUMENTSCHANGED, tabs);
 
@@ -218,7 +219,8 @@ window.onload = function() {
     function clearTracks(){
         $("#trackSamples").empty();
         $("#trackHeader").empty();
-        $("#trackHeaderRemix").empty();
+        $("#search-results").empty();
+        $("#noSamplesRemix").empty();
         $("#artistHeaderList").empty();
     }
 
@@ -232,16 +234,34 @@ window.onload = function() {
         current.style.display = 'block';
     }
     
-    function searchForURI(search){
-        var URI;
-        console.log("Searching for " + search);
-        sp.core.search(search, true, true, { onSuccess: function(result) {
-                       //return the URI of the first track
-                       URI = result.tracks[0].uri; //grabbing the URI at index 0
-                       console.log(URI);
-                       player.playTrack(URI);
-                       }
-                       });
+    function searchForSongName(search){
+        $("#search-results").empty();
+        //console.log("Searching for " + search);
+        var search = new models.Search(search);
+        search.observe(models.EVENT.CHANGE, function()
+        {
+                if(search.tracks.length)
+                {
+                       tempPlaylist = new models.Playlist();
+                       $.each(search.tracks,function(index,track)
+                        {
+                              if (index <= MAX_NBR_REMIX_RESULT)
+                              {
+                              tempPlaylist.add(models.Track.fromURI(track.uri));
+                              }
+                        });
+                       var playlistArt = new views.Player();
+                       playlistArt.track = tempPlaylist.get(0);
+                       playlistArt.context = tempPlaylist;
+                       $("#search-results").append(playlistArt.node);
+                       var playlistList = new views.List(tempPlaylist);
+                       playlistList.node.classList.add("temporary");
+                       $("#search-results").append(playlistList.node);
+                } else {
+                       $("#search-results").append('<div>No tracks in results</div>');
+                }
+        });
+        search.appendNext();
     }
     
     function updateTracksRemix(){
@@ -253,7 +273,7 @@ window.onload = function() {
             return; // no track playing
         }
         // Perform search of current track
-        searchForURI(getCurrentTrackName());
+        searchForSongName(getCurrentTrackName());
     }
 
     function updateTracks(){
@@ -473,8 +493,8 @@ window.onload = function() {
 
     function noSamples()
     {
-        var noSamples = $("#noSamples");
         var errorHTML = "<error> No Samples found! </error>";
+        var noSamples = $("#noSamples");
         noSamples.html(errorHTML);
         var noSamplesRemix = $("#noSamplesRemix");
         noSamplesRemix.html(errorHTML);
