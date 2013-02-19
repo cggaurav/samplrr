@@ -23,9 +23,10 @@
         </div>
         <div class="wrapper">
             
-                <div id="index" class="section">
+            <!-- Home tab -->
+            <div id="index" class="section">
                 <div class="refresh">
-                    <input id="refresh" type="image" src="./img/refresh.png">
+                    <input id="refresh" type="image" src="./img/refresh.png" />
                 </div>
                 <!-- <div id="console" class="description"></div>  -->
                 <div id="trackHeader" class="header">
@@ -37,6 +38,7 @@
                 <div id="noSamples">
                 </div>
             </div>
+            
             <!-- Submit or Contribute Tab -->
             <div id="contribute" class="section">
                 <p>     More work needed here! </p>
@@ -58,16 +60,30 @@
                         <option value="Cover">Cover</option>
                     </select>
                     <!-- <select id="partsampled" name="partsampled">
-                        <option value="Whole Track">Whole Track</option>
-                        <option value="Vocals / Lyrics">Vocals / Lyrics</option>
-                        <option value="Hook / Riff">Hook / Riff</option>
-                        <option value="Drum Loop">Drum Loop</option>
-                        <option value="Bassline">Bassline</option>
-                        <option value="Other">Other</option>
-                    </select> -->
+                     <option value="Whole Track">Whole Track</option>
+                     <option value="Vocals / Lyrics">Vocals / Lyrics</option>
+                     <option value="Hook / Riff">Hook / Riff</option>
+                     <option value="Drum Loop">Drum Loop</option>
+                     <option value="Bassline">Bassline</option>
+                     <option value="Other">Other</option>
+                     </select> -->
                     <input class="new-button" type="submit" id="submitSample" value="Submit">
+                        </div>
+            </div>
+            
+            <!-- Remix Tab -->
+            <div id="remix" class="section">
+                <div class="refresh">
+                    <input id="remixRefresh" type="image" src="./img/refresh.png" />
+                </div>
+                <div id="trackHeaderRemix" class="header">
+                </div>
+                <div id="noSamplesRemix">
+                </div>
+                <div id="remixSearchResults">
                 </div>
             </div>
+            
             <!-- About Tab -->
             <div id="about" class="section ">
                 <div class="row-fluid">
@@ -77,6 +93,7 @@
                     <div class="span8">
                         <p> Samplify is a Spotify app that makes it simple and easy for you to find samples, covers and remixes of songs.</br></br> We want to grow our data of samples, so keep listening and keep sampling!</br></br> We would love to hear feedback at <a href="mailto:cggaurav@gmail.com"> cggaurav@gmail.com </a></p>
                     </div>
+                </div>
             </div>
         </div><!-- /wrapper -->
     </body>
@@ -85,5 +102,5 @@
     <script src="sp://samplify/js/jquery.ui.js"></script>
     <script src="sp://samplify/js/rainbow-custom.min.js"></script>
     <script src="sp://samplify/js/samplify.js"></script>
-
+    
 </html>

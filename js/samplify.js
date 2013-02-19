@@ -23,6 +23,7 @@ window.onload = function() {
     //First time use
     clearTracks();
     updateTracks();
+    updateTracksRemix();
 
     application.observe(models.EVENT.ARGUMENTSCHANGED, tabs);
 
@@ -44,7 +45,8 @@ window.onload = function() {
     application.observe(models.EVENT.LINKSCHANGED, handleLinks);
     
 
-    function handleArgs() {
+    function handleArgs()
+    {
         var args = models.application.arguments;
         console.log(args);
         $.each(args,function(i,arg){ args[i] = decodeURI(arg.decodeForText()); });  //decode crazy swede characters
@@ -60,7 +62,10 @@ window.onload = function() {
         clearTracks();
         updateTracks();
     });
-
+    $("#remixRefresh").click(function() {
+        clearTracks();
+        updateTracksRemix();
+    });
 
     $("#submitSample").click(function() {
         console.log("Submitting Sample");
@@ -206,7 +211,6 @@ window.onload = function() {
 
             }); 
         // $("#sampling_slider").slider({ animate: "slow", max: "50"});
-
         // $("#sampled_slider").slider({ animate: "slow", max: "50"});
     }
 
@@ -214,6 +218,7 @@ window.onload = function() {
     function clearTracks(){
         $("#trackSamples").empty();
         $("#trackHeader").empty();
+        $("#trackHeaderRemix").empty();
         $("#artistHeaderList").empty();
     }
 
@@ -226,6 +231,30 @@ window.onload = function() {
         }
         current.style.display = 'block';
     }
+    
+    function searchForURI(search){
+        var URI;
+        console.log("Searching for " + search);
+        sp.core.search(search, true, true, { onSuccess: function(result) {
+                       //return the URI of the first track
+                       URI = result.tracks[0].uri; //grabbing the URI at index 0
+                       console.log(URI);
+                       player.playTrack(URI);
+                       }
+                       });
+    }
+    
+    function updateTracksRemix(){
+        updateTrackHeader();
+        var currentTrack = getCurrentTrack();
+        if (currentTrack == null)
+        {
+            noSamples();
+            return; // no track playing
+        }
+        // Perform search of current track
+        searchForURI(getCurrentTrackName());
+    }
 
     function updateTracks(){
 
@@ -233,6 +262,10 @@ window.onload = function() {
         updateTrackHeader();
 
         var updatedTracks;
+        var currentTrack = getCurrentTrack();
+        if (currentTrack == null)
+            return; // no track playing
+        
         var currentTrackURI = getCurrentTrackURI();
         // console.log(currentTrackURI);
         $.getJSON(server + "track/sampled?id=" + currentTrackURI.toString(),function(result){
@@ -304,13 +337,9 @@ window.onload = function() {
         var minutes = Math.floor(time/60);
         var seconds = time%60;
         var res = addLeadingZero(minutes.toString()) + ":" + addLeadingZero(seconds.toString());
-        console.log(res);
         return res;
     }
-    function Hi()
-    {
-        alert("psst");
-    }
+    
     function setupSampleContent(sample)
     {
         //Create Sample Context
@@ -374,22 +403,32 @@ window.onload = function() {
         // Get the track that is currently playing
         var currentTrack = player.track;
         var currentTrackURI = player.track.uri;
-        var currentArtistList = player.track.artists;
-        var currentAlbum = player.track.album.name;
-        var currentAlbumURI = player.track.album.uri;
+        //var currentArtistList = player.track.artists;
+        //var currentAlbum = player.track.album.name;
+        //var currentAlbumURI = player.track.album.uri;
 
         return currentTrackURI;
     }
 
+    function getCurrentTrack(){
+        // Get the track that is currently playing
+        var currentTrack = player.track;
+        //var currentTrackURI = player.track.uri;
+        //var currentArtistList = player.track.artists;
+        //var currentAlbum = player.track.album.name;
+        //var currentAlbumURI = player.track.album.uri;
+        return currentTrack;
+    }
+    
     function getCurrentTrackName(){
         // Get the track that is currently playing
         var currentTrack = player.track;
-        var currentTrackURI = player.track.uri;
-        var currentArtistList = player.track.artists;
-        var currentAlbum = player.track.album.name;
-        var currentAlbumURI = player.track.album.uri;
-
-        return currentTrack;
+        var currentTrackName = currentTrack.name;
+        //var currentTrackURI = player.track.uri;
+        //var currentArtistList = player.track.artists;
+        //var currentAlbum = player.track.album.name;
+        //var currentAlbumURI = player.track.album.uri;
+        return currentTrackName;
     }
 
     function getCurrentArtistListURI(){
@@ -406,16 +445,16 @@ window.onload = function() {
 
     function updateTrackHeader()
     {
-        var currentTrack = getCurrentTrackName();
-        var currentTrackURI = getCurrentTrackURI();
+        var currentTrack = getCurrentTrack();
         if (currentTrack == null) {
             console.log("No track playing!");
             return false;
-        } 
+        }
         else {
-
-            $("#trackHeader").html("♫ " + "<a href='" + root + currentTrackURI + "'>" + currentTrack + "</a><div id='artist" + i.toString() + "'></div>");
-            // $("#trackHeader").html("♫ " + currentTrack + "<div id='artist" + i.toString() + "'></div>")
+            var currentTrackURI = getCurrentTrackURI();
+            var trackheaderHTML = "♫ " + "<a href='" + root + currentTrackURI + "'>" + currentTrack + "</a><div id='artist" + i.toString() + "'></div>";
+            $("#trackHeader").html(trackheaderHTML);
+            $("#trackHeaderRemix").html(trackheaderHTML);
             return true;
         }
     }
@@ -435,11 +474,15 @@ window.onload = function() {
     function noSamples()
     {
         var noSamples = $("#noSamples");
-        noSamples.html("<error> No Samples found! </error>");
+        var errorHTML = "<error> No Samples found! </error>";
+        noSamples.html(errorHTML);
+        var noSamplesRemix = $("#noSamplesRemix");
+        noSamplesRemix.html(errorHTML);
     }
+    
     function consolify(){
 
-        $("#console").html("Track now playing is " + getCurrentTrackName());
+        $("#console").html("Track now playing is " + getCurrentTrack());
         $("#console").append("Artists now playing are " + getCurrentArtistList());
     }
 }

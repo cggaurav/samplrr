@@ -23,6 +23,12 @@
 				"en": "Home"
 			}
 		},
+        {
+            "arguments": "remix",
+            "title": {
+            "en": "Remix"
+            }
+        },
 		{
 			"arguments": "contribute",
 			"title": {
