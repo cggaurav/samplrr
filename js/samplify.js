@@ -234,12 +234,12 @@ window.onload = function() {
         current.style.display = 'block';
     }
     
-    function searchForSongName(search){
-        $("#search-results").empty();
-        //console.log("Searching for " + search);
-        var search = new models.Search(search);
+    // Searches for a given string and displays a playlist with the result
+    function searchAndDisplay(title, searchString){
+        var search = new models.Search(searchString);
         search.observe(models.EVENT.CHANGE, function()
         {
+                $("#search-results").append("<h2>" + title + "</h2>");
                 if(search.tracks.length)
                 {
                        tempPlaylist = new models.Playlist();
@@ -258,10 +258,23 @@ window.onload = function() {
                        playlistList.node.classList.add("temporary");
                        $("#search-results").append(playlistList.node);
                 } else {
-                       $("#search-results").append('<div>No tracks in results</div>');
+                       $("#search-results").append("<div>No tracks for this type of remix</div>");
                 }
         });
         search.appendNext();
+    }
+    
+    function searchForRemixes()
+    {
+        var currentTrack = getCurrentTrackName();
+        var instrumental = "\"" + currentTrack + "\" AND instrumental AND karaoke";
+        var dubstep = "\"" + currentTrack + "\"  AND dubstep";
+        var electronic = "\"" + currentTrack + "\"  AND electronic";
+        
+        $("#search-results").empty();
+        searchAndDisplay("Instrumental/Karaoke", instrumental);
+        searchAndDisplay("Dubstep", dubstep);
+        searchAndDisplay("Electronic", electronic);
     }
     
     function updateTracksRemix(){
@@ -273,7 +286,7 @@ window.onload = function() {
             return; // no track playing
         }
         // Perform search of current track
-        searchForSongName(getCurrentTrackName());
+        searchForRemixes();
     }
 
     function updateTracks(){

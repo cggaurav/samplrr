@@ -1,3 +1,9 @@
+/*bg grey  #ecebe8
+bg fade #d4d3d0
+samplify green #aac029
+ */
+
+
 /* Main Elements */
 body{
 	/*height: 96%;*/
@@ -10,6 +16,10 @@ h1 {
 	letter-spacing: 2px;
 	color: white;
 	text-align:center;
+}
+
+h2{
+    padding-top: 10px;
 }
 
 error{ 
@@ -49,7 +59,8 @@ p {
 	overflow: auto;
 	margin: 0px auto;
 }
-
+ 
+/* Playlist view */
 .sp-player {
 	float:left;
 	margin-right:10px;
@@ -59,10 +70,10 @@ p {
 }
 .sp-list {
 	width:inherit;
-	height:200px;
+	max-height:200px;
+    min-height:125px;
+    padding-bottom:10px;
 }
-
-
 .sp-list > div {
     background-color: #aac029;
     background-image: -webkit-linear-gradient(#ecebe8, #ecebe8 50%, #d4d3d0 50%, #d4d3d0);
@@ -75,10 +86,7 @@ p {
     position: relative;
     table-layout: fixed;
 }
-/*bg grey  ecebe8
-bg fade d4d3d0 
-samplify green aac029
- */
+
 .sp-list .sp-item {
     color: #463E3F;
     cursor: default;
