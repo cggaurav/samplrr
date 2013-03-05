@@ -3,7 +3,6 @@ bg fade #d4d3d0
 samplify green #aac029
  */
 
-
 /* Main Elements */
 body{
 	/*height: 96%;*/
@@ -60,11 +59,26 @@ p {
 	margin: 0px auto;
 }
  
+ /* Remix view */
+ 
+.remixResult
+{
+    margin-right:10px;
+}
+
+.remixPlayer
+{
+    float:left;
+    margin-right:10px;
+}
+
 /* Playlist view */
-.sp-player {
+
+/*.sp-player {
 	float:left;
 	margin-right:10px;
-}
+} */
+
 .add-playlist {
 	margin-top:20px;
 }
