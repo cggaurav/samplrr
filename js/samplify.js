@@ -234,99 +234,107 @@ window.onload = function() {
         current.style.display = 'block';
     }
     
-    // Searches for a given string and displays a playlist with the result
-    // We want to search both the spotify catalog and our cached
-    // database for remixes. Since we do not know if we will get any
-    // results back and since both searches are asynchronus it requires
-    // some fiddling with the divs in order to display correctly.    
-    function searchAndDisplay(title, searchPhrase, dbResult){
+    function searchSamplifyDBForRemixAndDisplay()
+    {
+        var resultsDiv = $("<div></div>").addClass("remixResult");
+        resultsDiv.append("<h2>Remixes</h2>");
+	    resultsDiv.append("<div>No tracks for this type of remix</div>"); // default
         
+	    // Search our database for remixes
+        var currentTrackURI = getCurrentTrackURI();
+        $.getJSON(getSamplingURLForTrack(currentTrackURI.toString()),function(result)
+        {
+	        var playlistArt = new views.Player();
+	        var tempPlaylist = new models.Playlist();
+	        var playlistList = new views.List(tempPlaylist);
+	        playlistArt.context = tempPlaylist;
+	        
+	        var resultsPlayer = $("<div></div>").addClass("remixPlayer");
+
+	        // Go through dbResult to see if any results in our database
+	        // matches the current category. This is step 1.
+	        var count = result.samples.length;
+	        for (var i = 0; i < count; i++)
+	        {
+	            var currentResult = result.samples[i];
+	            models.Track.fromURI(currentResult.track1, function(currentResultTrack) {
+		    	    // Make sure the result is the right kind of sample
+		    	    // and that it matches the current category. This is asynchronus.
+		    	    if (currentResult.relationship.kind == "Remix" ||
+		    	    currentResult.relationship.kind == "Cover Version (Remake)")
+		    	    {
+	                	tempPlaylist.add(currentResultTrack);
+		                if (tempPlaylist.length == 1) // the first track was added - make playlist view
+		                {     
+		                	resultsDiv.empty();
+		                	resultsDiv.append("<h2>Remixes</h2>");
+		                	resultsDiv.append(resultsPlayer);
+			                playlistArt.track = tempPlaylist.get(0);
+			                resultsPlayer.append(playlistArt.node);
+			                resultsDiv.append(playlistList.node);
+			            }
+			        }
+	            });
+	        }
+        
+        });
+        $("#search-results").append(resultsDiv);
+    }
+      
+    function searchSpotifyAndDisplay(title, searchPhrase)
+    {
         var searchString = "\"" + getCurrentTrackName() + "\" AND " + searchPhrase;
-        
-        var playlistArt = new views.Player();
-        var tempPlaylist = new models.Playlist();
-        var playlistList = new views.List(tempPlaylist);
-        playlistArt.context = tempPlaylist;
         
         var resultsDiv = $("<div></div>").addClass("remixResult");
         var resultsPlayer = $("<div></div>").addClass("remixPlayer");
-                         
-        resultsDiv.append("<h2>" + title + "</h2>");
-        resultsDiv.append(resultsPlayer);
-        
-        // Go through dbResult to see if any results in our database
-        // matches the current category
-        var count = dbResult.samples.length;
-        for(var i=0; i<count;i++)
-        {
-            var currentResult = dbResult.samples[i];
-            var currentResultTrack = models.Track.fromURI(currentResult.track2);
-            
-            // Make sure the result is the right kind of sample
-            // and that it matches the current category
-            if ( (currentResult.relationship.kind == "Remix" ||
-                  currentResult.relationship.kind == "Cover Version (Remake)") &&
-                (currentResultTrack.name.search(searchPhrase) != -1 || currentResultTrack.album.search(searchPhrase) != -1 || currentResultTrack.artists[0].search(searchPhrase) != -1 ))
-            {
-                tempPlaylist.add(currentResultTrack);
-                console.log("Added remix track from local database");
-            }
-        }
-        
-        if (tempPlaylist.length > 0)
-        {
-            playlistArt.track = tempPlaylist.get(0);
-            resultsPlayer.append(playlistArt.node);
-            resultsDiv.append(playlistList.node);
-        }else{
-            resultsDiv.append("<div>No tracks for this type of remix</div>");
-        }
-        
+                                
         // Search spotify catalog for remixes (step 2)
         var search = new models.Search(searchString);
-        search.pageSize = 20;
+        search.pageSize = MAX_NBR_REMIX_RESULT;
         search.searchPlaylists = false;
-        search.observe(models.EVENT.CHANGE,
-                       function() {
+        search.observe(models.EVENT.CHANGE, function() {       
+            // Add header
+            resultsDiv.append("<h2>" + title + "</h2>");
+            resultsDiv.append(resultsPlayer);
                        
-                       // Add header
-                       resultsDiv.empty();
-                       resultsDiv.append("<h2>" + title + "</h2>");
-                       resultsDiv.append(resultsPlayer);
-                       
-                       // If we have any search results
-                       if(search.tracks.length)
-                       {
-                       $.each(search.tracks,function(index,track)
-                              {
-                                if (index <= MAX_NBR_REMIX_RESULT)
-                                    tempPlaylist.add(models.Track.fromURI(track.uri));
-                              });
-                       
-                            playlistArt.track = tempPlaylist.get(0);
-                            resultsPlayer.append(playlistArt.node);
-                            resultsDiv.append(playlistList.node);
-                       } else {
-                            resultsDiv.append("<div>No tracks for this type of remix</div>");
-                       }
-                       });
+            // If we have any search results
+            if(search.tracks.length)
+            {
+            		var playlistArt = new views.Player();
+            		var tempPlaylist = new models.Playlist();
+            		var playlistList = new views.List(tempPlaylist);
+            		playlistArt.context = tempPlaylist;
+	           		
+	           		$.each(search.tracks,function(index,track)
+	                {
+	                    if (index <= MAX_NBR_REMIX_RESULT)
+	                        tempPlaylist.add(models.Track.fromURI(track.uri));
+	                });
+	           
+	                playlistArt.track = tempPlaylist.get(0);
+	                resultsPlayer.append(playlistArt.node);
+	                resultsDiv.append(playlistList.node);
+	         } else {
+	                resultsDiv.append("<div>No tracks for this type of remix</div>");
+	         }
+	    });
         search.appendNext(); // perform search
         $("#search-results").append(resultsDiv);
     }
     
+    // Searches for a given string and displays a playlist with the result
+    // We want to search both the spotify catalog and our cached
+    // database for remixes. 
     function searchForRemixes()
     {
         $("#search-results").empty();
         
-        // Search our database for remixes (only once and then pass the result as a parameter to the filter function
-        var currentTrackURI = getCurrentTrackURI();
-        $.getJSON(getSampledURLForTrack(currentTrackURI.toString()),function(result){
-                  searchAndDisplay("Instrumental/Karaoke", "instrumental", result);
-                  searchAndDisplay("Dubstep", "dubstep", result);
-                  searchAndDisplay("Electronic", "electronic", result);
-                  searchAndDisplay("Country", "country", result);
-                  searchAndDisplay("Acoustic", "acoustic", result);
-                  });
+        searchSamplifyDBForRemixAndDisplay();
+        searchSpotifyAndDisplay("Instrumental/Karaoke", "instrumental");
+        searchSpotifyAndDisplay("Dubstep", "dubstep");
+	    searchSpotifyAndDisplay("Electronic", "electronic");
+	    searchSpotifyAndDisplay("Country", "country");
+	    searchSpotifyAndDisplay("Acoustic", "acoustic");
     }
     
     function updateTracksRemix(){
@@ -381,7 +389,7 @@ window.onload = function() {
                   });
         
         // Do we really want to search both sampled and sampling?
-        /*  $.getJSON(getSamplingURLForTrack(currentTrackURI.toString()),
+          $.getJSON(getSamplingURLForTrack(currentTrackURI.toString()),
          function(result){
          var count = result.samples.length;
          // console.log("Count of Sampling Tracks are " + count);
@@ -390,10 +398,12 @@ window.onload = function() {
          updatedTracks = false;
          updateTrackSample(result.samples[i]);
          }
-         });*/
+         });
         
         updateArtistHeader();
         updateArtists();
+        
+
     }
     
     function updateArtists(){
@@ -406,10 +416,9 @@ window.onload = function() {
             //Make calls with closure, how?
             (function(uri,j)
              {
-             $.getJSON(getSampledURLForArtist(uri),
+             $.getJSON(getSamplingURLForArtist(uri),
                        function(result){
                        for(var i=0;i<result.samples.length;i++){
-                       // console.log("We are being called!");
                        updatedArtists = false;
                        updateArtistSample(result.samples[i],j);
                        }
