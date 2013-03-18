@@ -29,6 +29,12 @@
             "en": "Remix"
             }
         },
+        {
+            "arguments": "cover",
+            "title": {
+            "en": "Cover"
+            }
+        },
 		{
 			"arguments": "contribute",
 			"title": {
