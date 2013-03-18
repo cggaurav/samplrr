@@ -232,55 +232,48 @@ window.onload = function() {
     current.style.display = 'block';
   }
 
-  // This might not be necessary
-  /*
-    function searchSamplifyDBForRemixAndDisplay()
-    {
-        var resultsDiv = $("<div></div>").addClass("remixResult");
-        resultsDiv.append("<h2>Remixes</h2>");
-      resultsDiv.append("<div>No tracks here!</div>"); // default
-        
-      // Search our database for remixes
-        var currentTrackURI = getCurrentTrackURI();
-        $.getJSON(getSamplingURLForTrack(currentTrackURI.toString()),function(result)
-        {
-          var playlistArt = new views.Player();
-          var tempPlaylist = new models.Playlist();
-          var playlistList = new views.List(tempPlaylist);
-          playlistArt.context = tempPlaylist;
-  
-          var resultsPlayer = $("<div></div>").addClass("remixPlayer");
+  // result consists of all results from a query.
+  // We want to split these so that they get categorised
+  // by the tags that we have defined.
 
-          // Go through dbResult to see if any results in our database
-          // matches the current category. This is step 1.
-          var count = result.samples.length;
-          for (var i = 0; i < count; i++)
-          {
-              var currentResult = result.samples[i];
-              models.Track.fromURI(currentResult.track1, function(currentResultTrack) {
-              // Make sure the result is the right kind of sample
-              // and that it matches the current category. This is asynchronus.
-              if (currentResult.relationship.kind == "Remix" ||
-              currentResult.relationship.kind == "Cover Version (Remake)")
-              {
-                    tempPlaylist.add(currentResultTrack);
-                    if (tempPlaylist.length == 1) // the first track was added - make playlist view
-                    {
-                      resultsDiv.empty();
-                      resultsDiv.append("<h2>Remixes</h2>");
-                      resultsDiv.append(resultsPlayer);
-                      playlistArt.track = tempPlaylist.get(0);
-                      resultsPlayer.append(playlistArt.node);
-                      resultsDiv.append(playlistList.node);
-                  }
-              }
-              });
-          }
-        
-        });
-        $("#search-results").append(resultsDiv);
+  /* TAGS
+  0 Instrumental
+  1 Karaoke
+  2 Dubstep
+  3 Electronic
+  4 Country
+  5 Acoustic
+  6 Others */
+  var TAGS = ["Instrumental", "Karaoke", "Dubstep", "Electronic",
+    "Country", "Acoustic", "Others"];
+
+  function splitResultWithRespectToTags(tracks) {
+    var result = new Array();
+    for (var i = 0; i < TAGS.length; i++) {
+      result[i] = new Array();
     }
-     */
+
+    for (var i = 0; i < tracks.length; i++) {
+      var matchFound = false;
+      for (var j = 0; j < TAGS.length - 1; j++) {
+        // Check for match
+        if (tracks[i].name.indexOf(TAGS[j]) != -1 ||
+          tracks[i].album.name.indexOf(TAGS[j]) != -1) {
+          result[j].push(tracks[i]);
+          matchFound = true;
+        }
+      }
+      // If no tag match is found we want to insert it into the last position
+      if (!matchFound) {
+        result[TAGS.length - 1].push(tracks[i]);
+      }
+    }
+
+    // Display all resulting lists if they contain at least one element
+    for (var i = 0; i < TAGS.length; i++) {
+      if (result[i].length > 0) displayResults(result[i], TAGS[i]);
+    }
+  }
 
   // Takes a search result array and searches the tracks
   // based on popularity
@@ -317,6 +310,7 @@ window.onload = function() {
   // is added to the search results.
   // THIS IS NOT USED ATM, WE CONSIDER EVERY TRACK WITH THE SAME
   // ARTIST AND THE SAME TITLE AS A REMIX
+
   function searchSpotifyForRemixAndDisplayResultsForThisTrack(filter) {
     // Get the track name
     var currentTrackName = getCurrentTrackName();
@@ -353,38 +347,39 @@ window.onload = function() {
         //}
         //}
       }
-      displayResults(result);
+      splitResultWithRespectToTags(result);
     });
     search.appendNext(); // perform search
   }
 
-  // Called when a search for tracks is finished in searchSpotifyForThisTrack()
+  // Called when a search for tracks is finished in one of our search functions
 
-  function displayResults(tracks) {
+  function displayResults(tracks, title) {
+
+    if (tracks.length == 0) return; // No results
+
     var resultsDiv = $("<div></div>").addClass("remixResult");
     var resultsPlayer = $("<div></div>").addClass("remixPlayer");
+    resultsDiv.append("<h2>" + title + "</h2>");
 
     // Add header
     resultsDiv.append(resultsPlayer);
 
-    if (tracks.length) {
-      // Setup views
-      var playlistArt = new views.Player();
-      var tempPlaylist = new models.Playlist();
-      var playlistList = new views.List(tempPlaylist);
-      playlistArt.context = tempPlaylist;
+    // Setup views
+    var playlistArt = new views.Player();
+    var tempPlaylist = new models.Playlist();
+    var playlistList = new views.List(tempPlaylist);
+    playlistArt.context = tempPlaylist;
 
-      // Add all the search results to the playlist
-      for (var i = 0; i < tracks.length; i++)
-      tempPlaylist.add(models.Track.fromURI(tracks[i].uri));
+    // Add all the search results to the playlist
+    for (var i = 0; i < tracks.length; i++)
+    tempPlaylist.add(models.Track.fromURI(tracks[i].uri));
 
-      // Get nice album art and stuff
-      playlistArt.track = tempPlaylist.get(0);
-      resultsPlayer.append(playlistArt.node);
-      resultsDiv.append(playlistList.node);
-    } else {
-      resultsDiv.append("<div>No tracks here!</div>");
-    }
+    // Get nice album art and stuff
+    playlistArt.track = tempPlaylist.get(0);
+    resultsPlayer.append(playlistArt.node);
+    resultsDiv.append(playlistList.node);
+
     // Display the results
     $("#search-results").append(resultsDiv);
   }
