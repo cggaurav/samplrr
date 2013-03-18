@@ -20,25 +20,25 @@
 		{
 			"arguments": "index",
 			"title": {
-				"en": "Home"
+				"en": "Samples"
 			}
 		},
         {
             "arguments": "remix",
             "title": {
-            "en": "Remix"
+            "en": "Remixes"
             }
         },
         {
             "arguments": "cover",
             "title": {
-            "en": "Cover"
+            "en": "Covers"
             }
         },
 		{
 			"arguments": "contribute",
 			"title": {
-				"en": "Sample!"
+				"en": "Submit"
 			}
 		},
         {
