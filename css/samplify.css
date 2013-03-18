@@ -84,7 +84,6 @@ p {
 }
 .sp-list {
 	width:inherit;
-	max-height:200px;
     min-height:125px;
     padding-bottom:10px;
 }

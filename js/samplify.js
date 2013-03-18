@@ -62,9 +62,17 @@ window.onload = function() {
     clearTracks();
     updateTracks();
   });
+
   $("#remixRefresh").click(function() {
-    clearTracks();
-    updateTracksRemix();
+    clearRemix();
+    if (updateTrackHeaderRemix()) searchForRemixes();
+    else noSamplesRemix();
+  });
+
+  $("#coverRefresh").click(function() {
+    clearCover();
+    if (updateTrackHeaderCover()) searchForCovers();
+    else noSamplesCover();
   });
 
   $("#submitSample").click(function() {
@@ -217,9 +225,15 @@ window.onload = function() {
   function clearTracks() {
     $("#trackSamples").empty();
     $("#trackHeader").empty();
-    $("#search-results").empty();
-    $("#noSamplesRemix").empty();
     $("#artistHeaderList").empty();
+  }
+
+  function clearRemix() {
+    $("#remixResults").empty();
+  }
+
+  function clearCover() {
+    $("#coverResults").empty();
   }
 
   function tabs() {
@@ -247,7 +261,7 @@ window.onload = function() {
   var TAGS = ["Instrumental", "Karaoke", "Dubstep", "Electronic",
     "Country", "Acoustic", "Others"];
 
-  function splitResultWithRespectToTags(tracks) {
+  function splitResultWithRespectToTags(tracks, currentDiv) {
     var result = new Array();
     for (var i = 0; i < TAGS.length; i++) {
       result[i] = new Array();
@@ -257,8 +271,7 @@ window.onload = function() {
       var matchFound = false;
       for (var j = 0; j < TAGS.length - 1; j++) {
         // Check for match
-        if (tracks[i].name.indexOf(TAGS[j]) != -1 ||
-          tracks[i].album.name.indexOf(TAGS[j]) != -1) {
+        if (tracks[i].name.indexOf(TAGS[j]) != -1 || tracks[i].album.name.indexOf(TAGS[j]) != -1) {
           result[j].push(tracks[i]);
           matchFound = true;
         }
@@ -271,7 +284,9 @@ window.onload = function() {
 
     // Display all resulting lists if they contain at least one element
     for (var i = 0; i < TAGS.length; i++) {
-      if (result[i].length > 0) displayResults(result[i], TAGS[i]);
+      if (result[i].length > 0) {
+        $(currentDiv).append(displayResults(result[i], TAGS[i]));
+      }
     }
   }
 
@@ -292,36 +307,32 @@ window.onload = function() {
   function containsArtist(current, match) {
     for (var i = 0; i < current.length; i++) {
       for (var j = 0; j < match.length; j++) {
-        if (current[i].name.indexOf(match[j].name) != -1) // match
+        if (current[i].uri == match[j].uri) // match
         return true;
       }
     }
     return false;
   }
 
+  // remove unneccessary parts of the track name (if there are any)
+  // This is to remove subtitles such as "Levels - Original Version" -> "Levels"
+
+  function getCleanTrackName(track) {
+    var indexOfSubtitle = track.indexOf("-");
+    if (indexOfSubtitle != -1) track = track.substring(0, indexOfSubtitle);
+    indexOfSubtitle = track.indexOf("(");
+    if (indexOfSubtitle != -1) track = track.substring(0, indexOfSubtitle);
+    return track;
+  }
+
   var SEARCH_SIZE = 200;
-  var MAXIMUM_RESULT_SIZE = 15;
+  var MAXIMUM_RESULT_SIZE = 25;
 
-  // Returns an array (of maximum resultSize size) of the
-  // Spotify searches if you search for this album
+  var COVER_FILTER = ["cover", "made famous by", "tribute", "instrumental", "karaoke"];
 
-  // Filter is an array of phrases that the track title should
-  // be matched. If at least one phrase is found, the track
-  // is added to the search results.
-  // THIS IS NOT USED ATM, WE CONSIDER EVERY TRACK WITH THE SAME
-  // ARTIST AND THE SAME TITLE AS A REMIX
-
-  function searchSpotifyForRemixAndDisplayResultsForThisTrack(filter) {
+  function searchForCovers() {
     // Get the track name
-    var currentTrackName = getCurrentTrackName();
-
-    // remove unneccessary parts of the track name (if there are any)
-    // This is to remove subtitles such as "Levels - Original Version" -> "Levels"
-    var indexOfSubtitle = currentTrackName.indexOf("-");
-    if (indexOfSubtitle != -1) currentTrackName = currentTrackName.substring(0, indexOfSubtitle);
-    indexOfSubtitle = currentTrackName.indexOf("(");
-    if (indexOfSubtitle != -1) currentTrackName = currentTrackName.substring(0, indexOfSubtitle);
-
+    var currentTrackName = getCleanTrackName(getCurrentTrackName());
     var searchString = "\"" + currentTrackName + "\"";
     var result = new Array(); // the results of the search
 
@@ -333,21 +344,51 @@ window.onload = function() {
       var sortedList = sortTracksByPopularity(search.tracks);
 
       for (var i = 0; i < sortedList.length; i++) {
+        // Check so that we have not found enough tracks already
+        if (result.length > MAXIMUM_RESULT_SIZE) break;
 
+        // A track is only a cover if it DOES NOT contain the current artist
+        if (containsArtist(getCurrentArtistList(), sortedList[i].artists)) continue;
+
+        // Make sure the track matches any of our cover tags
+        for (var j = 0; j < COVER_FILTER.length; j++) {
+          if (sortedList[i].name.indexOf(COVER_FILTER[j]) != -1) {
+            result.push(sortedList[i]);
+            break;
+          }
+        }
+      }
+      $("#coverResults").empty(); // clear current view
+      if (result.length > 0) splitResultWithRespectToTags(result, "#coverResults");
+      else noSamplesCover();
+    });
+    search.appendNext(); // perform search
+  }
+
+  function searchForRemixes() {
+    // Get the track name
+    var currentTrackName = getCleanTrackName(getCurrentTrackName());
+    var searchString = "\"" + currentTrackName + "\"";
+    var result = new Array(); // the results of the search
+
+    var search = new models.Search(searchString);
+    search.pageSize = SEARCH_SIZE;
+    search.searchPlaylists = false;
+    search.observe(models.EVENT.CHANGE, function() {
+      // Sort results by popularity
+      var sortedList = sortTracksByPopularity(search.tracks);
+
+      for (var i = 0; i < sortedList.length; i++) {
         // Check so that we have not found enough tracks already
         if (result.length > MAXIMUM_RESULT_SIZE) break;
 
         // A track is only a remix if it contains the current artist
         if (!containsArtist(getCurrentArtistList(), sortedList[i].artists)) continue;
-
-        // for (var j = 0; j < filter.length; j++) {
-        //  if (sortedList[i].name.indexOf(filter[j]) != -1) {
         result.push(sortedList[i]);
-        // break;
-        //}
-        //}
       }
-      splitResultWithRespectToTags(result);
+      $("#remixResults").empty(); // clear current view
+      if (result.length > 0) splitResultWithRespectToTags(result, "#remixResults");
+      else noSamplesRemix();
     });
     search.appendNext(); // perform search
   }
@@ -355,7 +396,6 @@ window.onload = function() {
   // Called when a search for tracks is finished in one of our search functions
 
   function displayResults(tracks, title) {
-
     if (tracks.length == 0) return; // No results
 
     var resultsDiv = $("<div></div>").addClass("remixResult");
@@ -380,42 +420,7 @@ window.onload = function() {
     resultsPlayer.append(playlistArt.node);
     resultsDiv.append(playlistList.node);
 
-    // Display the results
-    $("#search-results").append(resultsDiv);
-  }
-
-  // Searches for a given string and displays a playlist with the result
-  // We want to search both the spotify catalog and our cached
-  // database for remixes.
-
-  function searchForRemixes() {
-    $("#search-results").empty();
-
-    var remixFilter = new Array();
-    remixFilter[0] = "mix";
-    remixFilter[1] = "remix";
-
-    var coverFilter = new Array();
-    coverFilter[0] = "cover";
-    coverFilter[1] = "made famous by";
-    coverFilter[2] = "tribute";
-    coverFilter[3] = "instrumental"
-    coverFilter[4] = "karaoke";
-
-    searchSpotifyForRemixAndDisplayResultsForThisTrack(remixFilter);
-    //searchSpotifyAndDisplayResultsForThisTrack(coverFilter);
-    // searchSamplifyDBForRemixAndDisplay();
-  }
-
-  function updateTracksRemix() {
-    updateTrackHeader();
-    var currentTrack = getCurrentTrack();
-    if (currentTrack == null) {
-      noSamples();
-      return; // no track playing
-    }
-    // Perform search of current track
-    searchForRemixes();
+    return resultsDiv;
   }
 
   function getSampledURLForTrack(track) {
@@ -433,7 +438,6 @@ window.onload = function() {
   function getSamplingURLForArtist(artist) {
     return (server + "artist/sampling?id=" + artist);
   }
-
 
   function updateTracks() {
 
@@ -493,12 +497,7 @@ window.onload = function() {
           }
         });
       })(artistList[j].uri, j);
-
     }
-    // console.log(updatedArtists);
-    // if(!updatedArtists){
-    // noSamples();
-    // }
   }
 
   function addLeadingZero(number) {
@@ -563,11 +562,9 @@ window.onload = function() {
     artistSamplesHTML.append(setupSampleContent(sample));
   }
 
-
   // Update the sample, sampling and the relationship, samples of track
 
   function updateTrackSample(sample) {
-
     var trackSamplesHTML = $("#trackSamples");
     trackSamplesHTML.append(setupSampleContent(sample));
   }
@@ -616,18 +613,36 @@ window.onload = function() {
     return player.track.artists;
   }
 
-  function updateTrackHeader() {
+  function getCurrentTrackHeader() {
     var currentTrack = getCurrentTrack();
-    if (currentTrack == null) {
-      console.log("No track playing!");
+    if (currentTrack == null || currentTrack.isAd == true) {
       return false;
     } else {
       var currentTrackURI = getCurrentTrackURI();
       var trackheaderHTML = "♫ " + "<a href='" + root + currentTrackURI + "'>" + currentTrack + "</a><div id='artist" + i.toString() + "'></div>";
-      $("#trackHeader").html(trackheaderHTML);
-      $("#trackHeaderRemix").html(trackheaderHTML);
-      return true;
+      return trackheaderHTML;
     }
+  }
+
+  function updateTrackHeader() {
+    var trackHeader = getCurrentTrackHeader();
+    if (!trackHeader) return false;
+    $("#trackHeader").html(trackHeader);
+    return true;
+  }
+
+  function updateTrackHeaderRemix() {
+    var trackHeader = getCurrentTrackHeader();
+    if (!trackHeader) return false;
+    $("#trackHeaderRemix").html(trackHeader);
+    return true;
+  }
+
+  function updateTrackHeaderCover() {
+    var trackHeader = getCurrentTrackHeader();
+    if (!trackHeader) return false;
+    $("#trackHeaderCover").html(trackHeader);
+    return true;
   }
 
   function updateArtistHeader() {
@@ -636,20 +651,22 @@ window.onload = function() {
     for (var i = 0; i < artistList.length; i++) {
       artistHeaderList.append('<div class="header"><a href="' + root + artistList[i].uri + '">' + artistList[i].name + '</a></div><div id="artist' + i.toString() + '"></div>');
       // artistHeaderList.append('<div class="header">'  + artistList[i].name + '</div><div id="artist' + i.toString() + '"></div>');
-
     }
   }
 
   function noSamples() {
-    var errorHTML = "<error> No Samples found! </error>";
-    var noSamples = $("#noSamples");
-    noSamples.html(errorHTML);
-    var noSamplesRemix = $("#noSamplesRemix");
-    noSamplesRemix.html(errorHTML);
+    $("#noSamples").html("<error> No samples found! </error>");
+  }
+
+  function noSamplesRemix() {
+    $("#remixResults").html("<error> No remixes found! </error>");
+  }
+
+  function noSamplesCover() {
+    $("#coverResults").html("<error> No covers found! </error>");
   }
 
   function consolify() {
-
     $("#console").html("Track now playing is " + getCurrentTrack());
     $("#console").append("Artists now playing are " + getCurrentArtistList());
   }
