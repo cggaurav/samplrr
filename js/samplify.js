@@ -21,7 +21,7 @@ window.onload = function() {
   var TAGS = ["Instrumental", "Karaoke", "Dubstep", "Electronic",
     "Country", "Acoustic", "Others"];
 
-  var COVER_FILTER = ["cover", "made famous by", "tribute", "instrumental", "karaoke"];
+  var COVER_FILTER = ["cover", "made famous by", "tribute", "instrumental", "karaoke", "in the style of", "version", "originally by", "originally performed"];
 
 
   // Handle tabs, do we need this?
@@ -63,8 +63,6 @@ window.onload = function() {
   }
 
   function refreshInterface() {
-    console.log("in refresh");
-
     // Update samples
     clearTracks();
     updateTracks();
@@ -337,7 +335,7 @@ window.onload = function() {
 
         // Make sure the track matches any of our cover tags
         for (var j = 0; j < COVER_FILTER.length; j++) {
-          if (sortedList[i].name.indexOf(COVER_FILTER[j]) != -1) {
+          if (sortedList[i].name.toLowerCase().indexOf(COVER_FILTER[j]) != -1) {
             result.push(sortedList[i]);
             break;
           }
@@ -412,7 +410,6 @@ window.onload = function() {
     playlistArt.track = tempPlaylist.get(0);
     resultsPlayer.append(playlistArt.node);
     resultsDiv.append(playlistList.node);
-    console.log(resultsDiv);
     return resultsDiv;
   }
 
