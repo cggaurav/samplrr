@@ -11,40 +11,49 @@
     @import url(http://fonts.googleapis.com/css?family=Englebert);
 
     @import url('sp://samplify/css/samplify.css');
+    @import url('sp://samplify/css/circle-pack.css');
     @import url('sp://samplify/css/jquery.ui.css');
     @import url('sp://samplify/css/bootstrap.responsive.css');
     </style>
+
+    <script src="sp://samplify/js/jquery.js"></script>
+    <script src="sp://samplify/js/jquery.ui.js"></script>
+    <script src="sp://samplify/js/vis/d3.js"></script>
+    <script src="sp://samplify/js/vis/d3.layout.js"></script>
+
 </head>
 <body>
-    <div class="navbar">
-        <div align="center">
-            <img src="samplify_transparent.png" width="200" height="60"/>
+    <header>
+        <div class="navbar">
+            <div align="center">
+                <img src="samplify_transparent.png" width="200" height="60"/>
+            </div>
         </div>
-    </div>
-    <div class="wrapper">
+    </header>
+    <div id = "wrapper" class="wrapper">
         <!-- Home tab -->
         <div id="index" class="section">
-            <div class="loading">
-                <div class="throbber" id="throbber_samples"><div></div></div>
-            </div>
-            <div id="trackHeader" class="header"></div>
+            <div id="trackHeader" class="sampleHeader"></div>
             <div id="trackSamples"></div>
             <div id="artistHeaderList"></div>
             <div id="noSamples"></div>
+            <div class="loading">
+                <div class="throbber" id="throbber_samples"><div></div></div>
+            </div>
         </div>
 
         <!-- Remix Tab -->
         <div id="remix" class="section">
-            <div id="trackHeaderRemix" class="header"></div>
-            <div id="remixResults"></div>
-            <div class="loading">
+            <div id="trackHeaderRemix" class="graphHeader"></div>
+            <div id="graph" class="graph"></div>
+           <!-- <div class="loading">
                 <div class="throbber" id="throbber_remix"><div></div></div>
-            </div>
+            </div>-->
         </div>
 
         <!-- Cover Tab -->
         <div id="cover" class="section">
-            <div id="trackHeaderCover" class="header"></div>
+            <div id="trackHeaderCover" class="graphHeader"></div>
             <div id="coverResults"></div>
             <div class="loading">
                 <div class="throbber" id="throbber_cover"><div></div></div>
@@ -52,16 +61,15 @@
         </div>
 
     </div><!-- /wrapper -->
-    <div class="footer">
-        <div class="refresh">
-            <button id="refresh" class="sp-button">Refresh</button>
+    <footer>      
+        <div class="footer">  
+            <div class="refresh">
+                <button id="refresh" class="sp-button">Refresh</button>
+            </div>
         </div>
-    </div>
+    </footer>
 </body>
 <!-- Load all scripts now -->
-<script src="sp://samplify/js/jquery.js"></script>
-<script src="sp://samplify/js/jquery.ui.js"></script>
 <script src="sp://samplify/js/rainbow-custom.min.js"></script>
+<script src="sp://samplify/js/vis/circle-pack.js"></script>
 <script src="sp://samplify/js/samplify.js"></script>
-
-</html>

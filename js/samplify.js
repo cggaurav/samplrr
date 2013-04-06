@@ -63,19 +63,14 @@ window.onload = function() {
   }
 
   function refreshInterface() {
-    // Update samples
     clearTracks();
     updateTracks();
 
-    // Update remixes
     clearRemix();
-    if (updateTrackHeaderRemix()) searchForRemixes();
-    else noSamplesRemix();
+    updateRemix();
 
-    // Update covers
     clearCover();
-    if (updateTrackHeaderCover()) searchForCovers();
-    else noSamplesCover();
+    updateCover();
   }
 
   $("#refresh").click(function() {
@@ -246,7 +241,7 @@ window.onload = function() {
     current.style.display = 'block';
   }
 
-  function splitResultWithRespectToTags(tracks, currentDiv) {
+  function splitResultWithRespectToTags(tracks) {
     var result = new Array();
     for (var i = 0; i < TAGS.length; i++) {
       result[i] = new Array();
@@ -256,23 +251,18 @@ window.onload = function() {
       var matchFound = false;
       for (var j = 0; j < TAGS.length - 1; j++) {
         // Check for match
-        if (tracks[i].name.indexOf(TAGS[j]) != -1 || tracks[i].album.name.indexOf(TAGS[j]) != -1) {
+        if (tracks[i].name.toLowerCase().indexOf(TAGS[j].toLowerCase()) != -1 || tracks[i].album.name.toLowerCase().indexOf(TAGS[j].toLowerCase()) != -1) {
           result[j].push(tracks[i]);
           matchFound = true;
+          break;
         }
       }
       // If no tag match is found we want to insert it into the last position
-      if (!matchFound) {
+      if (matchFound === false) {
         result[TAGS.length - 1].push(tracks[i]);
       }
     }
-
-    // Display all resulting lists if they contain at least one element
-    for (var i = 0; i < TAGS.length; i++) {
-      if (result[i].length > 0) {
-        $(currentDiv).append(displayResults(result[i], TAGS[i]));
-      }
-    }
+    return result;
   }
 
   // Takes a search result array and searches the tracks
@@ -310,10 +300,7 @@ window.onload = function() {
     return track;
   }
 
-  function searchForCovers() {
-    // Show spinner
-    $("#throbber_cover").show();
-
+  function searchSpotify(callback) {
     // Get the track name
     var currentTrackName = getCleanTrackName(getCurrentTrackName());
     var searchString = "\"" + currentTrackName + "\"";
@@ -323,65 +310,63 @@ window.onload = function() {
     search.pageSize = SEARCH_PAGE_SIZE;
     search.searchPlaylists = false;
     search.observe(models.EVENT.CHANGE, function() {
+
       // Sort results by popularity
       var sortedList = sortTracksByPopularity(search.tracks);
 
-      for (var i = 0; i < sortedList.length; i++) {
-        // Check so that we have not found enough tracks already
-        if (result.length > MAXIMUM_RESULT_SIZE) break;
+      // return results when finished
+      callback(sortedList);
+    });
+    search.appendNext(); // perform search
+  }
 
-        // A track is only a cover if it DOES NOT contain the current artist
-        if (containsArtist(getCurrentArtistList(), sortedList[i].artists)) continue;
+  function displayCovers(searchResults) {
+    var result = new Array();
 
-        // Make sure the track matches any of our cover tags
+    for (var i = 0; i < searchResults.length; i++) {
+      // Check so that we have not found enough tracks already
+      if (result.length >= MAXIMUM_RESULT_SIZE) break;
+
+      // A track is only a cover if it DOES NOT contain the current artist
+      if (containsArtist(getCurrentArtistList(), searchResults[i].artists)) continue;
+
+      // Make sure the track matches any of our cover tags
+      // Actually, is this necessary?
+      /*
         for (var j = 0; j < COVER_FILTER.length; j++) {
           if (sortedList[i].name.toLowerCase().indexOf(COVER_FILTER[j]) != -1) {
             result.push(sortedList[i]);
             break;
           }
         }
-      }
-      $("#coverResults").empty(); // clear current view
-      $("#throbber_cover").hide(); // remove spinner
+        */
+      result.push(searchResults[i]);
+    }
+    $("#coverResults").empty(); // clear current view
+    $("#throbber_cover").hide(); // remove spinner
 
-      if (result.length > 0) splitResultWithRespectToTags(result, "#coverResults");
-      else noSamplesCover();
-    });
-    search.appendNext(); // perform search
+    if (result.length > 0) splitResultWithRespectToTags(result);
+    else noSamplesCover();
   }
 
-  function searchForRemixes() {
-    // Show spinner
-    $("#throbber_remix").show();
+  function displayRemixes(searchResults) {
+    var result = new Array();
 
-    // Get the track name
-    var currentTrackName = getCleanTrackName(getCurrentTrackName());
-    var searchString = "\"" + currentTrackName + "\"";
-    var result = new Array(); // the results of the search
+    for (var i = 0; i < searchResults.length; i++) {
+      // Check so that we have not found enough tracks already
+      if (result.length > MAXIMUM_RESULT_SIZE) break;
 
-    var search = new models.Search(searchString);
-    search.pageSize = SEARCH_PAGE_SIZE;
-    search.searchPlaylists = false;
+      // A track is only a remix if it contains the current artist as one of the artists
+      if (!containsArtist(getCurrentArtistList(), searchResults[i].artists)) continue;
+      result.push(searchResults[i]);
+    }
+    $("#throbber_remix").hide(); // remove spinner
 
-    search.observe(models.EVENT.CHANGE, function() {
-      // Sort results by popularity
-      var sortedList = sortTracksByPopularity(search.tracks);
-
-      for (var i = 0; i < sortedList.length; i++) {
-        // Check so that we have not found enough tracks already
-        if (result.length > MAXIMUM_RESULT_SIZE) break;
-
-        // A track is only a remix if it contains the current artist
-        if (!containsArtist(getCurrentArtistList(), sortedList[i].artists)) continue;
-        result.push(sortedList[i]);
-      }
-      $("#remixResults").empty(); // clear current view
-      $("#throbber_remix").hide(); // remove spinner
-
-      if (result.length > 0) splitResultWithRespectToTags(result, "#remixResults");
-      else noSamplesRemix();
-    });
-    search.appendNext(); // perform search
+    if (result.length > 0) {
+      var data = splitResultWithRespectToTags(result);
+      loadCircleGraph(formatDataForGraph(data), "#graph", true);
+    }
+    else noSamplesRemix();
   }
 
   // Called when a search for tracks is finished in one of our search functions
@@ -403,9 +388,9 @@ window.onload = function() {
     playlistArt.context = tempPlaylist;
 
     // Add all the search results to the playlist
-    for (var i = 0; i < tracks.length; i++)
-    tempPlaylist.add(models.Track.fromURI(tracks[i].uri));
-
+    for (var i = 0; i < tracks.length; i++) {
+      tempPlaylist.add(models.Track.fromURI(tracks[i].uri));
+    }
     // Get nice album art and stuff
     playlistArt.track = tempPlaylist.get(0);
     resultsPlayer.append(playlistArt.node);
@@ -599,7 +584,7 @@ window.onload = function() {
 
   function getCurrentArtistListURI() {
     var currentArtistList = player.track.artists;
-    var currentArtistListURI = []
+    var currentArtistListURI = [];
     for (var i = 0; i < currentArtistList.length; i++)
     currentArtistListURI.push(currentArtistList[i].uri);
     return currentArtistListURI;
@@ -618,6 +603,19 @@ window.onload = function() {
       var trackheaderHTML = "♫ " + "<a href='" + root + currentTrackURI + "'>" + currentTrack + "</a><div id='artist" + i.toString() + "'></div>";
       return trackheaderHTML;
     }
+  }
+
+   function updateRemix() {
+    $("#throbber_remix").show();
+    $("#graph").empty();
+    if (updateTrackHeaderRemix()) searchSpotify(displayRemixes);
+    else noSamplesRemix();
+  }
+
+  function updateCover() {
+    $("#throbber_cover").show();
+    if (updateTrackHeaderCover()) searchSpotify(displayCovers);
+    else noSamplesCover();
   }
 
   function updateTrackHeader() {
@@ -645,7 +643,7 @@ window.onload = function() {
     var artistList = getCurrentArtistList();
     var artistHeaderList = $("#artistHeaderList");
     for (var i = 0; i < artistList.length; i++) {
-      artistHeaderList.append('<div class="header"><a href="' + root + artistList[i].uri + '">' + artistList[i].name + '</a></div><div id="artist' + i.toString() + '"></div>');
+      artistHeaderList.append('<div class="sampleHeader"><a href="' + root + artistList[i].uri + '">' + artistList[i].name + '</a></div><div id="artist' + i.toString() + '"></div>');
       // artistHeaderList.append('<div class="header">'  + artistList[i].name + '</div><div id="artist' + i.toString() + '"></div>');
     }
   }
@@ -655,10 +653,12 @@ window.onload = function() {
   }
 
   function noSamplesRemix() {
+    $("#throbber_remix").hide();
     $("#remixResults").html("<error> No remixes found! </error>");
   }
 
   function noSamplesCover() {
+    $("#throbber_cover").hide();
     $("#coverResults").html("<error> No covers found! </error>");
   }
 
