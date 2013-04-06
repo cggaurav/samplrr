@@ -24,35 +24,23 @@
 			}
 		},
         {
-            "arguments": "remix",
+			"arguments": "remix",
             "title": {
-            "en": "Remixes"
+				"en": "Remixes"
             }
         },
         {
-            "arguments": "cover",
+			"arguments": "cover",
             "title": {
-            "en": "Covers"
+				"en": "Covers"
             }
-        },
-		{
-			"arguments": "contribute",
-			"title": {
-				"en": "Submit"
-			}
-		},
-        {
-			"arguments": "about",
-			"title": {
-				"en": "About"
-			}
         }
 	],
 	"Dependencies": {
 	  "api": "0.2.3",
 	  "util": "0.1.0",
 	  "resources": "0.2.2"
-  },
+	},
 	"RequiredInterface": 1,
 	"RequiredPermissions": [
 	    "http://samplify.herokuapp.com",

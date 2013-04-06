@@ -1,7 +1,7 @@
 /*bg grey  #ecebe8
 bg fade #d4d3d0
 samplify green #aac029
- */
+*/
 
 /* Main Elements */
 body{
@@ -18,7 +18,7 @@ h1 {
 }
 
 h2{
-    padding-top: 10px;
+	padding-top: 10px;
 }
 
 error{ 
@@ -28,22 +28,40 @@ error{
 }
 
 .navbar{
-	height: 63px;
-	/*background-position: 0px 0px;*/
+	height: 70px;
+	width: 100%;
 	background-image: url(nav.png);
 	background-size: auto;
-	width: 100%;
+	position: relative;
 }
-.refresh{
-	position : relative;
-	/*margin:5px;*/
-	text-align: center;
 
+.footer{
+	width: 100%;
+	height: 40px;
+	background-image: url(footer.png);
+	background-size: auto;
+	position: absolute;
+	bottom: 0;
+}
+
+.refresh{
+	width: 100%;
+	height: 50%;
+	position: absolute;
+	top:10;
+	text-align:center;
+}
+
+.loading{
+	width: 100%;
+	height: 70%;
+	position: absolute;
+	text-align:center;
+	z-index: 1000;
 }
 
 .wrapper{
 	margin: 20px;
-	/*width: auto;*/
 }
 
 p {
@@ -54,71 +72,67 @@ p {
 }
 
 .section {
-	position: relative;
+	position: absolute;
+	bottom: 50px;
+	top: 80px;
+	right: 10px;
+	left: 10px;
 	overflow: auto;
-	margin: 0px auto;
 }
- 
- /* Remix view */
- 
+
+/* Remix view */
 .remixResult
 {
-    margin-right:10px;
+	margin-right:10px;
 }
 
 .remixPlayer
 {
-    float:left;
-    margin-right:10px;
+	float:left;
+	margin-right:10px;
 }
 
 /* Playlist view */
-
-/*.sp-player {
-	float:left;
-	margin-right:10px;
-} */
-
 .add-playlist {
 	margin-top:20px;
 }
 .sp-list {
 	width:inherit;
-    min-height:125px;
-    padding-bottom:10px;
+	min-height:125px;
+	padding-bottom:10px;
 }
 .sp-list > div {
-    background-color: #aac029;
-    background-image: -webkit-linear-gradient(#ecebe8, #ecebe8 50%, #d4d3d0 50%, #d4d3d0);
-    background-size: 40px 40px;
-    border-spacing: initial;
-    color: #aac029;
-    display: table;
-    font-size: 11px;
-    line-height: 20px;
-    position: relative;
-    table-layout: fixed;
+	background-color: #aac029;
+	background-image: -webkit-linear-gradient(#ecebe8, #ecebe8 50%, #d4d3d0 50%, #d4d3d0);
+	background-size: 40px 40px;
+	border-spacing: initial;
+	color: #aac029;
+	display: table;
+	font-size: 11px;
+	line-height: 20px;
+	position: relative;
+	table-layout: fixed;
 }
 
 .sp-list .sp-item {
-    color: #463E3F;
-    cursor: default;
-    display: table;
-    position: absolute;
-    table-layout: fixed;
-    text-decoration: none;
-    width: 100%;
+	color: #463E3F;
+	cursor: default;
+	display: table;
+	position: absolute;
+	table-layout: fixed;
+	text-decoration: none;
+	width: 100%;
 }		
 .sp-list .sp-track-playing { 
-    color: #463E3F; 
-    background-color: #aac029;
-    background-image: none;
+	color: #463E3F; 
+	background-color: #aac029;
+	background-image: none;
 }
 .sp-list .sp-item.sp-track-selected { background-color: #6C6C6C;}
 .sp-list .sp-item.sp-track-selected { color: #ecebe8; }
 .sp-list:focus .sp-item.sp-track-selected { background-color: #aac029; }
 .sp-list:focus .sp-item.sp-track-selected { color: #463E3F; }
-	
+
 /* Text */
 .description {
 	font-size:1.5em;
@@ -220,10 +234,10 @@ p {
 }
 
 .icon {
-    width: 170px;
-    height: 170px;
-    border-radius: 10px;
-    margin-bottom: 20px;
-    margin-left: 20px;
-    box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.5);
+	width: 170px;
+	height: 170px;
+	border-radius: 10px;
+	margin-bottom: 20px;
+	margin-left: 20px;
+	box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.5);
 }

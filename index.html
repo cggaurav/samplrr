@@ -1,114 +1,67 @@
 <!-- <!DOCTYPE html> -->
 <html>
-    <head>
-        <style>
-            @import url('sp://import/css/eve.css');
-            @import url('sp://import/css/player.css');
-            @import url('sp://import/css/api.css');
+<head>
+    <style>
+    @import url('sp://import/css/eve.css');
+    @import url('sp://import/css/player.css');
+    @import url('sp://import/css/api.css');
 
-            @import url(http://fonts.googleapis.com/css?family=Chela+One);
-            @import url(http://fonts.googleapis.com/css?family=Belgrano);
-            @import url(http://fonts.googleapis.com/css?family=Englebert);
+    @import url(http://fonts.googleapis.com/css?family=Chela+One);
+    @import url(http://fonts.googleapis.com/css?family=Belgrano);
+    @import url(http://fonts.googleapis.com/css?family=Englebert);
 
-            @import url('sp://samplify/css/samplify.css');
-            @import url('sp://samplify/css/jquery.ui.css');
-            @import url('sp://samplify/css/bootstrap.responsive.css');
-        </style>
-    </head>
-    <body>
-        <div class="navbar">
-            <div align="center">
-                <img src="samplify_transparent.png" width="200" height="60"/>
+    @import url('sp://samplify/css/samplify.css');
+    @import url('sp://samplify/css/jquery.ui.css');
+    @import url('sp://samplify/css/bootstrap.responsive.css');
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <div align="center">
+            <img src="samplify_transparent.png" width="200" height="60"/>
+        </div>
+    </div>
+    <div class="wrapper">
+        <!-- Home tab -->
+        <div id="index" class="section">
+            <div class="loading">
+                <div class="throbber" id="throbber_samples"><div></div></div>
+            </div>
+            <div id="trackHeader" class="header"></div>
+            <div id="trackSamples"></div>
+            <div id="artistHeaderList"></div>
+            <div id="noSamples"></div>
+        </div>
+
+        <!-- Remix Tab -->
+        <div id="remix" class="section">
+            <div id="trackHeaderRemix" class="header"></div>
+            <div id="remixResults"></div>
+            <div class="loading">
+                <div class="throbber" id="throbber_remix"><div></div></div>
             </div>
         </div>
-        <div class="wrapper">
-            
-            <!-- Home tab -->
-            <div id="index" class="section">
-                <div class="refresh">
-                    <input id="refresh" type="image" src="./img/refresh.png" />
-                </div>
-                <!-- <div id="console" class="description"></div>  -->
-                <div id="trackHeader" class="header">
-                </div>
-                <div id="trackSamples">
-                </div>
-                <div id="artistHeaderList">
-                </div>
-                <div id="noSamples">
-                </div>
-            </div>
-            
-            <!-- Submit or Contribute Tab -->
-            <!-- <div id="contribute" class="section">
-                <p>     More work needed here! </p>
-                <div class="sample">
-                    <div id="drop_box_sampling">
-                        <p>Drag sampled track here</p>
-                        <div id="sampling_slider"></div>
-                    </div>
-                    <div id="drop_box_sampled">
-                        <p>Drag sampling track here</p>
-                        <div id="sampled_slider"></div>
-                    </div>
-                </div>
-                <div class="submit">
-                    <select id="kind" name="kind">
-                        <option value="Direct Sample">Sample</option>
-                        <option value="Remix">Remix</option>
-                        <option value="Cover">Cover</option>
-                    </select>
-                    <select id="partsampled" name="partsampled">
-                     <option value="Whole Track">Whole Track</option>
-                     <option value="Vocals / Lyrics">Vocals / Lyrics</option>
-                     <option value="Hook / Riff">Hook / Riff</option>
-                     <option value="Drum Loop">Drum Loop</option>
-                     <option value="Bassline">Bassline</option>
-                     <option value="Other">Other</option>
-                     </select>
-                    <input class="new-button" type="submit" id="submitSample" value="Submit">
-                        </div>
-            </div> -->
-            
-            <!-- Remix Tab -->
-            <div id="remix" class="section">
-                <div class="refresh">
-                    <input id="remixRefresh" type="image" src="./img/refresh.png" />
-                </div>
-                <div id="trackHeaderRemix" class="header">
-                </div>
-                <div id="remixResults">
-                </div>
-            </div>
 
-             <!-- Cover Tab -->
-            <div id="cover" class="section">
-                <div class="refresh">
-                    <input id="coverRefresh" type="image" src="./img/refresh.png" />
-                </div>
-                <div id="trackHeaderCover" class="header">
-                </div>
-                <div id="coverResults">
-                </div>
+        <!-- Cover Tab -->
+        <div id="cover" class="section">
+            <div id="trackHeaderCover" class="header"></div>
+            <div id="coverResults"></div>
+            <div class="loading">
+                <div class="throbber" id="throbber_cover"><div></div></div>
             </div>
-            
-            <!-- About Tab -->
-            <div id="about" class="section ">
-                <div class="row-fluid">
-                    <div class="span4">
-                        <img class="icon" src="samplify128x128.png"/>
-                    </div>
-                    <div class="span8">
-                        <p> Samplify is a Spotify app that makes it simple and easy for you to find samples, covers and remixes of songs.</br></br> We want to grow our data of samples, so keep listening and keep sampling!</br></br> We would love to hear feedback at <a href="mailto:cggaurav@gmail.com"> cggaurav@gmail.com </a></p>
-                    </div>
-                </div>
-            </div>
-        </div><!-- /wrapper -->
-    </body>
-    <!-- Load all scripts now -->
-    <script src="sp://samplify/js/jquery.js"></script>
-    <script src="sp://samplify/js/jquery.ui.js"></script>
-    <script src="sp://samplify/js/rainbow-custom.min.js"></script>
-    <script src="sp://samplify/js/samplify.js"></script>
-    
+        </div>
+
+    </div><!-- /wrapper -->
+    <div class="footer">
+        <div class="refresh">
+            <button id="refresh" class="sp-button">Refresh</button>
+        </div>
+    </div>
+</body>
+<!-- Load all scripts now -->
+<script src="sp://samplify/js/jquery.js"></script>
+<script src="sp://samplify/js/jquery.ui.js"></script>
+<script src="sp://samplify/js/rainbow-custom.min.js"></script>
+<script src="sp://samplify/js/samplify.js"></script>
+
 </html>

@@ -12,15 +12,21 @@ window.onload = function() {
   var server = 'http://samplify.herokuapp.com/';
 
   var submitSample = {};
-  //Data values
-  var currentTrackSampled;
+  var SEARCH_PAGE_SIZE = 200;
+  var MAXIMUM_RESULT_SIZE = 25;
+
+  // Search results consists of all results from a query.
+  // We want to split these so that they get categorised
+  // by the tags that we have defined.
+  var TAGS = ["Instrumental", "Karaoke", "Dubstep", "Electronic",
+    "Country", "Acoustic", "Others"];
+
+  var COVER_FILTER = ["cover", "made famous by", "tribute", "instrumental", "karaoke"];
+
 
   // Handle tabs, do we need this?
   tabs();
   samples_drop();
-  //First time use
-  clearTracks();
-  updateTracks();
 
   application.observe(models.EVENT.ARGUMENTSCHANGED, tabs);
 
@@ -28,12 +34,8 @@ window.onload = function() {
     console.log(event);
     if (event.data.curtrack) {
       console.log("CurTrack");
-      // clearTracks();
-      // updateTracks();
     }
-
   });
-
 
   //Handle Arguments
   application.observe(models.EVENT.ARGUMENTSCHANGED, handleArgs);
@@ -41,6 +43,8 @@ window.onload = function() {
   // Handle items 'dropped' on your icon
   application.observe(models.EVENT.LINKSCHANGED, handleLinks);
 
+  //First time use
+  refreshInterface();
 
   function handleArgs() {
     var args = models.application.arguments;
@@ -58,21 +62,26 @@ window.onload = function() {
     console.log(links);
   }
 
-  $("#refresh").click(function() {
+  function refreshInterface() {
+    console.log("in refresh");
+
+    // Update samples
     clearTracks();
     updateTracks();
-  });
 
-  $("#remixRefresh").click(function() {
+    // Update remixes
     clearRemix();
     if (updateTrackHeaderRemix()) searchForRemixes();
     else noSamplesRemix();
-  });
 
-  $("#coverRefresh").click(function() {
+    // Update covers
     clearCover();
     if (updateTrackHeaderCover()) searchForCovers();
     else noSamplesCover();
+  }
+
+  $("#refresh").click(function() {
+    refreshInterface();
   });
 
   $("#submitSample").click(function() {
@@ -109,12 +118,6 @@ window.onload = function() {
     })(submitSample);
 
   });
-
-  // $(window).keypress(function(e) {
-  //   if (e.keyCode == 0) {
-  //     console.log('Space pressed');
-  //   }
-  // });
 
   function samples_drop() {
 
@@ -221,7 +224,6 @@ window.onload = function() {
     // $("#sampled_slider").slider({ animate: "slow", max: "50"});
   }
 
-
   function clearTracks() {
     $("#trackSamples").empty();
     $("#trackHeader").empty();
@@ -245,21 +247,6 @@ window.onload = function() {
     }
     current.style.display = 'block';
   }
-
-  // result consists of all results from a query.
-  // We want to split these so that they get categorised
-  // by the tags that we have defined.
-
-  /* TAGS
-  0 Instrumental
-  1 Karaoke
-  2 Dubstep
-  3 Electronic
-  4 Country
-  5 Acoustic
-  6 Others */
-  var TAGS = ["Instrumental", "Karaoke", "Dubstep", "Electronic",
-    "Country", "Acoustic", "Others"];
 
   function splitResultWithRespectToTags(tracks, currentDiv) {
     var result = new Array();
@@ -325,19 +312,17 @@ window.onload = function() {
     return track;
   }
 
-  var SEARCH_SIZE = 200;
-  var MAXIMUM_RESULT_SIZE = 25;
-
-  var COVER_FILTER = ["cover", "made famous by", "tribute", "instrumental", "karaoke"];
-
   function searchForCovers() {
+    // Show spinner
+    $("#throbber_cover").show();
+
     // Get the track name
     var currentTrackName = getCleanTrackName(getCurrentTrackName());
     var searchString = "\"" + currentTrackName + "\"";
     var result = new Array(); // the results of the search
 
     var search = new models.Search(searchString);
-    search.pageSize = SEARCH_SIZE;
+    search.pageSize = SEARCH_PAGE_SIZE;
     search.searchPlaylists = false;
     search.observe(models.EVENT.CHANGE, function() {
       // Sort results by popularity
@@ -359,6 +344,8 @@ window.onload = function() {
         }
       }
       $("#coverResults").empty(); // clear current view
+      $("#throbber_cover").hide(); // remove spinner
+
       if (result.length > 0) splitResultWithRespectToTags(result, "#coverResults");
       else noSamplesCover();
     });
@@ -366,14 +353,18 @@ window.onload = function() {
   }
 
   function searchForRemixes() {
+    // Show spinner
+    $("#throbber_remix").show();
+
     // Get the track name
     var currentTrackName = getCleanTrackName(getCurrentTrackName());
     var searchString = "\"" + currentTrackName + "\"";
     var result = new Array(); // the results of the search
 
     var search = new models.Search(searchString);
-    search.pageSize = SEARCH_SIZE;
+    search.pageSize = SEARCH_PAGE_SIZE;
     search.searchPlaylists = false;
+
     search.observe(models.EVENT.CHANGE, function() {
       // Sort results by popularity
       var sortedList = sortTracksByPopularity(search.tracks);
@@ -387,6 +378,8 @@ window.onload = function() {
         result.push(sortedList[i]);
       }
       $("#remixResults").empty(); // clear current view
+      $("#throbber_remix").hide(); // remove spinner
+
       if (result.length > 0) splitResultWithRespectToTags(result, "#remixResults");
       else noSamplesRemix();
     });
@@ -396,7 +389,7 @@ window.onload = function() {
   // Called when a search for tracks is finished in one of our search functions
 
   function displayResults(tracks, title) {
-    if (tracks.length == 0) return; // No results
+    if (tracks.length === 0) return; // No results
 
     var resultsDiv = $("<div></div>").addClass("remixResult");
     var resultsPlayer = $("<div></div>").addClass("remixPlayer");
@@ -419,7 +412,7 @@ window.onload = function() {
     playlistArt.track = tempPlaylist.get(0);
     resultsPlayer.append(playlistArt.node);
     resultsDiv.append(playlistList.node);
-
+    console.log(resultsDiv);
     return resultsDiv;
   }
 
@@ -440,6 +433,9 @@ window.onload = function() {
   }
 
   function updateTracks() {
+
+    // Show loading indicator
+    $("#throbber_samples").show();
 
     //Make this smarter
     updateTrackHeader();
@@ -512,6 +508,9 @@ window.onload = function() {
   }
 
   function setupSampleContent(sample) {
+    // Hide loading indicator
+    $("#throbber_samples").hide();
+
     //Create Sample Context
     var sampling_track = models.Track.fromURI(sample.track1 + "#" + minutesFromSeconds(sample.time1));
     var sampling_track_playlist = new models.Playlist();
@@ -615,7 +614,7 @@ window.onload = function() {
 
   function getCurrentTrackHeader() {
     var currentTrack = getCurrentTrack();
-    if (currentTrack == null || currentTrack.isAd == true) {
+    if (currentTrack === null || currentTrack.isAd === true) {
       return false;
     } else {
       var currentTrackURI = getCurrentTrackURI();
