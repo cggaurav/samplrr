@@ -28,14 +28,16 @@ error{
 	text-align:center;
 }
 
-.navbar{
-	height: 60px;
-	width: 100%;
+.header{
 	background-image: url(nav.png);
-	background-size: auto;
-	position: relative;
-	top: 0;
-	z-index: 1000;
+	/*height: 60px;*/
+	/*width: 100%;*/
+	
+	/*position:absolute;
+	bottom:0;
+	left: 0;
+	right: 0;
+	overflow: auto;*/
 }
 
 .footer{
@@ -43,7 +45,7 @@ error{
 	height: 40px;
 	background-image: url(footer.png);
 	background-size: auto;
-	position: fixed;
+	position: absolute;
 	bottom: 0;
 	z-index: 1000;
 }
