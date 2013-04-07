@@ -6,6 +6,7 @@ var TAGS = ["Instrumental", "Karaoke", "Dubstep", "Electronic",
 
 // Takes a result of a search and transforms it into the data format required
 // for the d3 visualization
+
 function formatDataForGraph(data, type) {
     var nbrTags = 0;
     var result = [];
@@ -14,10 +15,10 @@ function formatDataForGraph(data, type) {
             var curTag = [];
             for (var j = 0; j < data[i].length; j++) {
                 curTag[j] = {
-                    'title': data[i][j].name,
-                    'artist': data[i][j].artists[0].name,
+                    'title' : data[i][j].name,
+                    'artist' : data[i][j].artists[0].name,
                     'album' : data[i][j].album.name,
-                    'size': data[i][j].popularity,
+                    'size' : data[i][j].popularity,
                     'uri' : data[i][j].uri
                 };
             }
@@ -54,12 +55,11 @@ function animateOutGraph(divName, finishedCallback) {
         finishedCallback();
         return true;
     }, 750);
-    //d3.event.stopPropagation();
+    if (d3.event) d3.event.stopPropagation();
 }
 // Shows a beautiful d3 circle visualization
-function loadCircleGraph(data, divName, pickedSongCallback) {
-   // $(divName).empty(); // remove previous drawing(s)
 
+function loadCircleGraph(data, divName, pickedSongCallback) {
     var w = $("#wrapper").width(),
         h = $("#wrapper").height(),
         r = Math.min(w, h) * 0.95, // to fill up most of the graph
@@ -99,21 +99,21 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
         return d.children ? d.r : d.r * 1.05;
     })
         .attr("cx", function(d) {
-        return (Math.random() * w - w/2) * 7;
+        return (Math.random() * w - w / 2) * 7;
     })
         .attr("cy", function(d) {
-        return (Math.random() * h - h/2) * 7;
+        return (Math.random() * h - h / 2) * 7;
     })
         .on("click", function(d) {
-            if (!d.children) return pickedSongCallback(d.uri); // clicked on song
-            else return zoom(node == d ? root : d); // clicked on outer circle, zoom zoom!
+        if (!d.children) return pickedSongCallback(d.uri); // clicked on song
+        else return zoom(node == d ? root : d); // clicked on outer circle, zoom zoom!
     })
         .on("mouseover", function(d, i) {
         if (!d.children) highlightSong(d, i);
         else highlight(d.title, i);
     })
         .on("mouseout", function(d, i) {
-           downlight(d, i);
+        downlight(d, i);
     });
 
     // Update the position of the popover when the cursor is moved
@@ -147,11 +147,10 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
             return d.children ? k * d.r : k * d.r * 1.05;
         });
         node = d;
-        d3.event.stopPropagation();
+        if (d3.event) d3.event.stopPropagation();
     }
 
-    function highlight(tooltipContent, element)
-    {
+    function highlight(tooltipContent, element) {
         tooltipShown = true;
         tooltip.showTooltip(tooltipContent, d3.event);
     }

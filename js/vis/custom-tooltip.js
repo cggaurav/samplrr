@@ -8,8 +8,6 @@ function CustomTooltip( tooltipId, width, divName ) {
 
     var tooltip = $('#'+tooltipId);
 
-    console.log(tooltip);
-
     if(width){
         tooltip.css("width", width);
     }

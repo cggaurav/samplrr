@@ -91,7 +91,7 @@ p {
 	overflow: hidden;
 }
 
-/* Remix view */
+/* Remix view
 .remixResult
 {
 	margin-right:10px;
@@ -103,7 +103,7 @@ p {
 	margin-right:10px;
 }
 
-/* Playlist view */
+/* Playlist view 
 .add-playlist {
 	margin-top:20px;
 	padding: 10px 10px 10px 10px;
@@ -144,6 +144,7 @@ p {
 .sp-list .sp-item.sp-track-selected { color: #ecebe8; }
 .sp-list:focus .sp-item.sp-track-selected { background-color: #aac029; }
 .sp-list:focus .sp-item.sp-track-selected { color: #463E3F; }
+*/
 
 /* Text */
 .description {
@@ -176,6 +177,7 @@ p {
 	height: 310px;
 }
 
+/*
 #drop_box_sampled{
 	text-align: center;
 	position: absolute;
@@ -210,6 +212,7 @@ p {
 	box-shadow: inset 0 0 5px rgba(0,0,0,0.9);
 	border-radius: 7px;
 }
+*/
 
 .sampling{
 	position : absolute;
