@@ -91,7 +91,20 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
         .append("svg:g")
         .attr("class", function(d) {
         return d.children ? "parent" : "child";
-    });
+        });
+        
+    nodes.append('svg:pattern')
+        .attr('id', 'tile-ww')
+        .attr('patternUnits', 'userSpaceOnUse')
+        .attr('width', '100')
+        .attr('height', '100')
+        .append('svg:image')
+        // .attr('xlink:href', 'http://jaycadilak.files.wordpress.com/2013/02/keep_calm_and_carry_on_hd_widescreen_wallpapers_1920x1200.jpeg')
+        .attr('xlink:href', 'spotify:image:a8b8bbf47fd2a477bf3f247134c99fdaf5b9fdf9')
+        .attr('x', 0)
+        .attr('y', 0)
+        .attr('width', 100)
+        .attr('height', 100);
 
     // init circles (randomize starting positions for animation)
     nodes.append("svg:circle")
@@ -104,6 +117,9 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
         .attr("cy", function(d) {
         return (Math.random() * h - h / 2) * 7;
     })
+        .attr("fill", function(d) {
+        return 'url(#tile-ww)'
+    })
         .on("click", function(d) {
         if (!d.children) return pickedSongCallback(d.uri); // clicked on song
         else return zoom(node == d ? root : d); // clicked on outer circle, zoom zoom!
@@ -115,6 +131,7 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
         .on("mouseout", function(d, i) {
         downlight(d, i);
     });
+
     // Update the position of the popover when the cursor is moved
     d3.select(divName).on("mousemove", function(d, i) {
         if (tooltipShown === true) move(d, i);
