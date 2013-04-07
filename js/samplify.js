@@ -322,15 +322,12 @@ window.onload = function() {
 
       // Make sure the track matches any of our cover tags
       // Actually, is this necessary?
-      /*
-        for (var j = 0; j < COVER_FILTER.length; j++) {
-          if (sortedList[i].name.toLowerCase().indexOf(COVER_FILTER[j]) != -1) {
-            result.push(sortedList[i]);
-            break;
-          }
+      for (var j = 0; j < COVER_FILTER.length; j++) {
+        if (searchResults[i].name.toLowerCase().indexOf(COVER_FILTER[j]) != -1) {
+          result.push(searchResults[i]);
+          break;
         }
-        */
-      result.push(searchResults[i]);
+      }
     }
     $("#throbber_cover").hide(); // remove spinner
 
@@ -598,18 +595,20 @@ window.onload = function() {
     }
   }
 
-   function updateRemix() {
+  function updateRemix() {
     $("#throbber_remix").show();
-    $("#graphRemix").empty();
-    if (updateTrackHeaderRemix()) searchSpotify(displayRemixes);
-    else noSamplesRemix();
+    animateOutGraph("#graphRemix", function() {
+      if (updateTrackHeaderRemix()) searchSpotify(displayRemixes);
+      else noSamplesRemix();
+    });
   }
 
   function updateCover() {
     $("#throbber_cover").show();
-    $("#graphCover").empty();
-    if (updateTrackHeaderCover()) searchSpotify(displayCovers);
-    else noSamplesCover();
+    animateOutGraph("#graphCover", function() {
+      if (updateTrackHeaderCover()) searchSpotify(displayCovers);
+      else noSamplesCover();
+    });
   }
 
   function updateTrackHeader() {
@@ -648,12 +647,12 @@ window.onload = function() {
 
   function noSamplesRemix() {
     $("#throbber_remix").hide();
-    $("#graphRemix").html("<error> No remixes found! </error>");
+    $("#trackHeaderRemix").append("<br /> No remixes found! :(");
   }
 
   function noSamplesCover() {
     $("#throbber_cover").hide();
-    $("#graphCover").html("<error> No covers found! </error>");
+    $("#trackHeaderCover").append("<br /> No covers found! :(");
   }
 
   function consolify() {

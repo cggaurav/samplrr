@@ -35,9 +35,30 @@ function formatDataForGraph(data, type) {
     return graph;
 }
 
+// Removes the current graph with a nice animation
+
+function animateOutGraph(divName, finishedCallback) {
+    var vis = d3.select(divName);
+    var t = vis.transition()
+        .duration(750);
+    t.selectAll("circle")
+        .attr("cx", function(d) {
+        return Math.random() * 10000 - 5000;
+    })
+        .attr("cy", function(d) {
+        return Math.random() * 10000 - 5000;
+    });
+    // remove graph when the bubbles are gone
+    setTimeout(function() {
+        $(divName).empty();
+        finishedCallback();
+        return true;
+    }, 750);
+    //d3.event.stopPropagation();
+}
 // Shows a beautiful d3 circle visualization
 function loadCircleGraph(data, divName, pickedSongCallback) {
-    $(divName).empty(); // remove previous drawing(s)
+   // $(divName).empty(); // remove previous drawing(s)
 
     var w = $("#wrapper").width(),
         h = $("#wrapper").height(),
@@ -78,10 +99,10 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
         return d.children ? d.r : d.r * 1.05;
     })
         .attr("cx", function(d) {
-        return Math.random() * w;
+        return (Math.random() * w - w/2) * 7;
     })
         .attr("cy", function(d) {
-        return Math.random() * h;
+        return (Math.random() * h - h/2) * 7;
     })
         .on("click", function(d) {
             if (!d.children) return pickedSongCallback(d.uri); // clicked on song
