@@ -96,7 +96,7 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
     // init circles (randomize starting positions for animation)
     nodes.append("svg:circle")
         .attr("r", function(d) {
-        return d.children ? d.r : d.r * 1.05;
+        return d.children ? d.r : d.r * 1.1;
     })
         .attr("cx", function(d) {
         return (Math.random() * w - w / 2) * 7;
@@ -115,7 +115,6 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
         .on("mouseout", function(d, i) {
         downlight(d, i);
     });
-
     // Update the position of the popover when the cursor is moved
     d3.select(divName).on("mousemove", function(d, i) {
         if (tooltipShown === true) move(d, i);
@@ -124,7 +123,6 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
     zoom(root); // to get the nodes in the right positions
 
     d3.select(divName).on("click", function() {
-        console.log("clicked window should zoom to root");
         zoom(root);
     });
 
@@ -144,7 +142,7 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
             return y(d.y);
         })
             .attr("r", function(d) {
-            return d.children ? k * d.r : k * d.r * 1.05;
+            return d.children ? k * d.r: k * d.r * 1.1;
         });
         node = d;
         if (d3.event) d3.event.stopPropagation();
