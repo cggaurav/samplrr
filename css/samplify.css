@@ -58,9 +58,10 @@ error{
 
 .loading{
 	width: 100%;
-	height: 70%;
+	height: 100%;
 	position: absolute;
-	text-align:center;
+	text-align: center;
+	margin-top: 200px;
 	z-index: 1000;
 }
 
@@ -87,6 +88,7 @@ p {
 .graph{
 	position: absolute;
 	width: 100%;
+	overflow: hidden;
 }
 
 /* Remix view */

@@ -3,27 +3,49 @@ text {
   pointer-events: none;
 }
 
-text.parent {
-  fill: #000000;
+g.parent{
+  fill: #d5f134;
+  fill-opacity: .2;
+  stroke: #777777;
 }
 
-circle {
+g.parent:hover {
+  stroke: #5d6916;
+  stroke-width: .5px;
+}
+
+g.child:hover {
+  stroke: #5d6916;
+  stroke-width: .5px;
+}
+
+g.child {
   fill: #aac029;
   stroke: #777777;
   pointer-events: all;
 }
 
-circle.parent {
-  fill: #d5f134;
-  fill-opacity: .1;
-  stroke: #777777;
+.popover {
+      z-index: 9000;
+ }
+
+.tooltip {
+    position: absolute;
+    top: 0px;
+    left: 100px;
+    border: 1px solid #e0e0e0;
+    background-color: #fefefe;
+    opacity: .9;
+    color: black;
+    padding: 10px;
+    width: 300px;
+    font-size: 9pt;
+    z-index: 10;
 }
 
-circle.parent:hover {
-  stroke: #5d6916;
-  stroke-width: .5px;
+.tooltip .title a {
+    font-size: 8pt;
+    font-weight: bold;
+    color: #000;
 }
 
-circle.child {
-  pointer-events: none;
-}

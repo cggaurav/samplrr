@@ -242,9 +242,9 @@ window.onload = function() {
   }
 
   function splitResultWithRespectToTags(tracks) {
-    var result = new Array();
+    var result = [];
     for (var i = 0; i < TAGS.length; i++) {
-      result[i] = new Array();
+      result[i] = [];
     }
 
     for (var i = 0; i < tracks.length; i++) {
@@ -304,7 +304,7 @@ window.onload = function() {
     // Get the track name
     var currentTrackName = getCleanTrackName(getCurrentTrackName());
     var searchString = "\"" + currentTrackName + "\"";
-    var result = new Array(); // the results of the search
+    var result = []; // the results of the search
 
     var search = new models.Search(searchString);
     search.pageSize = SEARCH_PAGE_SIZE;
@@ -321,7 +321,7 @@ window.onload = function() {
   }
 
   function displayCovers(searchResults) {
-    var result = new Array();
+    var result = [];
 
     for (var i = 0; i < searchResults.length; i++) {
       // Check so that we have not found enough tracks already
@@ -350,7 +350,7 @@ window.onload = function() {
   }
 
   function displayRemixes(searchResults) {
-    var result = new Array();
+    var result = [];
 
     for (var i = 0; i < searchResults.length; i++) {
       // Check so that we have not found enough tracks already
@@ -364,7 +364,7 @@ window.onload = function() {
 
     if (result.length > 0) {
       var data = splitResultWithRespectToTags(result);
-      loadCircleGraph(formatDataForGraph(data), "#graph", true);
+      loadCircleGraph(formatDataForGraph(data), "#graph");
     }
     else noSamplesRemix();
   }
@@ -423,7 +423,7 @@ window.onload = function() {
     updateTrackHeader();
 
     var currentTrack = getCurrentTrack();
-    if (currentTrack == null) return; // no track playing
+    if (currentTrack === null) return; // no track playing
 
     var currentTrackURI = getCurrentTrackURI();
     $.getJSON(getSampledURLForTrack(currentTrackURI.toString()), function(result) {
