@@ -15,14 +15,7 @@ window.onload = function() {
   var SEARCH_PAGE_SIZE = 200;
   var MAXIMUM_RESULT_SIZE = 25;
 
-  // Search results consists of all results from a query.
-  // We want to split these so that they get categorised
-  // by the tags that we have defined.
-  var TAGS = ["Instrumental", "Karaoke", "Dubstep", "Electronic",
-    "Country", "Acoustic", "Others"];
-
   var COVER_FILTER = ["cover", "made famous by", "tribute", "instrumental", "karaoke", "in the style of", "version", "originally by", "originally performed"];
-
 
   // Handle tabs, do we need this?
   tabs();

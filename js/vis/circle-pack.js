@@ -1,34 +1,8 @@
-// dummy data
-/*
-function getChildren(depth) {
-    var kids = new Array();
-
-    if (depth != 2) {
-        for (var i = 0; i < 5; i++) {
-            kids[i] = {
-                'name': i,
-                'size': Math.floor((Math.random() * 1000) + 1),
-                'children': getChildren(depth + 1)
-            };
-        }
-    } else {
-        for (var i = 0; i < 5; i++) {
-            kids[i] = {
-                'name': i,
-                'size': Math.floor((Math.random() * 1000) + 1)
-            };
-        }
-    }
-    return kids;
-}
-
-function generateData() {
-    return {
-        'name': "This is the parent",
-        'children': getChildren(1)
-    };
-}
-*/
+// Search results consists of all results from a query.
+// We want to split these so that they get categorised
+// by the tags that we have defined.
+var TAGS = ["Instrumental", "Karaoke", "Dubstep", "Electronic",
+    "Country", "Acoustic", "Others"];
 
 function formatDataForGraph(data) {
     var nbrTags = 0;
@@ -37,21 +11,23 @@ function formatDataForGraph(data) {
         if (data[i].length > 0) {
             var curTag = [];
             for (var j = 0; j < data[i].length; j++) {
+                console.log(data[i][j]);
                 curTag[j] = {
-                    'name': data[i][j].name,
-                    'size': data[i][j].popularity,
-                    'title': data[i][j].uri
+                    'title': data[i][j].name,
+                    'artist': data[i][j].artists[0].name,
+                    'album' : data[i][j].album.name,
+                    'size': data[i][j].popularity
                 };
             }
             result[nbrTags] = {
-                'name': nbrTags,
+                'title': TAGS[i] + " remixes",
                 'children': curTag
             };
             nbrTags = nbrTags + 1;
         }
     }
     var graph = {
-        'name': "",
+        'title': "Remixes of current track",
         'children': result
     };
     return graph;
@@ -108,14 +84,15 @@ function loadCircleGraph(data, divName) {
         return zoom(node == d ? root : d.children ? d : null);
     })
         .on("mouseover", function(d, i) {
-        if (!d.children) highlight(d, i);
+        if (!d.children) highlightSong(d, i);
+        else highlightCategory(d, i);
     })
         .on("mouseout", function(d, i) {
-        if (!d.children) downlight(d, i);
+           downlight(d, i);
     });
     d3.select(window).on("mousemove", function(d, i) {
-            if (tooltipShown === true)
-                move(d, i); });
+        if (tooltipShown === true) move(d, i);
+    });
 
     zoom(root); // to get the nodes in the right positions
 
@@ -146,7 +123,15 @@ function loadCircleGraph(data, divName) {
         d3.event.stopPropagation();
     }
 
-    function highlight(data, element) {
+    function highlightSong(data, element){
+        var content = "<span class=\"title\">Title </span>" + data.title + 
+        "<br /><span class=\"title\">Artist </span>" + data.artist +
+        "<br /><span class=\"title\">Album </span>" + data.album;
+        tooltipShown = true;
+        tooltip.showTooltip(content, d3.event);
+    }
+
+    function highlightCategory(data, element) {
 
         //var description = node.description.split("|"),
         // content = '<span class=\"title\"><a href=\"' + data.url + '\">' + data.title + '</a></span><br/>' +
