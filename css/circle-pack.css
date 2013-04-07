@@ -1,27 +1,26 @@
-text {
-  font-size: 11px;
-  pointer-events: none;
-}
-
 g.parent{
   fill: #d5f134;
   fill-opacity: .2;
   stroke: #777777;
+  stroke-width: 1px;
+  cursor: pointer;
 }
 
 g.parent:hover {
   stroke: #5d6916;
-  stroke-width: .5px;
+  stroke-width: 2px;
 }
 
 g.child:hover {
   stroke: #5d6916;
-  stroke-width: .5px;
+  stroke-width: 2px;
 }
 
 g.child {
   fill: #aac029;
   stroke: #777777;
+  stroke-width: 1px;
+  cursor: pointer;
   pointer-events: all;
 }
 

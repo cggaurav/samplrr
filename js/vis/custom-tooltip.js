@@ -3,10 +3,12 @@
  */
 function CustomTooltip( tooltipId, width, divName ) {
 
-    var tooltipId = tooltipId;
+    //var tooltipId = tooltipId;
     $(divName).append("<div class='tooltip' id='" + tooltipId + "'></div>");
 
     var tooltip = $('#'+tooltipId);
+
+    console.log(tooltip);
 
     if(width){
         tooltip.css("width", width);
@@ -40,7 +42,6 @@ function CustomTooltip( tooltipId, width, divName ) {
             ttleft = Math.max( ((curX - wscrX + xOffset*2 + ttw) > $(divName).width()) ? curX - ttw - xOffset*2 : curX + xOffset, wscrX + xOffset ),
             tttop = Math.max( ((curY - wscrY + yOffset*2 + tth) > $(divName).height()) ? curY - tth - yOffset*2 : curY + yOffset, curY + yOffset );
 
-        console.log(ttleft + " " + tttop);
         tooltip.css('top', tttop + 'px').css('left', ttleft + 'px');
     }
 
