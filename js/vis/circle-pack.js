@@ -8,6 +8,15 @@ var TAGS = ["Instrumental", "Karaoke", "Dubstep", "Electronic",
 // for the d3 visualization
 
 var STANDARD_ZOOM_DURATION  = 750;
+function generateRandomPoint() {
+    // make sure point is outside of canvas
+
+    var rand = Math.random();
+    rand *= 4000;
+    if (rand < 2000) rand = -rand;
+    console.log(rand);
+    return rand;
+}
 
 function formatDataForGraph(data, type) {
     var nbrTags = 0;
@@ -22,7 +31,9 @@ function formatDataForGraph(data, type) {
                     'album': data[i][j].album.name,
                     'albumArt': data[i][j].album.data.cover,
                     'size': data[i][j].popularity,
-                    'uri': data[i][j].uri
+                    'uri': data[i][j].uri,
+                    'randX' : generateRandomPoint(),
+                    'randY' : generateRandomPoint()
                 };
             }
             result[nbrTags] = {
@@ -44,28 +55,27 @@ function formatDataForGraph(data, type) {
 function animateOutGraph(divName, finishedCallback) {
     var vis = d3.select(divName);
     var t = vis.transition()
-        .duration(750);
+        .duration(STANDARD_ZOOM_DURATION);
     t.selectAll("circle")
         .attr("cx", function(d) {
-        return Math.random() * 10000 - 5000;
+        return !d.children ? d.randX : generateRandomPoint();
     })
         .attr("cy", function(d) {
-        return Math.random() * 10000 - 5000;
+        return !d.children ? d.randY : generateRandomPoint();
     });
     // remove graph when the bubbles are gone
     setTimeout(function() {
         $(divName).empty();
         finishedCallback();
         return true;
-    }, 750);
+    }, STANDARD_ZOOM_DURATION);
     if (d3.event) d3.event.stopPropagation();
 }
-// Shows a beautiful d3 circle visualization
 
 function loadCircleGraph(data, divName, pickedSongCallback) {
     var w = $("#wrapper").width(),
         h = $("#wrapper").height(),
-        r = Math.min(w, h) * 1.2, // to fill up most of the graph
+        r = Math.min(w, h) * 1.2,
         x = d3.scale.linear().range([0, r]),
         y = d3.scale.linear().range([0, r]),
         node,
@@ -100,13 +110,14 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
     pack.nodes(root).forEach(function(d, i) {
         if (!d.children)
         {
-          //  d.r *= 1.1;
             // make sure the circles are not to small or too big
             d.r = Math.min(150, Math.max(30, d.r));
         }
         else if (d.parent) d.r += 10;
     });
 
+    // inits a SVG image for the corresponding track bubble
+    // implemented as a SVG pattern enclosing an image object
     nodes.append('svg:pattern')
         .attr('id', function(d) {
         return !d.children ? getUniqueId(d) : ""; // substring to get rid of problematic prefix
@@ -119,10 +130,10 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
         return d.r * 2;
     })
         .attr('x', function(d) {
-        return d.x - d.r;
+        return !d.children ? d.randX : generateRandomPoint(); // init at the same place as its corresponding circle
     })
         .attr('y', function(d) {
-        return d.y - d.r;
+        return !d.children ? d.randY : generateRandomPoint();
     })
         .append('svg:image')
         .attr('xlink:href', function(d) {
@@ -141,10 +152,10 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
         return d.r;
     })
         .attr("cx", function(d) {
-        return Math.random() * 10000 - 5000;
+        return !d.children ? d.randX : generateRandomPoint();
     })
         .attr("cy", function(d) {
-        return Math.random() * 10000 - 5000;
+        return !d.children ? d.randY : generateRandomPoint();
     })
         .attr('fill', function(d) {
         return !d.children ? "url(#" + getUniqueId(d) + ")" : null; // the albumArt suffix is unique
@@ -169,10 +180,13 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
 
     zoom(root, STANDARD_ZOOM_DURATION); // to get the nodes in the right positions
 
+    // Zoom out when user clicks ouside of the graph
     d3.select(divName).on("click", function() {
         zoom(root, STANDARD_ZOOM_DURATION);
     });
 
+    // Zooms the entire graph so that node d is in the center of the view
+    // The animation takes duration ms.
     function zoom(d, duration) {
         var k = r / d.r / 2;
         x.domain([d.x - d.r, d.x + d.r]);
