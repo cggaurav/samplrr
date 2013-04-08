@@ -614,21 +614,21 @@ window.onload = function() {
   function updateTrackHeader() {
     var trackHeader = getCurrentTrackHeader();
     if (!trackHeader) return false;
-    $("#trackHeader").html(trackHeader);
+    // $("#trackHeader").html(trackHeader);
     return true;
   }
 
   function updateTrackHeaderRemix() {
     var trackHeader = getCurrentTrackHeader();
     if (!trackHeader) return false;
-    $("#trackHeaderRemix").html(trackHeader);
+    // $("#trackHeaderRemix").html(trackHeader);
     return true;
   }
 
   function updateTrackHeaderCover() {
     var trackHeader = getCurrentTrackHeader();
     if (!trackHeader) return false;
-    $("#trackHeaderCover").html(trackHeader);
+    // $("#trackHeaderCover").html(trackHeader);
     return true;
   }
 

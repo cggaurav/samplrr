@@ -7,6 +7,7 @@ samplify green #aac029
 body{
 	/*height: 96%;*/
 	width: auto;
+	min-width: 770px;
 }
 
 h1 { 
@@ -31,13 +32,9 @@ error{
 .header{
 	background-image: url(nav.png);
 	/*height: 60px;*/
-	/*width: 100%;*/
+	width: 1000px;
 	
-	/*position:absolute;
-	bottom:0;
-	left: 0;
-	right: 0;
-	overflow: auto;*/
+	position:absolute;
 }
 
 .footer{
