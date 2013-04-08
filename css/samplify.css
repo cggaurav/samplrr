@@ -163,6 +163,8 @@ p {
 	padding: 10px 10px 10px 10px;
 	font-size: 1.3em;
 	font-family: Georgia;
+	line-height: 130%;
+	width: 30%;
 	z-index: 1000;
 }
 

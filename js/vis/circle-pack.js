@@ -7,6 +7,17 @@ var TAGS = ["Instrumental", "Karaoke", "Dubstep", "Electronic",
 // Takes a result of a search and transforms it into the data format required
 // for the d3 visualization
 
+var STANDARD_ZOOM_DURATION  = 750;
+function generateRandomPoint() {
+    // make sure point is outside of canvas
+
+    var rand = Math.random();
+    rand *= 4000;
+    if (rand < 2000) rand = -rand;
+    console.log(rand);
+    return rand;
+}
+
 function formatDataForGraph(data, type) {
     var nbrTags = 0;
     var result = [];
@@ -15,11 +26,14 @@ function formatDataForGraph(data, type) {
             var curTag = [];
             for (var j = 0; j < data[i].length; j++) {
                 curTag[j] = {
-                    'title' : data[i][j].name,
-                    'artist' : data[i][j].artists[0].name,
-                    'album' : data[i][j].album.name,
-                    'size' : data[i][j].popularity,
-                    'uri' : data[i][j].uri
+                    'title': data[i][j].name,
+                    'artist': data[i][j].artists[0].name,
+                    'album': data[i][j].album.name,
+                    'albumArt': data[i][j].album.data.cover,
+                    'size': data[i][j].popularity,
+                    'uri': data[i][j].uri,
+                    'randX' : generateRandomPoint(),
+                    'randY' : generateRandomPoint()
                 };
             }
             result[nbrTags] = {
@@ -41,28 +55,27 @@ function formatDataForGraph(data, type) {
 function animateOutGraph(divName, finishedCallback) {
     var vis = d3.select(divName);
     var t = vis.transition()
-        .duration(750);
+        .duration(STANDARD_ZOOM_DURATION);
     t.selectAll("circle")
         .attr("cx", function(d) {
-        return Math.random() * 10000 - 5000;
+        return !d.children ? d.randX : generateRandomPoint();
     })
         .attr("cy", function(d) {
-        return Math.random() * 10000 - 5000;
+        return !d.children ? d.randY : generateRandomPoint();
     });
     // remove graph when the bubbles are gone
     setTimeout(function() {
         $(divName).empty();
         finishedCallback();
         return true;
-    }, 750);
+    }, STANDARD_ZOOM_DURATION);
     if (d3.event) d3.event.stopPropagation();
 }
-// Shows a beautiful d3 circle visualization
 
 function loadCircleGraph(data, divName, pickedSongCallback) {
     var w = $("#wrapper").width(),
         h = $("#wrapper").height(),
-        r = Math.min(w, h) * 0.95, // to fill up most of the graph
+        r = Math.min(w, h) * 1.2,
         x = d3.scale.linear().range([0, r]),
         y = d3.scale.linear().range([0, r]),
         node,
@@ -90,46 +103,74 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
         .enter()
         .append("svg:g")
         .attr("class", function(d) {
-        return d.children ? "parent" : "child";
-        });
-        
+        return d.children ? (d.parent ? "parent" : "root") : "child";
+    });
+
+    // change circle size for asthetics
+    pack.nodes(root).forEach(function(d, i) {
+        if (!d.children)
+        {
+            // make sure the circles are not to small or too big
+            d.r = Math.min(150, Math.max(30, d.r));
+        }
+        else if (d.parent) d.r += 10;
+    });
+
+    // inits a SVG image for the corresponding track bubble
+    // implemented as a SVG pattern enclosing an image object
     nodes.append('svg:pattern')
-        .attr('id', 'tile-ww')
+        .attr('id', function(d) {
+        return !d.children ? getUniqueId(d) : ""; // substring to get rid of problematic prefix
+    })
         .attr('patternUnits', 'userSpaceOnUse')
-        .attr('width', '100')
-        .attr('height', '100')
+        .attr('width', function(d) {
+        return d.r * 2;
+    })
+        .attr('height', function(d) {
+        return d.r * 2;
+    })
+        .attr('x', function(d) {
+        return !d.children ? d.randX : generateRandomPoint(); // init at the same place as its corresponding circle
+    })
+        .attr('y', function(d) {
+        return !d.children ? d.randY : generateRandomPoint();
+    })
         .append('svg:image')
-        // .attr('xlink:href', 'http://jaycadilak.files.wordpress.com/2013/02/keep_calm_and_carry_on_hd_widescreen_wallpapers_1920x1200.jpeg')
-        .attr('xlink:href', 'spotify:image:a8b8bbf47fd2a477bf3f247134c99fdaf5b9fdf9')
-        .attr('x', 0)
-        .attr('y', 0)
-        .attr('width', 100)
-        .attr('height', 100);
+        .attr('xlink:href', function(d) {
+        return !d.children ? d.albumArt : "";
+    })
+        .attr('width', function(d) {
+        return d.r * 2;
+    })
+        .attr('height', function(d) {
+        return d.r * 2;
+    });
 
     // init circles (randomize starting positions for animation)
     nodes.append("svg:circle")
         .attr("r", function(d) {
-        return d.children ? d.r : d.r * 1.1;
+        return d.r;
     })
         .attr("cx", function(d) {
-        return (Math.random() * w - w / 2) * 7;
+        return !d.children ? d.randX : generateRandomPoint();
     })
         .attr("cy", function(d) {
-        return (Math.random() * h - h / 2) * 7;
+        return !d.children ? d.randY : generateRandomPoint();
     })
-        .attr("fill", function(d) {
-        return 'url(#tile-ww)'
+        .attr('fill', function(d) {
+        return !d.children ? "url(#" + getUniqueId(d) + ")" : null; // the albumArt suffix is unique
     })
         .on("click", function(d) {
         if (!d.children) return pickedSongCallback(d.uri); // clicked on song
-        else return zoom(node == d ? root : d); // clicked on outer circle, zoom zoom!
+        else return zoom(node == d ? root : d, STANDARD_ZOOM_DURATION); // clicked on outer circle, zoom zoom!
     })
         .on("mouseover", function(d, i) {
         if (!d.children) highlightSong(d, i);
-        else highlight(d.title, i);
+        else if (d.parent) highlight(d.title, i);
     })
         .on("mouseout", function(d, i) {
-        downlight(d, i);
+        if (!d.children) downlightSong(d, i);
+        else if (d.parent) downlight(d, i);
     });
 
     // Update the position of the popover when the cursor is moved
@@ -137,19 +178,22 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
         if (tooltipShown === true) move(d, i);
     });
 
-    zoom(root); // to get the nodes in the right positions
+    zoom(root, STANDARD_ZOOM_DURATION); // to get the nodes in the right positions
 
+    // Zoom out when user clicks ouside of the graph
     d3.select(divName).on("click", function() {
-        zoom(root);
+        zoom(root, STANDARD_ZOOM_DURATION);
     });
 
-    function zoom(d, i) {
+    // Zooms the entire graph so that node d is in the center of the view
+    // The animation takes duration ms.
+    function zoom(d, duration) {
         var k = r / d.r / 2;
         x.domain([d.x - d.r, d.x + d.r]);
         y.domain([d.y - d.r, d.y + d.r]);
 
         var t = vis.transition()
-            .duration(750);
+            .duration(duration);
 
         t.selectAll("circle")
             .attr("cx", function(d) {
@@ -159,10 +203,39 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
             return y(d.y);
         })
             .attr("r", function(d) {
-            return d.children ? k * d.r: k * d.r * 1.1;
+            return k * d.r;
         });
+
+        t.selectAll("pattern")
+            .attr('width', function(d) {
+            return k * d.r * 2;
+        })
+            .attr('height', function(d) {
+            return k * d.r * 2;
+        })
+            .attr("x", function(d) {
+            return x(d.x) - k * d.r;
+        })
+            .attr("y", function(d) {
+            return y(d.y) - k * d.r;
+        });
+
+        t.selectAll("image")
+            .attr('width', function(d) {
+            return k * d.r * 2;
+        })
+            .attr('height', function(d) {
+            return k * d.r * 2;
+        });
+
         node = d;
         if (d3.event) d3.event.stopPropagation();
+    }
+
+    // returns a unique string for a track object that can be used as an ID
+    function getUniqueId(data)
+    {
+        return data.uri.substring(15);
     }
 
     function highlight(tooltipContent, element) {
@@ -171,9 +244,12 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
     }
 
     function highlightSong(data, element) {
+        data.r += 5;
+        zoom(node, 200);
+
         var content = "<span class=\"title\">Title </span>" + data.title +
-            "<br /><span class=\"title\">Artist </span>" + data.artist +
-            "<br /><span class=\"title\">Album </span>" + data.album;
+        "<br /><span class=\"title\">Artist </span>" + data.artist +
+        "<br /><span class=\"title\">Album </span>" + data.album;
         highlight(content, element);
     }
 
@@ -184,5 +260,11 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
     function downlight(data, element) {
         tooltipShown = false;
         tooltip.hideTooltip();
+    }
+
+    function downlightSong(data, element) {
+        data.r -= 5;
+        zoom(node, 200);
+        downlight(data, element);
     }
 }
