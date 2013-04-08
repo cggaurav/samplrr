@@ -7,6 +7,8 @@ var TAGS = ["Instrumental", "Karaoke", "Dubstep", "Electronic",
 // Takes a result of a search and transforms it into the data format required
 // for the d3 visualization
 
+var STANDARD_ZOOM_DURATION  = 750;
+
 function formatDataForGraph(data, type) {
     var nbrTags = 0;
     var result = [];
@@ -98,9 +100,9 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
     pack.nodes(root).forEach(function(d, i) {
         if (!d.children)
         {
-            d.r *= 1.1;
+          //  d.r *= 1.1;
             // make sure the circles are not to small or too big
-            d.r = Math.min(200, Math.max(50, d.r));
+            d.r = Math.min(150, Math.max(30, d.r));
         }
         else if (d.parent) d.r += 10;
     });
@@ -155,14 +157,15 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
     })
         .on("click", function(d) {
         if (!d.children) return pickedSongCallback(d.uri); // clicked on song
-        else return zoom(node == d ? root : d); // clicked on outer circle, zoom zoom!
+        else return zoom(node == d ? root : d, STANDARD_ZOOM_DURATION); // clicked on outer circle, zoom zoom!
     })
         .on("mouseover", function(d, i) {
         if (!d.children) highlightSong(d, i);
         else if (d.parent) highlight(d.title, i);
     })
         .on("mouseout", function(d, i) {
-        downlight(d, i);
+        if (!d.children) downlightSong(d, i);
+        else if (d.parent) downlight(d, i);
     });
 
     // Update the position of the popover when the cursor is moved
@@ -170,19 +173,19 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
         if (tooltipShown === true) move(d, i);
     });
 
-    zoom(root); // to get the nodes in the right positions
+    zoom(root, STANDARD_ZOOM_DURATION); // to get the nodes in the right positions
 
     d3.select(divName).on("click", function() {
-        zoom(root);
+        zoom(root, STANDARD_ZOOM_DURATION);
     });
 
-    function zoom(d, i) {
+    function zoom(d, duration) {
         var k = r / d.r / 2;
         x.domain([d.x - d.r, d.x + d.r]);
         y.domain([d.y - d.r, d.y + d.r]);
 
         var t = vis.transition()
-            .duration(750);
+            .duration(duration);
 
         t.selectAll("circle")
             .attr("cx", function(d) {
@@ -210,9 +213,12 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
     }
 
     function highlightSong(data, element) {
+        data.r += 5;
+        zoom(node, 200);
+
         var content = "<span class=\"title\">Title </span>" + data.title +
-            "<br /><span class=\"title\">Artist </span>" + data.artist +
-            "<br /><span class=\"title\">Album </span>" + data.album;
+        "<br /><span class=\"title\">Artist </span>" + data.artist +
+        "<br /><span class=\"title\">Album </span>" + data.album;
         highlight(content, element);
     }
 
@@ -223,5 +229,11 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
     function downlight(data, element) {
         tooltipShown = false;
         tooltip.hideTooltip();
+    }
+
+    function downlightSong(data, element) {
+        data.r -= 5;
+        zoom(node, 200);
+        downlight(data, element);
     }
 }
