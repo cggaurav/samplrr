@@ -15,11 +15,12 @@ function formatDataForGraph(data, type) {
             var curTag = [];
             for (var j = 0; j < data[i].length; j++) {
                 curTag[j] = {
-                    'title' : data[i][j].name,
-                    'artist' : data[i][j].artists[0].name,
-                    'album' : data[i][j].album.name,
-                    'size' : data[i][j].popularity,
-                    'uri' : data[i][j].uri
+                    'title': data[i][j].name,
+                    'artist': data[i][j].artists[0].name,
+                    'album': data[i][j].album.name,
+                    'albumArt': data[i][j].album.data.cover,
+                    'size': data[i][j].popularity,
+                    'uri': data[i][j].uri
                 };
             }
             result[nbrTags] = {
@@ -62,7 +63,7 @@ function animateOutGraph(divName, finishedCallback) {
 function loadCircleGraph(data, divName, pickedSongCallback) {
     var w = $("#wrapper").width(),
         h = $("#wrapper").height(),
-        r = Math.min(w, h) * 0.95, // to fill up most of the graph
+        r = Math.min(w, h) * 1.2, // to fill up most of the graph
         x = d3.scale.linear().range([0, r]),
         y = d3.scale.linear().range([0, r]),
         node,
@@ -90,35 +91,62 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
         .enter()
         .append("svg:g")
         .attr("class", function(d) {
-        return d.children ? "parent" : "child";
-        });
-        
+        return d.children ? (d.parent ? "parent" : "root") : "child";
+    });
+
+    // change circle size for asthetics
+    pack.nodes(root).forEach(function(d, i) {
+        if (!d.children) d.r *= 1.1;
+        else if (d.parent) d.r += 10;
+    });
+
     nodes.append('svg:pattern')
-        .attr('id', 'tile-ww')
+        .attr('id', function(d) {
+        return !d.children ? getUniqueId(d) : ""; // substring to get rid of problematic prefix
+    })
         .attr('patternUnits', 'userSpaceOnUse')
-        .attr('width', '100')
-        .attr('height', '100')
+        .attr('width', function(d) {
+        return d.r * 2;
+    })
+        .attr('height', function(d) {
+        return d.r * 2;
+    })
+        .attr('x', function(d) {
+        return d.x - d.r;
+    })
+        .attr('y', function(d) {
+        return d.y - d.r;
+    })
         .append('svg:image')
-        // .attr('xlink:href', 'http://jaycadilak.files.wordpress.com/2013/02/keep_calm_and_carry_on_hd_widescreen_wallpapers_1920x1200.jpeg')
-        .attr('xlink:href', 'spotify:image:a8b8bbf47fd2a477bf3f247134c99fdaf5b9fdf9')
-        .attr('x', 0)
-        .attr('y', 0)
-        .attr('width', 100)
-        .attr('height', 100);
+        .attr('xlink:href', function(d) {
+        return !d.children ? d.albumArt : "";
+    })
+        .attr('x', function(d) {
+        return 0;
+    })
+        .attr('y', function(d) {
+        return 0;
+    })
+        .attr('width', function(d) {
+        return d.r * 2;
+    })
+        .attr('height', function(d) {
+        return d.r * 2;
+    });
 
     // init circles (randomize starting positions for animation)
     nodes.append("svg:circle")
         .attr("r", function(d) {
-        return d.children ? d.r : d.r * 1.1;
+        return d.r;
     })
         .attr("cx", function(d) {
-        return (Math.random() * w - w / 2) * 7;
+        return Math.random() * 10000 - 5000;
     })
         .attr("cy", function(d) {
-        return (Math.random() * h - h / 2) * 7;
+        return Math.random() * 10000 - 5000;
     })
-        .attr("fill", function(d) {
-        return 'url(#tile-ww)'
+        .attr('fill', function(d) {
+        return !d.children ? "url(#" + getUniqueId(d) + ")" : null; // the albumArt suffix is unique
     })
         .on("click", function(d) {
         if (!d.children) return pickedSongCallback(d.uri); // clicked on song
@@ -126,7 +154,7 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
     })
         .on("mouseover", function(d, i) {
         if (!d.children) highlightSong(d, i);
-        else highlight(d.title, i);
+        else if (d.parent) highlight(d.title, i);
     })
         .on("mouseout", function(d, i) {
         downlight(d, i);
@@ -159,10 +187,16 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
             return y(d.y);
         })
             .attr("r", function(d) {
-            return d.children ? k * d.r: k * d.r * 1.1;
+            return k * d.r;
         });
         node = d;
         if (d3.event) d3.event.stopPropagation();
+    }
+
+    // returns a unique string for a track object that can be used as an ID
+    function getUniqueId(data)
+    {
+        return data.uri.substring(15);
     }
 
     function highlight(tooltipContent, element) {
