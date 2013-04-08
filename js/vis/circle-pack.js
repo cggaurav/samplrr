@@ -96,7 +96,12 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
 
     // change circle size for asthetics
     pack.nodes(root).forEach(function(d, i) {
-        if (!d.children) d.r *= 1.1;
+        if (!d.children)
+        {
+            d.r *= 1.1;
+            // make sure the circles are not to small or too big
+            d.r = Math.min(200, Math.max(50, d.r));
+        }
         else if (d.parent) d.r += 10;
     });
 
