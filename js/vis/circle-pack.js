@@ -128,12 +128,6 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
         .attr('xlink:href', function(d) {
         return !d.children ? d.albumArt : "";
     })
-        .attr('x', function(d) {
-        return 0;
-    })
-        .attr('y', function(d) {
-        return 0;
-    })
         .attr('width', function(d) {
         return d.r * 2;
     })
@@ -197,6 +191,29 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
             .attr("r", function(d) {
             return k * d.r;
         });
+
+        t.selectAll("pattern")
+            .attr('width', function(d) {
+            return k * d.r * 2;
+        })
+            .attr('height', function(d) {
+            return k * d.r * 2;
+        })
+            .attr("x", function(d) {
+            return x(d.x) - k * d.r;
+        })
+            .attr("y", function(d) {
+            return y(d.y) - k * d.r;
+        });
+
+        t.selectAll("image")
+            .attr('width', function(d) {
+            return k * d.r * 2;
+        })
+            .attr('height', function(d) {
+            return k * d.r * 2;
+        });
+
         node = d;
         if (d3.event) d3.event.stopPropagation();
     }
