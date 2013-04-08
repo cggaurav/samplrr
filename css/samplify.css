@@ -33,8 +33,10 @@ error{
 	width: 100%;
 	background-image: url(nav.png);
 	background-size: auto;
-	position: relative;
+	position: absolute;
 	top: 0;
+	left: 0;
+	right: 0;
 	z-index: 1000;
 }
 
@@ -45,6 +47,8 @@ error{
 	background-size: auto;
 	position: fixed;
 	bottom: 0;
+	left: 0;
+	right: 0;
 	z-index: 1000;
 }
 
