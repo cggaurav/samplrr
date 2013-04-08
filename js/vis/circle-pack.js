@@ -7,14 +7,15 @@ var TAGS = ["Instrumental", "Karaoke", "Dubstep", "Electronic",
 // Takes a result of a search and transforms it into the data format required
 // for the d3 visualization
 
-var STANDARD_ZOOM_DURATION  = 750;
+var STANDARD_ZOOM_DURATION = 750;
+var scale = d3.scale.linear().domain([0, 100]).range([10, 80]);
+
 function generateRandomPoint() {
     // make sure point is outside of canvas
 
     var rand = Math.random();
     rand *= 4000;
     if (rand < 2000) rand = -rand;
-    console.log(rand);
     return rand;
 }
 
@@ -30,10 +31,10 @@ function formatDataForGraph(data, type) {
                     'artist': data[i][j].artists[0].name,
                     'album': data[i][j].album.name,
                     'albumArt': data[i][j].album.data.cover,
-                    'size': data[i][j].popularity,
+                    'size': scale(data[i][j].popularity),
                     'uri': data[i][j].uri,
-                    'randX' : generateRandomPoint(),
-                    'randY' : generateRandomPoint()
+                    'randX': generateRandomPoint(),
+                    'randY': generateRandomPoint()
                 };
             }
             result[nbrTags] = {
@@ -108,14 +109,12 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
 
     // change circle size for asthetics
     pack.nodes(root).forEach(function(d, i) {
-        if (!d.children)
-        {
+        d.r *= 1.1;
+        if (!d.children) {
             // make sure the circles are not to small or too big
-            d.r = Math.min(150, Math.max(30, d.r));
-        }
-        else if (d.parent) d.r += 10;
+            d.r = Math.min(130, Math.max(30, d.r));
+        } else if (d.parent) d.r += 10;
     });
-
     // inits a SVG image for the corresponding track bubble
     // implemented as a SVG pattern enclosing an image object
     nodes.append('svg:pattern')
@@ -148,9 +147,6 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
 
     // init circles (randomize starting positions for animation)
     nodes.append("svg:circle")
-        .attr("r", function(d) {
-        return d.r;
-    })
         .attr("cx", function(d) {
         return !d.children ? d.randX : generateRandomPoint();
     })
@@ -187,6 +183,7 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
 
     // Zooms the entire graph so that node d is in the center of the view
     // The animation takes duration ms.
+
     function zoom(d, duration) {
         var k = r / d.r / 2;
         x.domain([d.x - d.r, d.x + d.r]);
@@ -233,8 +230,8 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
     }
 
     // returns a unique string for a track object that can be used as an ID
-    function getUniqueId(data)
-    {
+
+    function getUniqueId(data) {
         return data.uri.substring(15);
     }
 
@@ -248,8 +245,8 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
         zoom(node, 200);
 
         var content = "<span class=\"title\">Title </span>" + data.title +
-        "<br /><span class=\"title\">Artist </span>" + data.artist +
-        "<br /><span class=\"title\">Album </span>" + data.album;
+            "<br /><span class=\"title\">Artist </span>" + data.artist +
+            "<br /><span class=\"title\">Album </span>" + data.album;
         highlight(content, element);
     }
 

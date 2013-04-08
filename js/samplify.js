@@ -13,7 +13,7 @@ window.onload = function() {
 
   var submitSample = {};
   var SEARCH_PAGE_SIZE = 200;
-  var MAXIMUM_RESULT_SIZE = 50;
+  var MAXIMUM_RESULT_SIZE = 25;
 
   var COVER_FILTER = ["cover", "made famous by", "tribute", "instrumental", "karaoke", "in the style of", "version", "originally by", "originally performed"];
 
