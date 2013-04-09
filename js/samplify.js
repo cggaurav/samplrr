@@ -25,12 +25,12 @@ window.onload = function() {
 
   application.observe(models.EVENT.ARGUMENTSCHANGED, tabs);
 
-  player.observe(models.EVENT.CHANGE, function(event) {
+/*  player.observe(models.EVENT.CHANGE, function(event) {
     console.log(event);
     if (event.data.curtrack) {
       console.log("CurTrack");
     }
-  });
+  });*/
 
   //Handle Arguments
   application.observe(models.EVENT.ARGUMENTSCHANGED, handleArgs);
@@ -47,7 +47,13 @@ window.onload = function() {
     for (var j = 0; j < playlist.length; j++) {
       var collabTrack = playlist.tracks[j];
       if (collabTrack.album === null) continue; // sometimes bogus tracks appear in the playlist
-      var cur = "<img src='" + collabTrack.album.data.cover + "' alt='" + collabTrack.uri + "' width='100' height='100' />";
+
+      // Store info about the track in the <img> object in the carousel for
+      // interacting with it later
+      var cur = "<img src='" + collabTrack.album.data.cover + "' uri='" +
+      collabTrack.uri + "' title='" + collabTrack.name + "' artist='" +
+      collabTrack.artists[0].name + "' album='" +
+      collabTrack.album.name + "' width='100' height='100' />";
       // Add song
       $(".carouselContent").each(function() {
         $(this).trigger("insertItem", [cur, 0, true, 0]);
@@ -591,6 +597,7 @@ window.onload = function() {
 
   function initCarousels() {
     $(".carouselContent").each(function() {
+      var curCarouselName = $(this).attr("id").toString();
       $(this).carouFredSel({
         direction: "up",
         height: $("#wrapper").height(),
@@ -611,9 +618,29 @@ window.onload = function() {
         }
       });
       // Say that we should play song and refresh ui when an image in the carousel is clicked on
-      $("#" + $(this).attr("id").toString() + " img").click(function() {
-        player.play($(this).attr("alt"));
+      $("#" + curCarouselName + " img").click(function() {
+        player.play($(this).attr("uri"));
         refreshInterface();
+      });
+
+      // create tooltip
+      var tooltip = CustomTooltip(curCarouselName + "tooltip", 300,
+      '#' + $(this).parent().parent().parent().attr('id').toString()); // insert tooltip in section
+      $("#" + curCarouselName + " img").mouseover(function(event) {
+        var title = $(this).attr("title");
+        var artist = $(this).attr("artist");
+        var album = $(this).attr("album");
+
+        var tooltipHTML = "<span class=\"title\">Title </span>" + title +
+            "<br /><span class=\"title\">Artist </span>" + artist +
+            "<br /><span class=\"title\">Album </span>" + album;
+        tooltip.showTooltip(tooltipHTML, event);
+      });
+      $("#" + curCarouselName + " img").mouseout(function() {
+        tooltip.hideTooltip();
+      });
+      $("#" + curCarouselName + " img").mousemove(function(event) {
+        tooltip.updatePosition(event);
       });
     });
   }
@@ -642,6 +669,7 @@ window.onload = function() {
   }
 
   function updateTrackHeaderRemix() {
+    $("#trackHeaderRemix").empty();
     var trackHeader = getCurrentTrackHeader();
     if (!trackHeader) return false;
     $("#trackHeaderRemix").html(trackHeader);
@@ -649,6 +677,7 @@ window.onload = function() {
   }
 
   function updateTrackHeaderCover() {
+    $("#trackHeaderCover").empty();
     var trackHeader = getCurrentTrackHeader();
     if (!trackHeader) return false;
     $("#trackHeaderCover").html(trackHeader);
@@ -670,6 +699,7 @@ window.onload = function() {
 
   function noSamplesRemix() {
     $("#throbber_remix").hide();
+
     $("#trackHeaderRemix").append("<br /> No remixes found! :(");
   }
 

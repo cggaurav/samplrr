@@ -3,14 +3,11 @@
  */
 function CustomTooltip( tooltipId, width, divName ) {
 
-    //var tooltipId = tooltipId;
-    $(divName).append("<div class='tooltip' id='" + tooltipId + "'></div>");
+    // prevent us from creating the same div several times
+    if (!$('#' + tooltipId).length)
+        $(divName).append("<div class='tooltip' id='" + tooltipId + "'></div>");
 
     var tooltip = $('#'+tooltipId);
-
-    if(width){
-        tooltip.css("width", width);
-    }
 
    // tooltip.on("mouseleave", function(e) { hideTooltip(); });
 
@@ -29,18 +26,16 @@ function CustomTooltip( tooltipId, width, divName ) {
     }
 
     function updatePosition( event ) {
-        var xOffset = 0,
-            yOffset = 0,
-            ttw = tooltip.width(),
+        var ttw = tooltip.width(),
             tth = tooltip.height(),
             wscrY = $(divName).scrollTop(),
             wscrX = $(divName).scrollLeft(),
             curX =  event.pageX + 10,
             curY =  event.pageY - 50,
-            ttleft = Math.max( ((curX - wscrX + xOffset*2 + ttw) > $(divName).width()) ? curX - ttw - xOffset*2 : curX + xOffset, wscrX + xOffset ),
-            tttop = Math.max( ((curY - wscrY + yOffset*2 + tth) > $(divName).height()) ? curY - tth - yOffset*2 : curY + yOffset, curY + yOffset );
+            ttleft = Math.max( ((curX - wscrX + ttw) > $(divName).width()) ? curX - ttw : curX, wscrX ),
+            tttop = Math.max( ((curY - wscrY + tth) > $(divName).height()) ? curY - tth : curY, curY );
 
-        tooltip.css('top', tttop + 'px').css('left', ttleft + 'px');
+            tooltip.css('top', tttop + 'px').css('left', ttleft + 'px');
     }
 
     return {

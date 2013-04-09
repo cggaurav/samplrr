@@ -82,8 +82,7 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
         y = d3.scale.linear().range([0, r]),
         node,
         root,
-        tooltip = CustomTooltip("posts_tooltip_" + divName.substring(1), 300, divName), // name should be unique
-        tooltipShown = false;
+        tooltip = CustomTooltip("posts_tooltip_" + divName.substring(1), 300, divName); // name should be unique
 
     var pack = d3.layout.pack()
         .size([r, r])
@@ -168,11 +167,9 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
         .on("mouseout", function(d, i) {
         if (!d.children) downlightSong(d, i);
         else if (d.parent) downlight(d, i);
-    });
-
-    // Update the position of the popover when the cursor is moved
-    d3.select(divName).on("mousemove", function(d, i) {
-        if (tooltipShown === true) move(d, i);
+    })
+        .on("mousemove", function(d, i) {
+            move(d, i);
     });
 
     zoom(root, STANDARD_ZOOM_DURATION); // to get the nodes in the right positions
@@ -237,7 +234,6 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
     }
 
     function highlight(tooltipContent, element) {
-        tooltipShown = true;
         tooltip.showTooltip(tooltipContent, d3.event);
     }
 
@@ -256,7 +252,6 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
     }
 
     function downlight(data, element) {
-        tooltipShown = false;
         tooltip.hideTooltip();
     }
 
