@@ -8,7 +8,7 @@ var TAGS = ["Instrumental", "Karaoke", "Dubstep", "Electronic",
 // for the d3 visualization
 
 var STANDARD_ZOOM_DURATION = 750;
-var scale = d3.scale.linear().domain([0, 100]).range([10, 80]);
+var scale = d3.scale.linear().domain([0, 100]).range([10, 90]);
 
 function generateRandomPoint() {
     // make sure point is outside of canvas
@@ -64,6 +64,7 @@ function animateOutGraph(divName, finishedCallback) {
         .attr("cy", function(d) {
         return !d.children ? d.randY : generateRandomPoint();
     });
+
     // remove graph when the bubbles are gone
     setTimeout(function() {
         $(divName).empty();
@@ -72,8 +73,8 @@ function animateOutGraph(divName, finishedCallback) {
     }, STANDARD_ZOOM_DURATION);
     if (d3.event) d3.event.stopPropagation();
 }
-
 function loadCircleGraph(data, divName, pickedSongCallback) {
+    $(divName).empty();
     var w = $("#wrapper").width(),
         h = $("#wrapper").height(),
         r = Math.min(w, h) * 1.2,

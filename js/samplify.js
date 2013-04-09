@@ -16,6 +16,8 @@ window.onload = function() {
   var MAXIMUM_RESULT_SIZE = 25;
 
   var COVER_FILTER = ["cover", "made famous by", "tribute", "instrumental", "karaoke", "in the style of", "version", "originally by", "originally performed"];
+  var collabPlaylist = null;
+  var SAMPLIFY_COLLAB_PLAYLIST = "spotify:user:cggaurav:playlist:6RR4sZhswpFYkhgCxm5HfC";
 
   // Handle tabs, do we need this?
   tabs();
@@ -38,6 +40,20 @@ window.onload = function() {
 
   //First time use
   refreshInterface();
+
+  // Add songs from collab playlist to carousel div
+  models.Playlist.fromURI(SAMPLIFY_COLLAB_PLAYLIST, function(playlist) {
+    collabPlaylist = playlist;
+    for (var j = 0; j < playlist.length; j++) {
+      var collabTrack = playlist.tracks[j];
+      if (collabTrack.album === null) continue; // sometimes bogus tracks appear in the playlist
+      var cur = "<img src='" + collabTrack.album.data.cover + "' alt='" + collabTrack.uri + "' width='100' height='100' />";
+      // Add song
+      $(".carouselContent").each(function() {
+        $(this).trigger("insertItem", [cur, 0, true, 0]);
+      });
+    }
+  });
 
   function handleArgs() {
     var args = models.application.arguments;
@@ -364,35 +380,6 @@ window.onload = function() {
     } else noSamplesRemix();
   }
 
-  /*
-  function displayResults(tracks, title) {
-    if (tracks.length === 0) return; // No results
-
-    var resultsDiv = $("<div></div>").addClass("remixResult");
-    var resultsPlayer = $("<div></div>").addClass("remixPlayer");
-    resultsDiv.append("<h2>" + title + "</h2>");
-
-    // Add header
-    resultsDiv.append(resultsPlayer);
-
-    // Setup views
-    var playlistArt = new views.Player();
-    var tempPlaylist = new models.Playlist();
-    var playlistList = new views.List(tempPlaylist);
-    playlistArt.context = tempPlaylist;
-
-    // Add all the search results to the playlist
-    for (var i = 0; i < tracks.length; i++) {
-      tempPlaylist.add(models.Track.fromURI(tracks[i].uri));
-    }
-    // Get nice album art and stuff
-    playlistArt.track = tempPlaylist.get(0);
-    resultsPlayer.append(playlistArt.node);
-    resultsDiv.append(playlistList.node);
-    return resultsDiv;
-  }
-  */
-
   function getSampledURLForTrack(track) {
     return (server + "track/sampled?id=" + track);
   }
@@ -602,36 +589,33 @@ window.onload = function() {
     }
   }
 
-  function initCarousel(divName) {
-    $(divName).carouFredSel(
-    {
-      direction: "up",
-      height: $("#wrapper").height(),
-      width: 150,
-      items: {
-        visible: {
-          min: 3,
-          max: 10
-        },
-        height: "auto",
-        width: 150
-      },
-      scroll: {
-        items: 1,
-        easing: "swing",
-        pauseOnHover: true
-      }
-    });
-    $(divName + " img").click(function() {
-      player.play($(this).attr("alt"));
-      refreshInterface();
-    });
-  }
-
-  // Make sures the carousels are displayed properly
   function initCarousels() {
-    initCarousel("#carouselRemix");
-    initCarousel("#carouselCover");
+    $(".carouselContent").each(function() {
+      $(this).carouFredSel({
+        direction: "up",
+        height: $("#wrapper").height(),
+        width: 150,
+        items: {
+          start: (collabPlaylist !== null) ? Math.floor(Math.random() * collabPlaylist.length) : 0, // start carousel at random item
+          visible: {
+            min: 3,
+            max: 10
+          },
+          height: "auto",
+          width: 150
+        },
+        scroll: {
+          items: 1,
+          easing: "swing",
+          pauseOnHover: true
+        }
+      });
+      // Say that we should play song and refresh ui when an image in the carousel is clicked on
+      $("#" + $(this).attr("id").toString() + " img").click(function() {
+        player.play($(this).attr("alt"));
+        refreshInterface();
+      });
+    });
   }
 
   function updateRemix() {

@@ -17,18 +17,18 @@
 	"BundleType": "Application",
 	"BundleVersion": "0.1",
 	"DefaultTabs": [
+		{
+			"arguments": "index",
+			"title": {
+				"en": "Samples"
+			}
+		},
         {
 			"arguments": "remix",
             "title": {
 				"en": "Remixes"
 	  		}
         },
-        		{
-			"arguments": "index",
-			"title": {
-				"en": "Samples"
-			}
-		},
         {
 			"arguments": "cover",
             "title": {
