@@ -25,17 +25,18 @@ function CustomTooltip( tooltipId, width, divName ) {
         tooltip.hide();
     }
 
-    function updatePosition( event ) {
-        var ttw = tooltip.width(),
+    function updatePosition(event) {
+        var xOffset = 15,
+            yOffset = 15,
+            ttw = tooltip.width(),
             tth = tooltip.height(),
-            wscrY = $(divName).scrollTop(),
-            wscrX = $(divName).scrollLeft(),
-            curX =  event.pageX + 10,
-            curY =  event.pageY - 50,
-            ttleft = Math.max( ((curX - wscrX + ttw) > $(divName).width()) ? curX - ttw : curX, wscrX ),
-            tttop = Math.max( ((curY - wscrY + tth) > $(divName).height()) ? curY - tth : curY, curY );
+            curX = event.pageX,
+            curY = event.pageY - 60, // because of header
 
-            tooltip.css('top', tttop + 'px').css('left', ttleft + 'px');
+            ttleft = Math.max(((curX + xOffset * 2 + ttw) > $(window).width()) ? curX - ttw - xOffset * 2 : curX + xOffset, xOffset),
+            tttop = ((curY + yOffset * 2 + tth) > $(window).height() - 150) ? curY - tth - yOffset * 2 : curY + yOffset;
+
+        tooltip.css('top', tttop + 'px').css('left', ttleft + 'px');
     }
 
     return {
