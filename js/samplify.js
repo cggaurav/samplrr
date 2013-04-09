@@ -624,6 +624,7 @@ window.onload = function() {
     });
     $(divName + " img").click(function() {
       player.play($(this).attr("alt"));
+      refreshInterface();
     });
   }
 
