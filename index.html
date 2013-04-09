@@ -12,6 +12,7 @@
 
     @import url('sp://samplify/css/samplify.css');
     @import url('sp://samplify/css/circle-pack.css');
+    @import url('sp://samplify/css/caroufredsel.css');
     @import url('sp://samplify/css/jquery.ui.css');
     @import url('sp://samplify/css/bootstrap.responsive.css');
     </style>
@@ -21,6 +22,7 @@
     <script src="sp://samplify/js/vis/d3.js"></script>
     <script src="sp://samplify/js/vis/d3.layout.js"></script>
     <script src="sp://samplify/js/vis/custom-tooltip.js"></script>
+    <script src="sp://samplify/js/vis/caroufredsel.js"></script>
 
 </head>
 <body>
@@ -34,18 +36,40 @@
     <div id = "wrapper" class="wrapper">
         <!-- Home tab -->
         <div id="index" class="section">
-            <div class="loading"  id="throbber_samples">
-                <div class="throbber"><div></div></div>
-            </div>
-            <div id="trackHeader" class="sampleHeader"></div>
-            <div id="trackSamples"></div>
-            <div id="artistHeaderList"></div>
-            <div id="noSamples"></div>
+          <div class="loading"  id="throbber_samples">
+            <div class="throbber"><div></div></div>
+        </div>
+        <div id="trackHeader" class="sampleHeader"></div>
+        <div id="trackSamples"></div>
+        <div id="artistHeaderList"></div>
+        <div id="noSamples"></div>
         </div>
 
         <!-- Remix Tab -->
         <div id="remix" class="section">
             <div id="trackHeaderRemix" class="graphHeader"></div>
+            <div class="image_carousel">
+                <div id="carouselRemix">
+                    <img src="sp://samplify/img/cover.jpg" alt="spotify:track:68GdZAAowWDac3SkdNWOwo" width="100" height="100" />
+                    <img src="sp://samplify/img/cover.jpg" alt="spotify:track:68GdZAAowWDac3SkdNWOwo" width="100" height="100" />
+                    <img src="sp://samplify/img/cover.jpg" alt="spotify:track:68GdZAAowWDac3SkdNWOwo" width="100" height="100" />
+                    <img src="sp://samplify/img/cover.jpg" alt="spotify:track:68GdZAAowWDac3SkdNWOwo" width="100" height="100" />
+                    <img src="sp://samplify/img/cover.jpg" alt="spotify:track:68GdZAAowWDac3SkdNWOwo" width="100" height="100" />
+
+                    <img src="sp://samplify/img/cover.jpg" alt="spotify:track:68GdZAAowWDac3SkdNWOwo" width="100" height="100" />
+
+                    <img src="sp://samplify/img/cover.jpg" alt="spotify:track:68GdZAAowWDac3SkdNWOwo" width="100" height="100" />
+
+                    <img src="sp://samplify/img/cover.jpg" alt="spotify:track:68GdZAAowWDac3SkdNWOwo" width="100" height="100" />
+
+                    <img src="sp://samplify/img/cover.jpg" alt="spotify:track:68GdZAAowWDac3SkdNWOwo" width="100" height="100" />
+
+                    <img src="sp://samplify/img/cover.jpg" alt="spotify:track:68GdZAAowWDac3SkdNWOwo" width="100" height="100" />
+                    
+                    <img src="sp://samplify/img/cover.jpg" alt="spotify:track:68GdZAAowWDac3SkdNWOwo" width="100" height="100" />
+                </div>
+                <div class="clearfix"></div>
+            </div>
             <div id="graphRemix" class="graph"></div>
             <div class="loading">
                 <div class="throbber" id="throbber_remix"><div></div></div>
@@ -55,6 +79,28 @@
         <!-- Cover Tab -->
         <div id="cover" class="section">
             <div id="trackHeaderCover" class="graphHeader"></div>
+                <div class="image_carousel">
+                    <div id="carouselCover">
+                        <img src="sp://samplify/img/cover.jpg" alt="spotify:track:68GdZAAowWDac3SkdNWOwo" width="100" height="100" />
+                        <img src="sp://samplify/img/cover.jpg" alt="spotify:track:68GdZAAowWDac3SkdNWOwo" width="100" height="100" />
+                        <img src="sp://samplify/img/cover.jpg" alt="spotify:track:68GdZAAowWDac3SkdNWOwo" width="100" height="100" />
+                        <img src="sp://samplify/img/cover.jpg" alt="spotify:track:68GdZAAowWDac3SkdNWOwo" width="100" height="100" />
+                        <img src="sp://samplify/img/cover.jpg" alt="spotify:track:68GdZAAowWDac3SkdNWOwo" width="100" height="100" />
+
+                        <img src="sp://samplify/img/cover.jpg" alt="spotify:track:68GdZAAowWDac3SkdNWOwo" width="100" height="100" />
+
+                        <img src="sp://samplify/img/cover.jpg" alt="spotify:track:68GdZAAowWDac3SkdNWOwo" width="100" height="100" />
+
+                        <img src="sp://samplify/img/cover.jpg" alt="spotify:track:68GdZAAowWDac3SkdNWOwo" width="100" height="100" />
+
+                        <img src="sp://samplify/img/cover.jpg" alt="spotify:track:68GdZAAowWDac3SkdNWOwo" width="100" height="100" />
+
+                        <img src="sp://samplify/img/cover.jpg" alt="spotify:track:68GdZAAowWDac3SkdNWOwo" width="100" height="100" />
+                        
+                        <img src="sp://samplify/img/cover.jpg" alt="spotify:track:68GdZAAowWDac3SkdNWOwo" width="100" height="100" />
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
             <div id="graphCover" class="graph"></div>
             <div class="loading">
                 <div class="throbber" id="throbber_cover"><div></div></div>
@@ -62,14 +108,15 @@
         </div>
 
     </div><!-- /wrapper -->
-    <footer>      
-        <div class="footer">  
-            <div class="refresh">
-                <button id="refresh" class="sp-button">Refresh</button>
-            </div>
+<footer>      
+    <div class="footer">  
+        <div class="refresh">
+            <button id="refresh" class="sp-button">Refresh</button>
         </div>
-    </footer>
+    </div>
+</footer>
 </body>
+
 <!-- Load all scripts now -->
 <script src="sp://samplify/js/rainbow-custom.min.js"></script>
 <script src="sp://samplify/js/vis/circle-pack.js"></script>

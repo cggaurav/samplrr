@@ -55,6 +55,19 @@ window.onload = function() {
     console.log(links);
   }
 
+  function tabs() {
+    var args = models.application.arguments;
+    var current = document.getElementById(args[0]);
+    var sections = document.getElementsByClassName('section');
+    for (i = 0; i < sections.length; i++) {
+      sections[i].style.display = 'none';
+    }
+    current.style.display = 'block';
+
+    // make sure the carousels are displayed properly
+    initCarousels();
+  }
+
   function refreshInterface() {
     clearTracks();
     updateTracks();
@@ -67,7 +80,12 @@ window.onload = function() {
     refreshInterface();
   });
 
-/*
+  // Called when the window is resized
+  $(window).resize(function() {
+    initCarousels();
+  });
+
+  /*
   $("#submitSample").click(function() {
     console.log("Submitting Sample");
     submitSample['time1'] = "0";
@@ -215,16 +233,6 @@ window.onload = function() {
     $("#artistHeaderList").empty();
   }
 
-  function tabs() {
-    var args = models.application.arguments;
-    var current = document.getElementById(args[0]);
-    var sections = document.getElementsByClassName('section');
-    for (i = 0; i < sections.length; i++) {
-      sections[i].style.display = 'none';
-    }
-    current.style.display = 'block';
-  }
-
   function splitResultWithRespectToTags(tracks) {
     var result = [];
     for (var i = 0; i < TAGS.length; i++) {
@@ -305,8 +313,8 @@ window.onload = function() {
   }
 
   // start playing the song that the user picked
-  function pickedSongFromGraph(uri)
-  {
+
+  function pickedSongFromGraph(uri) {
     player.play(uri);
   }
 
@@ -353,11 +361,10 @@ window.onload = function() {
     if (result.length > 0) {
       var data = splitResultWithRespectToTags(result);
       loadCircleGraph(formatDataForGraph(data, "remix"), "#graphRemix", pickedSongFromGraph);
-    }
-    else noSamplesRemix();
+    } else noSamplesRemix();
   }
 
-/*
+  /*
   function displayResults(tracks, title) {
     if (tracks.length === 0) return; // No results
 
@@ -595,6 +602,37 @@ window.onload = function() {
     }
   }
 
+  function initCarousel(divName) {
+    $(divName).carouFredSel(
+    {
+      direction: "up",
+      height: $("#wrapper").height(),
+      width: 150,
+      items: {
+        visible: {
+          min: 3,
+          max: 10
+        },
+        height: "auto",
+        width: 150
+      },
+      scroll: {
+        items: 1,
+        easing: "swing",
+        pauseOnHover: true
+      }
+    });
+    $(divName + " img").click(function() {
+      player.play($(this).attr("alt"));
+    });
+  }
+
+  // Make sures the carousels are displayed properly
+  function initCarousels() {
+    initCarousel("#carouselRemix");
+    initCarousel("#carouselCover");
+  }
+
   function updateRemix() {
     $("#throbber_remix").show();
     animateOutGraph("#graphRemix", function() {
@@ -637,7 +675,7 @@ window.onload = function() {
     var artistHeaderList = $("#artistHeaderList");
     for (var i = 0; i < artistList.length; i++) {
       //artistHeaderList.append('<div class="sampleHeader"><a href="' + root + artistList[i].uri + '">' + artistList[i].name + '</a></div><div id="artist' + i.toString() + '"></div>');
-      artistHeaderList.append('<div class="sampleHeader">'  + artistList[i].name + '</div><div id="artist' + i.toString() + '"></div>');
+      artistHeaderList.append('<div class="sampleHeader">' + artistList[i].name + '</div><div id="artist' + i.toString() + '"></div>');
     }
   }
 
