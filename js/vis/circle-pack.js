@@ -1,8 +1,17 @@
 // Search results consists of all results from a query.
 // We want to split these so that they get categorised
 // by the tags that we have defined.
-var TAGS = ["Instrumental", "Karaoke", "Dubstep", "Electronic",
-    "Country", "Acoustic", "Other"];
+var TAGS = [
+    ["Instrumental" , ["instrumental", "karaoke"]],
+    ["Dubstep" , ["dubstep"]],
+    ["Electronic" , ["electronic", "trance", "house", "computer", "synth"]],
+    ["Country" , ["country", "western"]],
+    ["Acoustic" , ["acoustic", "unplugged"]],
+    ["Workout" , ["workout", "cardio", "training", "exercise", "gym"]],
+    ["Lullabye" , ["lullabye", "baby", "kid", "child"]],
+    ["Orchestra" , ["orchestra", "symphony"]],
+    ["Other", []]
+];
 
 // Takes a result of a search and transforms it into the data format required
 // for the d3 visualization
@@ -38,7 +47,7 @@ function formatDataForGraph(data, type) {
                 };
             }
             result[nbrTags] = {
-                'title': TAGS[i] + ((type == "remix") ? " remixes" : " covers"),
+                'title': TAGS[i][0] + ((type == "remix") ? " remixes" : " covers"),
                 'children': curTag
             };
             nbrTags = nbrTags + 1;

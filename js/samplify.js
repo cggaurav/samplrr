@@ -280,6 +280,19 @@ window.onload = function() {
     $("#artistHeaderList").empty();
   }
 
+// Checks whether string s contains any of the tags in the given array
+// returns a boolean value
+  function containsTag(s, arrayOfTags)
+  {
+    s = s.toLowerCase();
+    for (var i = 0; i < arrayOfTags.length; i++)
+    {
+      if (s.indexOf(arrayOfTags[i]) != -1)
+        return true;
+    }
+    return false;
+  }
+
   function splitResultWithRespectToTags(tracks) {
     var result = [];
     for (var i = 0; i < TAGS.length; i++) {
@@ -290,7 +303,8 @@ window.onload = function() {
       var matchFound = false;
       for (var j = 0; j < TAGS.length - 1; j++) {
         // Check for match
-        if (tracks[i].name.toLowerCase().indexOf(TAGS[j].toLowerCase()) != -1 || tracks[i].album.name.toLowerCase().indexOf(TAGS[j].toLowerCase()) != -1) {
+        if (containsTag(tracks[i].name, TAGS[j][1]) || containsTag(tracks[i].album.name, TAGS[j][1])) {
+        //if (tracks[i].name.toLowerCase().indexOf(TAGS[j]) != -1 || tracks[i].album.name.toLowerCase().indexOf(TAGS[j]) != -1) {
           result[j].push(tracks[i]);
           matchFound = true;
           break;
