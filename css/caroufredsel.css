@@ -1,9 +1,9 @@
 .image_carousel {
 	position: fixed;
 	float: right;
-	right: 15px;
+	right: 0;
+	padding-right: 15px;
 	top : 60px;
-	width: 15%;
 	z-index: 1500;
 }
 
@@ -15,8 +15,4 @@
 	display: block;
 	float: right;
 	cursor: pointer;
-}
-.clearfix {
-	float: none;
-	clear: both;
 }

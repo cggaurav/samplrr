@@ -95,6 +95,26 @@ p {
 	overflow: hidden;
 }
 
+/* Text */
+.description {
+	font-size:1.5em;
+	font-style:italic;
+	font-family:Georgia;
+	/*padding:0 0 25px;*/
+	line-height:25px;
+	position: relative;
+}
+
+.graphHeader{
+	position: absolute;
+	padding: 10px 10px 10px 10px;
+	font-size: 1.3em;
+	font-family: Georgia;
+	line-height: 130%;
+	width: 30%;
+	z-index: 1000;
+}
+
 /* Remix view
 .remixResult
 {
@@ -150,39 +170,6 @@ p {
 .sp-list:focus .sp-item.sp-track-selected { color: #463E3F; }
 */
 
-/* Text */
-.description {
-	font-size:1.5em;
-	font-style:italic;
-	font-family:Georgia;
-	/*padding:0 0 25px;*/
-	line-height:25px;
-	position: relative;
-}
-
-.graphHeader{
-	position: absolute;
-	padding: 10px 10px 10px 10px;
-	font-size: 1.3em;
-	font-family: Georgia;
-	line-height: 130%;
-	width: 30%;
-	z-index: 1000;
-}
-
-.sampleHeader{
-	position: relative;
-	padding: 10px 10px 10px 10px;
-	font-size: 1.3em;
-	font-family: Georgia;
-	z-index: 1000;
-}
-
-.sample{
-	position : relative;
-	height: 310px;
-	width: 85%;	
-}
 /*
 #drop_box_sampled{
 	text-align: center;
@@ -220,6 +207,20 @@ p {
 }
 */
 
+.sampleHeader{
+	position: relative;
+	padding: 10px 10px 10px 10px;
+	font-size: 1.3em;
+	font-family: Georgia;
+	z-index: 1000;
+}
+
+.sample{
+	position : relative;
+	height: 250px;
+	width: 85%;
+}
+
 .sampled{
 	position : absolute;
 	text-align: left;
@@ -245,7 +246,6 @@ p {
 	font-size: 1.5em;
 	text-align: center;
 	color: #767676;
-;
 }
 
 .sampling{

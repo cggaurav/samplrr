@@ -23,7 +23,7 @@ window.onload = function() {
   var SAMPLIFY_COLLAB_PLAYLIST_SAMPLES = "spotify:user:cggaurav:playlist:6RR4sZhswpFYkhgCxm5HfC";
   var SAMPLIFY_COLLAB_PLAYLIST_REMIXES = "spotify:user:faximan:playlist:3WmosOs2FKQgafFv5pQrrT";
   var SAMPLIFY_COLLAB_PLAYLIST_COVERS = "spotify:user:faximan:playlist:1uZXfGQXYUefaWCuS6qnRd";
-  var refreshFlag = true; // is set when the interface is supposed to be reset as soon
+  var refreshFlag = false; // is set when the interface is supposed to be reset as soon
    // as the track has loaded (see models.EVENT.CHANGE) Can this be done without a global variable?
 
   // Handle tabs, do we need this?
@@ -78,15 +78,16 @@ window.onload = function() {
     }
     current.style.display = 'block';
 
-    initCarousels();
+    initAllCarousels();
   }
 
   function refreshInterface() {
     clearTracks();
-    updateTracks();
+    if (updateTracks() === null)
+      noTrackPlaying();
+
     updateRemix();
     updateCover();
-    //player.seek(200);
   }
 
   $("#refresh").click(function() {
@@ -94,7 +95,7 @@ window.onload = function() {
   });
 
   function doneResizing(){
-    initCarousels();
+    initAllCarousels();
   }
   // Called when the window is 'fully'resized
   $(window).resize(function() {
@@ -119,12 +120,15 @@ window.onload = function() {
   function loadCarouselPlaylists() {
     models.Playlist.fromURI(SAMPLIFY_COLLAB_PLAYLIST_SAMPLES, function(playlist) {
       addPlaylistToCarousel(playlist, "#carouselSample");
+      initCarousel("#carouselSample");
     });
     models.Playlist.fromURI(SAMPLIFY_COLLAB_PLAYLIST_REMIXES, function(playlist) {
       addPlaylistToCarousel(playlist, "#carouselRemix");
+      initCarousel("#carouselRemix");
     });
     models.Playlist.fromURI(SAMPLIFY_COLLAB_PLAYLIST_COVERS, function(playlist) {
       addPlaylistToCarousel(playlist, "#carouselCover");
+      initCarousel("#carouselCover");
     });
   }
 
@@ -424,7 +428,7 @@ window.onload = function() {
     updateTrackHeader();
 
     var currentTrack = getCurrentTrack();
-    if (currentTrack === null) return; // no track playing
+    if (currentTrack === null) return null; // no track playing
 
     var currentTrackURI = getCurrentTrackURI();
     $.getJSON(getSampleURLForTrack(currentTrackURI), function(result) {
@@ -482,13 +486,21 @@ window.onload = function() {
 
     // Hide loading indicator
     $("#throbber_samples").hide();
-    //Create Sample Context
+
+    // Get the tracks
     var sampling_track = models.Track.fromURI(sample.sampling_track);
+    var sampled_track = models.Track.fromURI(sample.sampled_track);
+
+    // Make sure to only include samples that we can actually play
+    if (sampling_track.availableForPlayback === false || sampled_track.availableForPlayback === false)
+      return;
+
+    //Create Sample Context
     var sampling_track_playlist = new models.Playlist();
     sampling_track_playlist.add(sampling_track);
     var sampling_track_player = new views.Player();
     sampling_track_player.track = null; // Don't play the track right away
-    // sampling_track_player.position = minutesFromSeconds(sample.time1);
+    sampling_track_player.position = minutesFromSeconds(sample.time1);
     sampling_track_player.context = sampling_track_playlist;
 
     //Update Sample
@@ -497,7 +509,6 @@ window.onload = function() {
     samplingDiv.append(sampling_track_player.node);
 
     //Create Sample Context
-    var sampled_track = models.Track.fromURI(sample.sampled_track);
     var sampled_track_playlist = new models.Playlist();
     sampled_track_playlist.add(sampled_track);
     var sampled_track_player = new views.Player();
@@ -600,53 +611,57 @@ window.onload = function() {
     }
   }
 
-  function initCarousels() {
+  function initAllCarousels()
+  {
     $(".carouselContent").each(function() {
-      var curCarouselName = $(this).attr("id").toString();
-      $(this).carouFredSel({
-        direction: "up",
-        height: $("#wrapper").height(),
-        width: 150,
-        items: {
-          start: 0,
-          visible: {
-            min: 3,
-            max: 10
-          },
-          height: "auto",
-          width: 150
+      initCarousel('#' + $(this).attr("id").toString());
+    });
+  }
+
+  function initCarousel(divName) {
+    $(divName).carouFredSel({
+      direction: "up",
+      height: $("#wrapper").height(),
+      width: 150,
+      items: {
+        start: 0,
+        visible: {
+          min: 3,
+          max: 10
         },
-        scroll: {
-          items: 1,
-          easing: "swing",
-          pauseOnHover: true
-        }
-      });
-      // Say that we should play song and refresh ui when an image in the carousel is clicked on
-      $('#' + curCarouselName + " img").click(function() {
-        player.play($(this).attr("uri"));
-        refreshFlag = true; // tells the ui to refresh when the new song has loaded
-      });
+        height: "auto",
+        width: 150
+      },
+      scroll: {
+        items: 1,
+        easing: "swing",
+        pauseOnHover: true
+      }
+    });
+    // Say that we should play song and refresh ui when an image in the carousel is clicked on
+    $(divName + " img").click(function() {
+      player.play($(this).attr("uri"));
+      refreshFlag = true; // tells the ui to refresh when the new song has loaded
+    });
 
-      // create tooltip
-      var tooltip = CustomTooltip(curCarouselName + "tooltip", 300,
-      '#' + $('#' + curCarouselName).closest('div[class^="section"]').attr('id').toString()); // insert tooltip in section
-      $('#' + curCarouselName + " img").mouseover(function(event) {
-        var title = $(this).attr("title");
-        var artist = $(this).attr("artist");
-        var album = $(this).attr("album");
+    // create tooltip
+    var tooltip = CustomTooltip(divName.substring(1) + "tooltip", 300,
+      '#' + $(divName).closest('div[class^="section"]').attr('id').toString()); // insert tooltip in section
+    $(divName + " img").mouseover(function(event) {
+      var title = $(this).attr("title");
+      var artist = $(this).attr("artist");
+      var album = $(this).attr("album");
 
-        var tooltipHTML = "<span class=\"title\">Title </span>" + title +
-          "<br /><span class=\"title\">Artist </span>" + artist +
-          "<br /><span class=\"title\">Album </span>" + album;
-        tooltip.showTooltip(tooltipHTML, event);
-      });
-      $('#' + curCarouselName + " img").mouseout(function() {
-        tooltip.hideTooltip();
-      });
-      $('#' + curCarouselName + " img").mousemove(function(event) {
-        tooltip.updatePosition(event);
-      });
+      var tooltipHTML = "<span class=\"title\">Title </span>" + title +
+        "<br /><span class=\"title\">Artist </span>" + artist +
+        "<br /><span class=\"title\">Album </span>" + album;
+      tooltip.showTooltip(tooltipHTML, event);
+    });
+    $(divName + " img").mouseout(function() {
+      tooltip.hideTooltip();
+    });
+    $(divName + " img").mousemove(function(event) {
+      tooltip.updatePosition(event);
     });
   }
 
@@ -654,7 +669,7 @@ window.onload = function() {
     $("#throbber_remix").show();
     animateOutGraph("#graphRemix", function() {
       if (updateTrackHeaderRemix()) searchSpotify(displayRemixes);
-      else noSamplesRemix();
+      else noTrackPlaying();
     });
   }
 
@@ -662,7 +677,7 @@ window.onload = function() {
     $("#throbber_cover").show();
     animateOutGraph("#graphCover", function() {
       if (updateTrackHeaderCover()) searchSpotify(displayCovers);
-      else noSamplesCover();
+      else noTrackPlaying();
     });
   }
 
@@ -701,6 +716,16 @@ window.onload = function() {
   function noSamplesForTrack() {
     $("#throbber_samples").hide();
     $("#trackHeader").append("<br /> No samples for this track found!");
+  }
+
+  function noTrackPlaying() {
+    $("#throbber_samples").hide();
+    $("#throbber_remix").hide();
+    $("#throbber_cover").hide();
+
+    $(trackHeader).html("<br /> Play a track and hit refresh!");
+    $(trackHeaderRemix).html("<br /> Play a track and hit refresh!");
+    $(trackHeaderCover).html("<br /> Play a track and hit refresh!");
   }
 
   function noSamplesForArtist() {

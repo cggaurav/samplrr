@@ -30,11 +30,12 @@ function CustomTooltip( tooltipId, width, divName ) {
             yOffset = 15,
             ttw = tooltip.width(),
             tth = tooltip.height(),
+            wscrY = $("#wrapper").scrollTop(),
             curX = event.pageX,
-            curY = event.pageY - 60, // because of header
+            curY = event.pageY - 60 + wscrY, // because of header
 
             ttleft = Math.max(((curX + xOffset * 2 + ttw) > $(window).width()) ? curX - ttw - xOffset * 2 : curX + xOffset, xOffset),
-            tttop = ((curY + yOffset * 2 + tth) > $(window).height() - 150) ? curY - tth - yOffset * 2 : curY + yOffset;
+            tttop = ((curY - wscrY + yOffset * 2 + tth) > $(window).height() - 150) ? curY - tth - yOffset * 2 : curY + yOffset;
 
         tooltip.css('top', tttop + 'px').css('left', ttleft + 'px');
     }
