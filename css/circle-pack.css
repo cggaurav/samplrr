@@ -17,8 +17,6 @@ g.root {
 }
 
 g.child {
-  /*fill: #aac029;
-  fill: url(#tile-ww);*/
   stroke: #777777;
   stroke-width: 1px;
   cursor: pointer;
@@ -30,10 +28,9 @@ g.parent:hover {
 }
 
 g.child:hover {
-  stroke: #5d6916;
-  stroke-width: 3px;
-/*  fill: url(#tile-ww);
-*/}
+ /* stroke: #5d6916;
+  stroke-width: 3px;*/
+}
 
 .tooltip {
     position: absolute;
