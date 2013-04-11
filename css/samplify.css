@@ -237,13 +237,18 @@ p {
 	left:40%;
 	right:40%;
 	bottom:0;
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 1.1em;
-	text-align: center;
 	padding-left: 10px;
 	padding-right: 10px;
-	color: #463E3F;
 }
+
+.relationship p{
+	font-family: Georgia;
+	font-size: 1.5em;
+	text-align: center;
+	color: #767676;
+;
+}
+
 .sampling{
 	position: absolute;
 	text-align: right;

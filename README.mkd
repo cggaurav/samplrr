@@ -3,11 +3,9 @@
 Samplify is a Spotify app that makes it easy for you to find sampled music!
 
 ## TODO
+1. Carousell for Samples
+2. Add more content to the backend
+3. More tags
+4. 
 
-1. Visualization using Processing.js 
-2. Change the logo
-3. Fix the backend, after getting data from echonest
-4. Reload button on the footer
-5. Top 15, but a view of 5. 
-
-//Sunday
+//Friday

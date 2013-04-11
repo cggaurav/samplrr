@@ -13,7 +13,8 @@ window.onload = function() {
   // var server = 'http://samplify.herokuapp.com/';
   var server = 'http://samplifybackend.herokuapp.com/';
   var windowResize;
-  var resultsAny;
+  var trackSamplesAny;
+  var artistSamplesAny;
   var submitSample = {};
   var SEARCH_PAGE_SIZE = 200;
   var MAXIMUM_RESULT_SIZE = 25;
@@ -28,12 +29,9 @@ window.onload = function() {
 
   application.observe(models.EVENT.ARGUMENTSCHANGED, tabs);
 
-/*  player.observe(models.EVENT.CHANGE, function(event) {
-    console.log(event);
-    if (event.data.curtrack) {
-      console.log("CurTrack");
-    }
-  });*/
+  player.observe(models.EVENT.CHANGE, function(event) {
+    console.log(event.data);
+  });
 
   //Handle Arguments
   application.observe(models.EVENT.ARGUMENTSCHANGED, handleArgs);
@@ -98,6 +96,7 @@ window.onload = function() {
     updateTracks();
     updateRemix();
     updateCover();
+    player.seek(200);
   }
 
   $("#refresh").click(function() {
@@ -404,7 +403,8 @@ window.onload = function() {
 
     // Show loading indicator
     $("#throbber_samples").show();
-    resultsAny = false;
+    trackSamplesAny = false;
+    artistSamplesAny = false;
     //Make this smarter
     updateTrackHeader();
 
@@ -415,7 +415,7 @@ window.onload = function() {
     $.getJSON(getSampleURLForTrack(currentTrackURI), function(result) {
       var count = result.samples.length;
       if(count > 0) 
-        resultsAny = true;
+        trackSamplesAny = true;
       else
         noSamplesForTrack();
       //console.log("Count of Sampled Tracks are " + count);
@@ -435,27 +435,21 @@ window.onload = function() {
     for (var j = 0; j < artistList.length; j++) {
       (function(uri, j) {
         $.getJSON(getSampleURLForArtist(uri),function(result) {
-          var count = result.samples.length
+          var count = result.samples.length;
           if(count > 0)
-            resultsAny = true;
+          {  
+            updateArtistHeader();
+            artistSamplesAny = true;
+          }
             // updateArtistHeader();
           for (var i = 0; i < result.samples.length; i++) {
             updatedArtists = false;
             updateArtistSample(result.samples[i], j);
           }
         });
-
-        // $.getJSON(getSampleURLForArtist(uri),
-
-        // function(result) {
-        //   for (var i = 0; i < result.samples.length; i++) {
-        //     // console.log("We are being called too!");
-        //     updatedArtists = false;
-        //     updateArtistSample(result.samples[i], j);
-        //   }
-        // });
       })(artistList[j].uri, j);
     }
+
   }
 
   function addLeadingZero(number) {
@@ -503,9 +497,9 @@ window.onload = function() {
 
     var relnDiv = $("<div></div>").addClass("relationship");
     if(!sample.relationship.partSampled)
-      relnDiv.append(" is a " + sample.relationship.kind.toLowerCase() + " of ");
+      relnDiv.append("<p> is a " + sample.relationship.kind.toLowerCase() + " of </p>");
     else
-      relnDiv.append(" is a " + sample.relationship.kind.toLowerCase() + ' with </br> ' + sample.relationship.partSampled + " of ");
+      relnDiv.append("<p> is a " + sample.relationship.kind.toLowerCase() + ' with </br> ' + sample.relationship.partSampled + " of </p>");
 
     // Uppppppddddddaaaaaattttteeeeee!
 
@@ -691,12 +685,12 @@ window.onload = function() {
 
   function noSamplesForTrack() {
     $("#throbber_samples").hide();
-    $("#trackHeader").append("<br /> No samples for this track found, but..");
+    $("#trackHeader").append("<br /> No samples for this track found!");
   }
 
   function noSamplesForArtist() {
-    $("#throbber_samples").hide();
-    $("#trackHeader").append("<br /> No samples for this artist found!");
+    // $("#throbber_samples").hide();
+    $("#trackHeader").append("<br /> No samples for this artist found either!");
   }
 
   function noSamplesRemix() {
