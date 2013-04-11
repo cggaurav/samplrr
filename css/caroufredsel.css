@@ -3,8 +3,8 @@
 	float: right;
 	right: 15px;
 	top : 60px;
-	width: 15%
-	z-index: 500;
+	width: 15%;
+	z-index: 1500;
 }
 
 .image_carousel img {

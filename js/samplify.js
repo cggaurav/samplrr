@@ -20,8 +20,11 @@ window.onload = function() {
   var MAXIMUM_RESULT_SIZE = 25;
 
   var COVER_FILTER = ["cover", "made famous by", "tribute", "instrumental", "karaoke", "in the style of", "version", "originally by", "originally performed"];
-  var collabPlaylist = null;
-  var SAMPLIFY_COLLAB_PLAYLIST = "spotify:user:cggaurav:playlist:6RR4sZhswpFYkhgCxm5HfC";
+  var SAMPLIFY_COLLAB_PLAYLIST_SAMPLES = "spotify:user:cggaurav:playlist:6RR4sZhswpFYkhgCxm5HfC";
+  var SAMPLIFY_COLLAB_PLAYLIST_REMIXES = "spotify:user:faximan:playlist:3WmosOs2FKQgafFv5pQrrT";
+  var SAMPLIFY_COLLAB_PLAYLIST_COVERS = "spotify:user:faximan:playlist:1uZXfGQXYUefaWCuS6qnRd";
+  var refreshFlag = true; // is set when the interface is supposed to be reset as soon
+   // as the track has loaded (see models.EVENT.CHANGE) Can this be done without a global variable?
 
   // Handle tabs, do we need this?
   tabs();
@@ -30,6 +33,11 @@ window.onload = function() {
   application.observe(models.EVENT.ARGUMENTSCHANGED, tabs);
 
   player.observe(models.EVENT.CHANGE, function(event) {
+    if (refreshFlag === true)
+    {
+      refreshFlag = false;
+      refreshInterface();
+    }
     console.log(event.data);
   });
 
@@ -42,29 +50,12 @@ window.onload = function() {
   //First time use
   refreshInterface();
 
-  // Add songs from collab playlist to carousel div
-  models.Playlist.fromURI(SAMPLIFY_COLLAB_PLAYLIST, function(playlist) {
-    collabPlaylist = playlist;
-    for (var j = 0; j < playlist.length; j++) {
-      var collabTrack = playlist.tracks[j];
-      if (collabTrack.album === null) continue; // sometimes bogus tracks appear in the playlist
-
-      // Store info about the track in the <img> object in the carousel for
-      // interacting with it later
-      var cur = "<img src='" + collabTrack.album.data.cover + "' uri='" +
-      collabTrack.uri + "' title='" + collabTrack.name + "' artist='" +
-      collabTrack.artists[0].name + "' album='" +
-      collabTrack.album.name + "' width='100' height='100' />";
-      // Add song
-      $(".carouselContent").each(function() {
-        $(this).trigger("insertItem", [cur, 0, true, 0]);
-      });
-    }
-  });
+  // Load data into carousel playlists from collaboration playlists
+  loadCarouselPlaylists();
 
   function handleArgs() {
     var args = models.application.arguments;
-    console.log(args);
+   // console.log(args);
     $.each(args, function(i, arg) {
       args[i] = decodeURI(arg.decodeForText());
     }); //decode crazy swede characters
@@ -87,7 +78,6 @@ window.onload = function() {
     }
     current.style.display = 'block';
 
-    // make sure the carousels are displayed properly
     initCarousels();
   }
 
@@ -111,6 +101,32 @@ window.onload = function() {
     clearTimeout(windowResize);
     windowResize = setTimeout(doneResizing, 1000);
   });
+
+
+  function addPlaylistToCarousel(playlist, divName) {
+    for (var j = 0; j < playlist.length; j++) {
+      var collabTrack = playlist.tracks[j];
+      if (collabTrack.album === null) continue; // sometimes bogus tracks appear in the playlist
+
+      // Store info about the track in the <img> object in the carousel for
+      // interacting with it later
+      var cur = "<img src='" + collabTrack.album.data.cover + "' uri='" + collabTrack.uri + "' title='" + collabTrack.name + "' artist='" + collabTrack.artists[0].name + "' album='" + collabTrack.album.name + "' width='100' height='100' />";
+      // Add song
+      $(divName).trigger("insertItem", [cur, 0, true, 0]);
+    }
+  }
+
+  function loadCarouselPlaylists() {
+    models.Playlist.fromURI(SAMPLIFY_COLLAB_PLAYLIST_SAMPLES, function(playlist) {
+      addPlaylistToCarousel(playlist, "#carouselSample");
+    });
+    models.Playlist.fromURI(SAMPLIFY_COLLAB_PLAYLIST_REMIXES, function(playlist) {
+      addPlaylistToCarousel(playlist, "#carouselRemix");
+    });
+    models.Playlist.fromURI(SAMPLIFY_COLLAB_PLAYLIST_COVERS, function(playlist) {
+      addPlaylistToCarousel(playlist, "#carouselCover");
+    });
+  }
 
   /*
   $("#submitSample").click(function() {
@@ -400,7 +416,6 @@ window.onload = function() {
   }
 
   function updateTracks() {
-
     // Show loading indicator
     $("#throbber_samples").show();
     trackSamplesAny = false;
@@ -437,7 +452,7 @@ window.onload = function() {
         $.getJSON(getSampleURLForArtist(uri),function(result) {
           var count = result.samples.length;
           if(count > 0)
-          {  
+          {
             updateArtistHeader();
             artistSamplesAny = true;
           }
@@ -593,7 +608,7 @@ window.onload = function() {
         height: $("#wrapper").height(),
         width: 150,
         items: {
-          start: (collabPlaylist !== null) ? Math.floor(Math.random() * collabPlaylist.length) : 0, // start carousel at random item
+          start: 0,
           visible: {
             min: 3,
             max: 10
@@ -608,28 +623,28 @@ window.onload = function() {
         }
       });
       // Say that we should play song and refresh ui when an image in the carousel is clicked on
-      $("#" + curCarouselName + " img").click(function() {
+      $('#' + curCarouselName + " img").click(function() {
         player.play($(this).attr("uri"));
-        refreshInterface();
+        refreshFlag = true; // tells the ui to refresh when the new song has loaded
       });
 
       // create tooltip
       var tooltip = CustomTooltip(curCarouselName + "tooltip", 300,
-      '#' + $(this).parent().parent().parent().attr('id').toString()); // insert tooltip in section
-      $("#" + curCarouselName + " img").mouseover(function(event) {
+      '#' + $('#' + curCarouselName).closest('div[class^="section"]').attr('id').toString()); // insert tooltip in section
+      $('#' + curCarouselName + " img").mouseover(function(event) {
         var title = $(this).attr("title");
         var artist = $(this).attr("artist");
         var album = $(this).attr("album");
 
         var tooltipHTML = "<span class=\"title\">Title </span>" + title +
-            "<br /><span class=\"title\">Artist </span>" + artist +
-            "<br /><span class=\"title\">Album </span>" + album;
+          "<br /><span class=\"title\">Artist </span>" + artist +
+          "<br /><span class=\"title\">Album </span>" + album;
         tooltip.showTooltip(tooltipHTML, event);
       });
-      $("#" + curCarouselName + " img").mouseout(function() {
+      $('#' + curCarouselName + " img").mouseout(function() {
         tooltip.hideTooltip();
       });
-      $("#" + curCarouselName + " img").mousemove(function(event) {
+      $('#' + curCarouselName + " img").mousemove(function(event) {
         tooltip.updatePosition(event);
       });
     });
