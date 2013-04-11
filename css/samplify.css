@@ -181,8 +181,7 @@ p {
 .sample{
 	position : relative;
 	height: 310px;
-	width: 70%;	
-	/*Alex, can you fix the width for samples*/
+	width: 85%;	
 }
 /*
 #drop_box_sampled{

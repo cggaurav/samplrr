@@ -96,7 +96,7 @@ window.onload = function() {
     updateTracks();
     updateRemix();
     updateCover();
-    player.seek(200);
+    //player.seek(200);
   }
 
   $("#refresh").click(function() {
@@ -477,7 +477,7 @@ window.onload = function() {
     sampling_track_player.context = sampling_track_playlist;
 
     //Update Sample
-    $(sampling_track_player.node).addClass('sp-image-extra-large');
+    $(sampling_track_player.node).addClass('sp-image-large');
     var samplingDiv = $("<div></div>").addClass("sampling");
     samplingDiv.append(sampling_track_player.node);
 
@@ -491,7 +491,7 @@ window.onload = function() {
     sampled_track_player.context = sampled_track_playlist;
 
     //Update Sample
-    $(sampled_track_player.node).addClass('sp-image-extra-large');
+    $(sampled_track_player.node).addClass('sp-image-large');
     var sampledDiv = $("<div></div>").addClass("sampled");
     sampledDiv.append(sampled_track_player.node);
 
