@@ -8,9 +8,11 @@ window.onload = function() {
   var player = models.player;
   var library = models.library;
   var application = models.application;
+  var windowResize = false;
   var root = 'spotify:app:' + window.location.hostname + ":";
-  var server = 'http://samplify.herokuapp.com/';
-
+  // var server = 'http://samplify.herokuapp.com/';
+  var server = 'http://samplifybackend.herokuapp.com/';
+  var windowResize;
   var submitSample = {};
   var SEARCH_PAGE_SIZE = 200;
   var MAXIMUM_RESULT_SIZE = 25;
@@ -93,7 +95,6 @@ window.onload = function() {
   function refreshInterface() {
     clearTracks();
     updateTracks();
-
     updateRemix();
     updateCover();
   }
@@ -102,9 +103,13 @@ window.onload = function() {
     refreshInterface();
   });
 
-  // Called when the window is resized
-  $(window).resize(function() {
+  function doneResizing(){
     initCarousels();
+  }
+  // Called when the window is 'fully'resized
+  $(window).resize(function() {
+    clearTimeout(windowResize);
+    windowResize = setTimeout(doneResizing, 1000);
   });
 
   /*
@@ -386,20 +391,12 @@ window.onload = function() {
     } else noSamplesRemix();
   }
 
-  function getSampledURLForTrack(track) {
-    return (server + "track/sampled?id=" + track);
+  function getSampleURLForTrack(track) {
+    return (server + "track?id=" + track);
   }
 
-  function getSamplingURLForTrack(track) {
-    return (server + "track/sampling?id=" + track);
-  }
-
-  function getSampledURLForArtist(artist) {
-    return (server + "artist/sampled?id=" + artist);
-  }
-
-  function getSamplingURLForArtist(artist) {
-    return (server + "artist/sampling?id=" + artist);
+  function getSampleURLForArtist(artist) {
+    return (server + "artist?id=" + artist);
   }
 
   function updateTracks() {
@@ -414,19 +411,10 @@ window.onload = function() {
     if (currentTrack === null) return; // no track playing
 
     var currentTrackURI = getCurrentTrackURI();
-    $.getJSON(getSampledURLForTrack(currentTrackURI.toString()), function(result) {
+    $.getJSON(getSampleURLForTrack(currentTrackURI), function(result) {
+      console.log(result);
       var count = result.samples.length;
       //console.log("Count of Sampled Tracks are " + count);
-      for (var i = 0; i < count; i++) {
-        updateTrackSample(result.samples[i]);
-      }
-    });
-
-    $.getJSON(getSamplingURLForTrack(currentTrackURI.toString()),
-
-    function(result) {
-      var count = result.samples.length;
-      // console.log("Count of Sampling Tracks are " + count);
       for (var i = 0; i < count; i++) {
         updateTrackSample(result.samples[i]);
       }
@@ -444,7 +432,7 @@ window.onload = function() {
     for (var j = 0; j < artistList.length; j++) {
       //Make calls with closure, how?
       (function(uri, j) {
-        $.getJSON(getSamplingURLForArtist(uri),
+        $.getJSON(getSampleURLForArtist(uri),
 
         function(result) {
           for (var i = 0; i < result.samples.length; i++) {
@@ -453,15 +441,15 @@ window.onload = function() {
           }
         });
 
-        $.getJSON(getSamplingURLForArtist(uri),
+        // $.getJSON(getSampleURLForArtist(uri),
 
-        function(result) {
-          for (var i = 0; i < result.samples.length; i++) {
-            // console.log("We are being called too!");
-            updatedArtists = false;
-            updateArtistSample(result.samples[i], j);
-          }
-        });
+        // function(result) {
+        //   for (var i = 0; i < result.samples.length; i++) {
+        //     // console.log("We are being called too!");
+        //     updatedArtists = false;
+        //     updateArtistSample(result.samples[i], j);
+        //   }
+        // });
       })(artistList[j].uri, j);
     }
   }
@@ -482,7 +470,7 @@ window.onload = function() {
     $("#throbber_samples").hide();
 
     //Create Sample Context
-    var sampling_track = models.Track.fromURI(sample.track1 + "#" + minutesFromSeconds(sample.time1));
+    var sampling_track = models.Track.fromURI(sample.sampling_track);
     var sampling_track_playlist = new models.Playlist();
     sampling_track_playlist.add(sampling_track);
     var sampling_track_player = new views.Player();
@@ -496,7 +484,7 @@ window.onload = function() {
     samplingDiv.append(sampling_track_player.node);
 
     //Create Sample Context
-    var sampled_track = models.Track.fromURI(sample.track2 + "#" + minutesFromSeconds(sample.time2));
+    var sampled_track = models.Track.fromURI(sample.sampled_track);
     var sampled_track_playlist = new models.Playlist();
     sampled_track_playlist.add(sampled_track);
     var sampled_track_player = new views.Player();
@@ -510,7 +498,11 @@ window.onload = function() {
     sampledDiv.append(sampled_track_player.node);
 
     var relnDiv = $("<div></div>").addClass("relationship");
-    relnDiv.append((!sample.relationship.partsampled ? "" : sample.relationship.partsampled) + "</br>" + sample.relationship.kind);
+    if(!sample.relationship.partSampled)
+      relnDiv.append(" is a " + sample.relationship.kind.toLowerCase() + " of ");
+    else
+      relnDiv.append(" is a " + sample.relationship.kind.toLowerCase() + ' with </br> ' + sample.relationship.partSampled + " of ");
+
     // Uppppppddddddaaaaaattttteeeeee!
 
     var outerDiv = $("<div></div>").addClass("sample");

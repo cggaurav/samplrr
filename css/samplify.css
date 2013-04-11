@@ -181,8 +181,9 @@ p {
 .sample{
 	position : relative;
 	height: 310px;
+	width: 70%;	
+	/*Alex, can you fix the width for samples*/
 }
-
 /*
 #drop_box_sampled{
 	text-align: center;
@@ -220,7 +221,7 @@ p {
 }
 */
 
-.sampling{
+.sampled{
 	position : absolute;
 	text-align: left;
 	top:0;
@@ -243,7 +244,7 @@ p {
 	padding-right: 10px;
 	color: #463E3F;
 }
-.sampled{
+.sampling{
 	position: absolute;
 	text-align: right;
 	top:0;
