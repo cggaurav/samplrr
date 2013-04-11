@@ -13,6 +13,7 @@ window.onload = function() {
   // var server = 'http://samplify.herokuapp.com/';
   var server = 'http://samplifybackend.herokuapp.com/';
   var windowResize;
+  var resultsAny;
   var submitSample = {};
   var SEARCH_PAGE_SIZE = 200;
   var MAXIMUM_RESULT_SIZE = 25;
@@ -403,7 +404,7 @@ window.onload = function() {
 
     // Show loading indicator
     $("#throbber_samples").show();
-
+    resultsAny = false;
     //Make this smarter
     updateTrackHeader();
 
@@ -412,16 +413,18 @@ window.onload = function() {
 
     var currentTrackURI = getCurrentTrackURI();
     $.getJSON(getSampleURLForTrack(currentTrackURI), function(result) {
-      console.log(result);
       var count = result.samples.length;
+      if(count > 0) 
+        resultsAny = true;
+      else
+        noSamplesForTrack();
       //console.log("Count of Sampled Tracks are " + count);
       for (var i = 0; i < count; i++) {
         updateTrackSample(result.samples[i]);
       }
     });
-
-    updateArtistHeader();
     updateArtists();
+
   }
 
   function updateArtists() {
@@ -430,11 +433,12 @@ window.onload = function() {
 
     var updatedArtists;
     for (var j = 0; j < artistList.length; j++) {
-      //Make calls with closure, how?
       (function(uri, j) {
-        $.getJSON(getSampleURLForArtist(uri),
-
-        function(result) {
+        $.getJSON(getSampleURLForArtist(uri),function(result) {
+          var count = result.samples.length
+          if(count > 0)
+            resultsAny = true;
+            // updateArtistHeader();
           for (var i = 0; i < result.samples.length; i++) {
             updatedArtists = false;
             updateArtistSample(result.samples[i], j);
@@ -466,9 +470,9 @@ window.onload = function() {
   }
 
   function setupSampleContent(sample) {
+
     // Hide loading indicator
     $("#throbber_samples").hide();
-
     //Create Sample Context
     var sampling_track = models.Track.fromURI(sample.sampling_track);
     var sampling_track_playlist = new models.Playlist();
@@ -516,7 +520,6 @@ window.onload = function() {
 
   function updateArtistSample(sample, id) {
 
-    // console.log("Getting artist samples");
     var tag = "#artist" + (id).toString();
     // console.log("Tag is " + tag);
     var artistSamplesHTML = $(tag);
@@ -526,6 +529,7 @@ window.onload = function() {
   // Update the sample, sampling and the relationship, samples of track
 
   function updateTrackSample(sample) {
+
     var trackSamplesHTML = $("#trackSamples");
     trackSamplesHTML.append(setupSampleContent(sample));
   }
@@ -685,13 +689,18 @@ window.onload = function() {
     }
   }
 
-  function noSamples() {
-    $("#noSamples").html("<error> No samples found! </error>");
+  function noSamplesForTrack() {
+    $("#throbber_samples").hide();
+    $("#trackHeader").append("<br /> No samples for this track found, but..");
+  }
+
+  function noSamplesForArtist() {
+    $("#throbber_samples").hide();
+    $("#trackHeader").append("<br /> No samples for this artist found!");
   }
 
   function noSamplesRemix() {
     $("#throbber_remix").hide();
-
     $("#trackHeaderRemix").append("<br /> No remixes found! :(");
   }
 
