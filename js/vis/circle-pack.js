@@ -4,7 +4,7 @@
 var TAGS = [
     ["Instrumental" , ["instrumental", "karaoke"]],
     ["Dubstep" , ["dubstep"]],
-    ["Electronic" , ["electronic", "trance", "house", "computer", "synth"]],
+    ["Electronic" , ["electronic", "trance", "synth"]],
     ["Country" , ["country", "western"]],
     ["Acoustic" , ["acoustic", "unplugged"]],
     ["Workout" , ["workout", "cardio", "training", "exercise", "gym"]],
