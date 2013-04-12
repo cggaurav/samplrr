@@ -519,7 +519,7 @@ window.onload = function() {
 
     //Update Sample
     $(sampling_track_player.node).addClass('sp-image-large');
-    var samplingDiv = $("<div></div>").addClass("sampling");
+    var samplingDiv = $("<div></div>").addClass("sampled");
     samplingDiv.append(sampling_track_player.node);
 
     //Create Sample Context
@@ -532,7 +532,7 @@ window.onload = function() {
 
     //Update Sample
     $(sampled_track_player.node).addClass('sp-image-large');
-    var sampledDiv = $("<div></div>").addClass("sampled");
+    var sampledDiv = $("<div></div>").addClass("sampling");
     sampledDiv.append(sampled_track_player.node);
 
     var relnDiv = $("<div></div>").addClass("relationship");
