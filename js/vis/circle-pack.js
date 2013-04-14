@@ -121,7 +121,7 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
         d.r *= 1.1;
         if (!d.children) {
             // make sure the circles are not too small or too big
-            d.r = Math.min(r/2, Math.max(30, d.r));
+            d.r = Math.min(300, Math.min(r/2, Math.max(30, d.r)));
         } else if (d.parent) d.r *= 1.1;
     });
     // inits a SVG image for the corresponding track bubble
@@ -138,10 +138,10 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
         return d.r * 2;
     })
         .attr('x', function(d) {
-        return !d.children ? d.randX : generateRandomPoint(); // init at the same place as its corresponding circle
+        return !d.children ? d.randX - d.r : generateRandomPoint(); // init at the same place as its corresponding circle
     })
         .attr('y', function(d) {
-        return !d.children ? d.randY : generateRandomPoint();
+        return !d.children ? d.randY - d.r: generateRandomPoint();
     })
         .append('svg:image')
         .attr('xlink:href', function(d) {
