@@ -120,9 +120,9 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
     pack.nodes(root).forEach(function(d, i) {
         d.r *= 1.1;
         if (!d.children) {
-            // make sure the circles are not to small or too big
-            d.r = Math.min(130, Math.max(30, d.r));
-        } else if (d.parent) d.r += 10;
+            // make sure the circles are not too small or too big
+            d.r = Math.min(r/2, Math.max(30, d.r));
+        } else if (d.parent) d.r *= 1.1;
     });
     // inits a SVG image for the corresponding track bubble
     // implemented as a SVG pattern enclosing an image object
