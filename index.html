@@ -2,13 +2,14 @@
 <html>
 <head>
     <style>
-    @import url('sp://import/css/eve.css');
-    @import url('sp://import/css/player.css');
-    @import url('sp://import/css/api.css');
+    @import url('$views/css/image.css');
+    @import url('$views/css/buttons.css');
+    @import url('$views/css/tabbar.css');
+    @import url('$views/css/throbber.css');
 
-    @import url(http://fonts.googleapis.com/css?family=Chela+One);
+   /* @import url(http://fonts.googleapis.com/css?family=Chela+One);
     @import url(http://fonts.googleapis.com/css?family=Belgrano);
-    @import url(http://fonts.googleapis.com/css?family=Englebert);
+    @import url(http://fonts.googleapis.com/css?family=Englebert);*/
 
     @import url('sp://samplify/css/samplify.css');
     @import url('sp://samplify/css/circle-pack.css');
@@ -17,13 +18,14 @@
     @import url('sp://samplify/css/bootstrap.responsive.css');
     </style>
 
-    <script src="sp://samplify/js/jquery.js"></script>
-    <script src="sp://samplify/js/jquery.ui.js"></script>
-    <script src="sp://samplify/js/vis/d3.js"></script>
-    <script src="sp://samplify/js/vis/d3.layout.js"></script>
-    <script src="sp://samplify/js/vis/custom-tooltip.js"></script>
-    <script src="sp://samplify/js/vis/caroufredsel.js"></script>
-    <script src="sp://samplify/js/rainbow-custom.min.js"></script>
+    <!-- Load external javascripts -->
+    <script src="sp://samplify/js/external_libs/jquery.js"></script>
+    <script src="sp://samplify/js/external_libs/jquery.ui.js"></script>
+    <script src="sp://samplify/js/external_libs/d3.js"></script>
+    <script src="sp://samplify/js/external_libs/d3.layout.js"></script>
+    <script src="sp://samplify/js/external_libs/caroufredsel.js"></script>
+    <script src="sp://samplify/js/external_libs/rainbow-custom.min.js"></script>
+    <script src="sp://samplify/js/custom-tooltip.js"></script>
 </head>
 <body>
 <header>
@@ -39,22 +41,15 @@
             <div class="image_carousel">
                 <div class="carouselContent" id="carouselSample"></div>
             </div>
-            <div class="loading"  id="throbber_samples">
-                <div class="throbber"><div></div></div>
-            </div>
-            <div id="trackHeader" class="sampleHeader"></div>
+            <div id="trackHeaderSamples" class="sampleHeader"></div>
             <div id="trackSamples"></div>
             <div id="artistHeaderList"></div>
-            <div id="noSamples"></div>
         </div>
 
         <!-- Remix Tab -->
         <div id="remix" class="section">
             <div class="image_carousel">
                 <div class="carouselContent" id="carouselRemix"></div>
-            </div>
-             <div class="loading">
-                <div class="throbber" id="throbber_remix"><div></div></div>
             </div>
             <div id="trackHeaderRemix" class="graphHeader"></div>
             <div id="graphRemix" class="graph"></div>
@@ -65,9 +60,6 @@
             <div class="image_carousel">
                 <div class="carouselContent" id="carouselCover"></div>
             </div>
-            <div class="loading">
-                <div class="throbber" id="throbber_cover"><div></div></div>
-            </div>
             <div id="trackHeaderCover" class="graphHeader"></div>
             <div id="graphCover" class="graph"></div>
         </div>
@@ -76,7 +68,7 @@
 <footer>      
     <div class="footer">  
         <div class="refresh">
-            <button id="refresh" class="sp-button">Refresh</button>
+            <div id="refreshButton"></div>
            <!--  <div class="right">
                 <img src="/img/twitter.png"/ width="30" height="30" />
             </div> -->
@@ -86,5 +78,5 @@
 </body>
 
 <!-- Load all scripts now -->
-<script src="sp://samplify/js/vis/circle-pack.js"></script>
+<script src="sp://samplify/js/circle-pack.js"></script>
 <script src="sp://samplify/js/samplify.js"></script>

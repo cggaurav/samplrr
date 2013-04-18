@@ -7,7 +7,7 @@
 	z-index: 1500;
 }
 
-.image_carousel img {
+.image_carousel .sp-image {
 	border: 1px solid #ccc;
 	background-color: white;
 	padding: 9px;

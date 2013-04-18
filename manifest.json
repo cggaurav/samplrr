@@ -1,6 +1,6 @@
 {
 	"AppDescription": {
-		"en": "Samplify makes it easy for you to find and submit music samples,covers and remixes!"
+		"en": "Samplify helps you discover samples, covers and remixes!"
 	},
 	"AppIcon": {
 		"36x18": "samplify36x18.png",
@@ -11,7 +11,7 @@
 		"en": "Samplify"
 	},
 	"AppURL": {
-		"en" : "http://samplify.herokuapp.com"
+		"en" : "http://www.samplify.info"
 	},
 	"BundleIdentifier": "samplify",
 	"BundleType": "Application",
@@ -37,13 +37,12 @@
         }
 	],
 	"Dependencies": {
-	  "api": "0.2.3",
-	  "util": "0.1.0",
-	  "resources": "0.2.2"
+	  "api": "1.10.2",
+	  "views": "1.18.1"
 	},
 	"RequiredInterface": 1,
 	"RequiredPermissions": [
-	    "http://samplify.herokuapp.com",
+		"http://samplifybackend.herokuapp.com/",
 	    "https://graph.facebook.com",
 	    "http://ws.audioscrobbler.com/",
 	    "http://developer.echonest.com"

@@ -31,7 +31,7 @@ error{
 .navbar{
 	height: 60px;
 	width: 100%;
-	background-image: url(nav.png);
+	background-image: url(../img/nav.png);
 	background-size: auto;
 	position: absolute;
 	top: 0;
@@ -43,7 +43,7 @@ error{
 .footer{
 	width: 100%;
 	height: 40px;
-	background-image: url(footer.png);
+	background-image: url(../img/footer.png);
 	background-size: auto;
 	position: fixed;
 	bottom: 0;
@@ -108,127 +108,40 @@ p {
 .graphHeader{
 	position: absolute;
 	padding: 10px 10px 10px 10px;
-	font-size: 1.3em;
+	font-size: 1.5em;
 	font-family: Georgia;
 	line-height: 130%;
 	width: 30%;
 	z-index: 1000;
+	color: #767676;
 }
-
-/* Remix view
-.remixResult
-{
-	margin-right:10px;
-}
-
-.remixPlayer
-{
-	float:left;
-	margin-right:10px;
-}
-
-/* Playlist view 
-.add-playlist {
-	margin-top:20px;
-	padding: 10px 10px 10px 10px;
-}
-.sp-list {
-	width:inherit;
-	min-height:125px;
-	padding-bottom:10px;
-}
-.sp-list > div {
-	background-color: #aac029;
-	background-image: -webkit-linear-gradient(#ecebe8, #ecebe8 50%, #d4d3d0 50%, #d4d3d0);
-	background-size: 40px 40px;
-	border-spacing: initial;
-	color: #aac029;
-	display: table;
-	font-size: 11px;
-	line-height: 20px;
-	position: relative;
-	table-layout: fixed;
-}
-
-.sp-list .sp-item {
-	color: #463E3F;
-	cursor: default;
-	display: table;
-	position: absolute;
-	table-layout: fixed;
-	text-decoration: none;
-	width: 100%;
-}		
-.sp-list .sp-track-playing { 
-	color: #463E3F; 
-	background-color: #aac029;
-	background-image: none;
-}
-.sp-list .sp-item.sp-track-selected { background-color: #6C6C6C;}
-.sp-list .sp-item.sp-track-selected { color: #ecebe8; }
-.sp-list:focus .sp-item.sp-track-selected { background-color: #aac029; }
-.sp-list:focus .sp-item.sp-track-selected { color: #463E3F; }
-*/
-
-/*
-#drop_box_sampled{
-	text-align: center;
-	position: absolute;
-	float:right;
-	top:0;
-	left:50%;
-	right:0;
-	bottom:0;
-	padding-right:5px;
-	box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
-	border-radius: 7px;
-	margin-left: 20px;
-	margin-right: 10px;
-}
-
-#drop_box_sampling{
-	text-align:center;
-	position : absolute;
-	float: left;
-	top:0;
-	left:0;
-	bottom:0;
-	right: 50%;
-	padding-left:5px;
-	box-shadow: inset 0 0 5px rgba(0,0,0,0.3);
-	border-radius: 7px;
-	margin-right: 20px;
-	margin-left: 10px;
-}
-
-#drop_box_sampling.over, #drop_box_sampled.over{
-	box-shadow: inset 0 0 5px rgba(0,0,0,0.9);
-	border-radius: 7px;
-}
-*/
 
 .sampleHeader{
 	position: relative;
 	padding: 10px 10px 10px 10px;
-	font-size: 1.3em;
+	font-size: 1.5em;
 	font-family: Georgia;
+	line-height: 130%;
 	z-index: 1000;
+	color: #767676;
 }
 
 .sample{
 	position : relative;
-	height: 250px;
+	height: 220px;
 	width: 85%;
+	padding-top: 10px;
 }
 
 .sampled{
-	position : absolute;
-	text-align: left;
-	top:0;
-	left:0;
-	bottom:0;
-	right: 60%;
+	position : relative;
+	float: left;
 	padding-left: 10px;
+}
+.sampling{
+	position: relative;
+	float: right;
+	padding-right:10px;
 }
 
 .relationship{
@@ -248,19 +161,6 @@ p {
 	color: #767676;
 }
 
-.sampling{
-	position: absolute;
-	text-align: right;
-	top:0;
-	left:60%;
-	right:0;
-	bottom:0;
-	padding-right:10px;
-}
-.submit{
-	padding: 10px;
-	position: relative;
-}
 .right{
 	float: right;
 }
