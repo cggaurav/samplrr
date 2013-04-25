@@ -100,7 +100,6 @@ p {
 	font-size:1.5em;
 	font-style:italic;
 	font-family:Georgia;
-	/*padding:0 0 25px;*/
 	line-height:25px;
 	position: relative;
 }
@@ -152,10 +151,7 @@ p {
 	bottom:0;
 	padding-left: 10px;
 	padding-right: 10px;
-}
-
-.relationship p{
-	font-family: Georgia;
+		font-family: Georgia;
 	font-size: 1.5em;
 	text-align: center;
 	color: #767676;

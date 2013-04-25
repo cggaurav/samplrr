@@ -257,11 +257,11 @@ function(models, Search, Image, Throbber) {
             // Setup artist sample list
             var currentArtistHTML = $("<div></div>").addClass("sampleHeader").attr('id', 'artist' + j);
             currentArtistHTML.append(name);
+            $("#artistHeaderList").append(currentArtistHTML);
 
             for (var i = 0; i < count; i++) {
-              currentArtistHTML.append(setupSampleContent(result.samples[i]));
+              $("#artistHeaderList").append(setupSampleContent(result.samples[i]));
             }
-            $("#artistHeaderList").append(currentArtistHTML);
           }
         });
       })(artistList[j].uri, artistList[j].name, j);
