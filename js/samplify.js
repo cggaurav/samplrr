@@ -393,33 +393,23 @@ function(models, Search, Image, Throbber) {
       // Get the track name
       var currentTrackName = getCleanTrackName(models.player.track.name);
       var searchString = "\"" + currentTrackName + "\"";
-      var result = []; // the results of the search
 
       var search = Search.search(searchString);
       search.tracks.snapshot(0, SEARCH_PAGE_SIZE).done(function(snapshot) {
 
+        // This is to load the album name into the resulting array
+        var promises = [];
         var results = snapshot.toArray();
-        var numberOfAlbumsFetched = 0;
-
-        // For some unknown reason is album names not included in the resulting tracks
-        // Load them separetly here.
-        for (var i = 0; i < results.length; i++) {
-          (function(j) {
-            models.Album.fromURI(results[j].album.uri).load('name').done(function(album) {
-              results[j].album.name = album.name;
-              if (++numberOfAlbumsFetched == results.length) {
-                // return results when finished
-                callback(sortTracksByPopularity(results));
-              }
-            }).fail(function() {
-              console.error("Error loading album name");
-              if (++numberOfAlbumsFetched == results.length) {
-                // return results when finished
-                callback(sortTracksByPopularity(results));
-              }
-            });
-          })(i);
-        }
+        results.forEach(function(result) {
+          promises.push(result.album.load('name'));
+        });
+        // Load all promises (always means done/fail does not matter, always called)
+        models.Promise.join(promises)
+          .always(function(albums) {
+          for (var i = 0; i < results.length; i++)
+          results[i].album.name = albums[i].name; // add the album name to the result tracks
+          callback(sortTracksByPopularity(results)); // return the results sorted by popularity in the callback
+        });
       }).fail(function() {
         console.error('Error retrieving snapshot');
       });
