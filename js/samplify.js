@@ -163,7 +163,6 @@ function(models, Search, Image, Throbber) {
       height: $("#wrapper").height(),
       width: 150,
       items: {
-        //start: 0,
         visible: {
           min: 3,
           max: 10
