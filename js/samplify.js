@@ -256,7 +256,7 @@ function(models, Search, Image, Throbber) {
           if (count > 0) {
             // Setup artist sample list
             var currentArtistHTML = $("<div></div>").addClass("sampleHeader").attr('id', 'artist' + j);
-            currentArtistHTML.append('► ' + name);
+            currentArtistHTML.append("► " + "<a href='" + uri + "'>" + name + "</a>");
             $("#artistHeaderList").append(currentArtistHTML);
 
             for (var i = 0; i < count; i++) {
@@ -539,7 +539,7 @@ function(models, Search, Image, Throbber) {
       var currentTrackName = currentTrack.name;
       var currentArtistList = currentTrack.artists;
 
-      var trackheaderHTML = "♫ " + currentTrackName + " by " + getArtistString(currentArtistList);
+      var trackheaderHTML = "♫ " + "<a href='"  + currentTrack.uri + "'>" + currentTrackName + "</a>" + " by " + getArtistString(currentArtistList);
       $(trackHeaderDiv).html(trackheaderHTML);
     }).fail(function() {
       console.error("Error retrieving current track.");

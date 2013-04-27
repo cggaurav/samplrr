@@ -18,7 +18,7 @@ var TAGS = [
   function getArtistString(artistList) {
     var artists_array = [];
     for (i = 0; i < artistList.length; i++) {
-      artists_array.push(artistList[i].name);
+      artists_array.push("<a href='" + artistList[i].uri + "'>" + artistList[i].name + "</a>");
     }
     return artists_array.join(', ');
   }
