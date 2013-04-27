@@ -68,7 +68,7 @@ a:link {color: #111;}      /* unvisited link */
 
 .graph{
 	position: absolute;
-	width: 100%;
+	width: 85%;
 	overflow: hidden;
 }
 

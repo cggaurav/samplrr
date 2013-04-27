@@ -13,15 +13,15 @@ var TAGS = [
   ["Other", []]
 ];
 
-  // Returns a string with all the artists of a track, joined by a comma
+// Returns a string with all the artists of a track, joined by a comma
 
-  function getArtistString(artistList) {
-    var artists_array = [];
-    for (i = 0; i < artistList.length; i++) {
-      artists_array.push("<a href='" + artistList[i].uri + "'>" + artistList[i].name + "</a>");
-    }
-    return artists_array.join(', ');
+function getArtistString(artistList) {
+  var artists_array = [];
+  for (i = 0; i < artistList.length; i++) {
+    artists_array.push("<a href='" + artistList[i].uri + "'>" + artistList[i].name + "</a>");
   }
+  return artists_array.join(', ');
+}
 
 // Takes a result of a search and transforms it into the data format required
 // for the d3 visualization
@@ -76,12 +76,12 @@ function animateOutGraph(divName, finishedCallback) {
   var vis = d3.select(divName);
   var t = vis.transition()
     .duration(STANDARD_ZOOM_DURATION);
-  t.selectAll("circle")
-    .attr("cx", function(d) {
-    return !d.children ? d.randX : generateRandomPoint();
+  t.selectAll("rect")
+    .attr("x", function(d) {
+    return !d.children ? d.randX - d.r : generateRandomPoint();
   })
-    .attr("cy", function(d) {
-    return !d.children ? d.randY : generateRandomPoint();
+    .attr("y", function(d) {
+    return !d.children ? d.randY - d.r : generateRandomPoint();
   });
 
   // remove graph when the bubbles are gone
@@ -93,19 +93,21 @@ function animateOutGraph(divName, finishedCallback) {
   if (d3.event) d3.event.stopPropagation();
 }
 
+// Uses d3 circle pack layout to give a graphical representation of the found remixes and covers.
+// However, we have choosen to display the covers as squares instead of circles since circular
+// cover art is prohibited by Spotify due to legal reasons.
 function loadCircleGraph(data, divName, pickedSongCallback) {
   $(divName).empty();
   var w = $("#wrapper").width(),
     h = $("#wrapper").height(),
-    r = Math.min(w, h) * 1.2,
-    x = d3.scale.linear().range([0, r]),
-    y = d3.scale.linear().range([0, r]),
+    x = d3.scale.linear().range([0, w]),
+    y = d3.scale.linear().range([0, h]),
     node,
     root,
     tooltip = CustomTooltip("posts_tooltip_" + divName.substring(1), 300, divName); // name should be unique
 
   var pack = d3.layout.pack()
-    .size([r, r])
+    .size([w, h])
     .value(function(d) {
     return d.size;
   });
@@ -114,8 +116,7 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
     .attr("width", w)
     .attr("height", h)
     .attr("class", "pack")
-    .append("svg:g")
-    .attr("transform", "translate(" + (w - r) / 2 + "," + (h - r) / 2 + ")");
+    .append("svg:g");
 
   node = root = data;
 
@@ -129,10 +130,9 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
 
   // change circle size for asthetics
   pack.nodes(root).forEach(function(d, i) {
-    d.r *= 1.1;
     if (!d.children) {
       // make sure the circles are not too small or too big
-      d.r = Math.min(200, Math.min(r / 2, Math.max(30, d.r)));
+      //d.r = Math.min(400, Math.min(r, Math.max(60, d.r)));
     } else if (d.parent) d.r *= 1.1;
   });
   // inits a SVG image for the corresponding track bubble
@@ -165,13 +165,19 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
     return d.r * 2;
   });
 
-  // init circles (randomize starting positions for animation)
-  nodes.append("svg:circle")
-    .attr("cx", function(d) {
-    return !d.children ? d.randX : generateRandomPoint();
+  // init squares (randomize starting positions for animation)
+  nodes.append("svg:rect")
+    .attr("x", function(d) {
+    return !d.children ? d.randX - d.r : generateRandomPoint();
   })
-    .attr("cy", function(d) {
-    return !d.children ? d.randY : generateRandomPoint();
+    .attr("y", function(d) {
+    return !d.children ? d.randY - d.r : generateRandomPoint();
+  })
+    .attr("height", function(d) {
+    return d.r * 2;
+  })
+    .attr("width", function(d) {
+    return d.r * 2;
   })
     .attr('fill', function(d) {
     return !d.children ? "url(#" + getUniqueId(d) + ")" : null; // the albumArt suffix is unique
@@ -194,53 +200,45 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
 
   zoom(root, STANDARD_ZOOM_DURATION); // to get the nodes in the right positions
 
-  // Zoom out when user clicks ouside of the graph
-  d3.select(divName).on("click", function() {
-    zoom(root, STANDARD_ZOOM_DURATION);
-  });
-
-  // Zooms the entire graph so that node d is in the center of the view
-  // The animation takes duration ms.
-
+  // Adjusts the entire layout according to the current values of the circles.
   function zoom(d, duration) {
-    var k = r / d.r / 2;
-    x.domain([d.x - d.r, d.x + d.r]);
-    y.domain([d.y - d.r, d.y + d.r]);
-
     var t = vis.transition()
       .duration(duration);
 
-    t.selectAll("circle")
-      .attr("cx", function(d) {
-      return x(d.x);
+    t.selectAll("rect")
+      .attr("x", function(d) {
+      return d.x - d.r;
     })
-      .attr("cy", function(d) {
-      return y(d.y);
+      .attr("y", function(d) {
+      return d.y - d.r;
     })
-      .attr("r", function(d) {
-      return k * d.r;
+      .attr("width", function(d) {
+      return d.r * 2;
+    })
+      .attr("height", function(d) {
+      return d.r * 2;
     });
 
     t.selectAll("pattern")
-      .attr('width', function(d) {
-      return k * d.r * 2;
-    })
-      .attr('height', function(d) {
-      return k * d.r * 2;
-    })
       .attr("x", function(d) {
-      return x(d.x) - k * d.r;
+      return d.x - d.r;
     })
       .attr("y", function(d) {
-      return y(d.y) - k * d.r;
+      return d.y - d.r;
+    })
+      .attr('width', function(d) {
+      return d.r * 2;
+    })
+      .attr('height', function(d) {
+      return d.r * 2;
     });
 
     t.selectAll("image")
       .attr('width', function(d) {
-      return k * d.r * 2;
+      return d.r * 2;
     })
       .attr('height', function(d) {
-      return k * d.r * 2;
+      return d.r * 2;
     });
 
     node = d;
@@ -258,7 +256,7 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
   }
 
   function highlightSong(data, element) {
-    data.r += 5;
+    data.r += 5; // enlarge the cover
     zoom(node, 200);
 
     var content = "<span class=\"title\">Title </span>" + data.title +
@@ -276,7 +274,7 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
   }
 
   function downlightSong(data, element) {
-    data.r -= 5;
+    data.r -= 5; // shrink cover to original size
     zoom(node, 200);
     downlight(data, element);
   }
