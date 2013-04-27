@@ -1,31 +1,11 @@
 /*bg grey  #ecebe8
 bg fade #d4d3d0
-samplify green #aac029
+samplify green #abc100
 */
 
 /* Main Elements */
 body{
-	/*height: 96%;*/
 	width: auto;
-}
-
-h1 { 
-	font-family: Arial;
-	padding-top: 15px;
-	font-size: 2em;
-	letter-spacing: 2px;
-	color: white;
-	text-align:center;
-}
-
-h2{
-	padding-top: 10px;
-}
-
-error{ 
-	font-family: Arial;
-	font-size: 1.1em;
-	text-align:center;
 }
 
 .navbar{
@@ -60,15 +40,6 @@ error{
 	text-align:center;
 }
 
-.loading{
-	width: 100%;
-	height: 100%;
-	position: absolute;
-	text-align: center;
-	margin-top: 200px;
-	z-index: 1000;
-}
-
 .wrapper{
 	position: absolute;
 	bottom: 40px;
@@ -95,7 +66,6 @@ p {
 	overflow: hidden;
 }
 
-/* Text */
 .description {
 	font-size:1.5em;
 	font-style:italic;
@@ -104,25 +74,24 @@ p {
 	position: relative;
 }
 
-.graphHeader{
-	position: absolute;
-	padding: 10px 10px 10px 10px;
-	font-size: 1.5em;
-	font-family: Georgia;
-	line-height: 130%;
-	width: 30%;
-	z-index: 1000;
-	color: #767676;
-}
-
-.sampleHeader{
+.sampleHeader,
+.graphHeader,
+.noSamples{
 	position: relative;
 	padding: 10px 10px 10px 10px;
 	font-size: 1.5em;
-	font-family: Georgia;
-	line-height: 130%;
+	font-family: Arial;
+	color: #111;
 	z-index: 1000;
-	color: #767676;
+}
+.graphHeader
+{
+	position: absolute;
+	width: 30%;
+}
+.noSamples
+{
+	color: #666;
 }
 
 .sample{
@@ -131,7 +100,6 @@ p {
 	width: 85%;
 	padding-top: 10px;
 }
-
 .sampled{
 	position : relative;
 	float: left;
@@ -145,16 +113,16 @@ p {
 
 .relationship{
 	position:absolute;
-	top:0;
+	top:30%;
 	left:40%;
 	right:40%;
 	bottom:0;
 	padding-left: 10px;
 	padding-right: 10px;
-		font-family: Georgia;
+	font-family: Arial;
 	font-size: 1.5em;
 	text-align: center;
-	color: #767676;
+	color: #111;
 }
 
 .right{

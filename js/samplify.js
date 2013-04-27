@@ -256,7 +256,7 @@ function(models, Search, Image, Throbber) {
           if (count > 0) {
             // Setup artist sample list
             var currentArtistHTML = $("<div></div>").addClass("sampleHeader").attr('id', 'artist' + j);
-            currentArtistHTML.append(name);
+            currentArtistHTML.append('► ' + name);
             $("#artistHeaderList").append(currentArtistHTML);
 
             for (var i = 0; i < count; i++) {
@@ -306,8 +306,7 @@ function(models, Search, Image, Throbber) {
     sampledDiv.append(sampled_image.node);
 
     var relnDiv = $("<div></div>").addClass("relationship");
-    if (!sample.relationship.partSampled) relnDiv.append("<p> is a " + sample.relationship.kind.toLowerCase() + " of </p>");
-    else relnDiv.append("<p> is a " + sample.relationship.kind.toLowerCase() + ' with </br> ' + sample.relationship.partSampled + " of </p>");
+    relnDiv.append("is a sample of");
 
     var outerDiv = $("<div></div>").addClass("sample");
     outerDiv.append(samplingDiv);
@@ -324,7 +323,7 @@ function(models, Search, Image, Throbber) {
 
   function noSamplesForTrack() {
     throbber_samples.hide();
-    $("#trackSamples").addClass("sampleHeader").append("No samples for this track found!");
+    $("#trackSamples").addClass("noSamples").append("No samples for this track found!");
   }
 
   // Checks whether string s contains any of the tags in the given array
