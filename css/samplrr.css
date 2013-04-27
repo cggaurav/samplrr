@@ -56,11 +56,10 @@ p {
 	padding-bottom: 7px;
 }
 
-a:link {text-decoration:none;}
+a:link {text-decoration:none; color: #111;}
 a:visited {text-decoration:none;}
 a:hover {text-decoration:underline;}
 a:active {text-decoration:underline;}
-a:link {color: #111;}      /* unvisited link */
 
 .section {
 	position: relative;
@@ -72,21 +71,13 @@ a:link {color: #111;}      /* unvisited link */
 	overflow: hidden;
 }
 
-.description {
-	font-size:1.5em;
-	font-style:italic;
-	font-family:Georgia;
-	line-height:25px;
-	position: relative;
-}
-
 .sampleHeader,
 .graphHeader,
 .noSamples{
 	position: relative;
 	padding: 10px 10px 10px 10px;
 	font-size: 1.5em;
-	font-family: Arial;
+	font-family: Helvetica;
 	color: #111;
 	z-index: 1000;
 }
@@ -125,7 +116,7 @@ a:link {color: #111;}      /* unvisited link */
 	bottom:0;
 	padding-left: 10px;
 	padding-right: 10px;
-	font-family: Arial;
+	font-family: Helvetica;
 	font-size: 1.5em;
 	text-align: center;
 	color: #111;
