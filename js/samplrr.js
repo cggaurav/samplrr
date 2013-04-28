@@ -1,6 +1,6 @@
-require(['$api/models', '$api/search#Search', '$views/image#Image', '$views/throbber#Throbber'],
+require(['$api/models', '$api/search#Search', '$views/image#Image', '$views/throbber#Throbber', '$api/toplists#Toplist'],
 
-function(models, Search, Image, Throbber) {
+function(models, Search, Image, Throbber, Toplist) {
 
   // When application has loaded, run tabs function
   models.application.load('arguments').done(tabs);
@@ -27,11 +27,11 @@ function(models, Search, Image, Throbber) {
 
   // Setup throbbers in the middle of the app window (a throbber is 80x80 px)
   var throbber_samples = Throbber.forElement($("#index")[0]);
-  throbber_samples.setPosition($("#wrapper").width() / 2-40, $("#wrapper").height() / 2-40);
+  throbber_samples.setPosition($("#wrapper").width() / 2 - 40, $("#wrapper").height() / 2 - 40);
   var throbber_remix = Throbber.forElement($("#remix")[0]);
-  throbber_remix.setPosition($("#wrapper").width() / 2-40, $("#wrapper").height() / 2-40);
+  throbber_remix.setPosition($("#wrapper").width() / 2 - 40, $("#wrapper").height() / 2 - 40);
   var throbber_cover = Throbber.forElement($("#cover")[0]);
-  throbber_cover.setPosition($("#wrapper").width() / 2-40, $("#wrapper").height() / 2-40);
+  throbber_cover.setPosition($("#wrapper").width() / 2 - 40, $("#wrapper").height() / 2 - 40);
   throbber_samples.showContent();
   throbber_remix.showContent();
   throbber_cover.showContent();
@@ -48,7 +48,7 @@ function(models, Search, Image, Throbber) {
   // Setup refresh button
   require('$views/buttons', function(buttons) {
     var refreshButton = buttons.Button.withLabel('Refresh');
-    $('#refreshButton').append(refreshButton.node);
+    $('#refresh').append(refreshButton.node);
   });
 
   //First time use
@@ -82,7 +82,7 @@ function(models, Search, Image, Throbber) {
     });
   }
 
-  $("#refreshButton").click(function() {
+  $("#refresh").click(function() {
     refreshInterface();
   });
 
@@ -178,8 +178,8 @@ function(models, Search, Image, Throbber) {
     });
     // Say that we should play song and refresh ui when an image in the carousel is clicked on
     $(divName + " .sp-image").click(function() {
-      models.player.playTrack(models.Track.fromURI($(this).attr("uri")));
       refreshFlag = true; // tells the ui to refresh when the new song has loaded
+      models.player.playTrack(models.Track.fromURI($(this).attr("uri")));
     });
 
     // create tooltip
@@ -291,12 +291,14 @@ function(models, Search, Image, Throbber) {
     var sampling_image = Image.forTrack(sampling_track, {
       player: true,
       placeholder: "track",
-      style: "embossed"
+      style: "embossed",
+      link: "auto" // links image to track
     });
     var sampled_image = Image.forTrack(sampled_track, {
       player: true,
       placeholder: "track",
-      style: "embossed"
+      style: "embossed",
+      link: "auto" // links image to track
     });
 
     var samplingDiv = $("<div></div>").addClass("sampled");
@@ -539,7 +541,7 @@ function(models, Search, Image, Throbber) {
       var currentTrackName = currentTrack.name;
       var currentArtistList = currentTrack.artists;
 
-      var trackheaderHTML = "♫ " + "<a href='"  + currentTrack.uri + "'>" + currentTrackName + "</a>" + " by " + getArtistString(currentArtistList);
+      var trackheaderHTML = "♫ " + "<a href='" + currentTrack.uri + "'>" + currentTrackName + "</a>" + " by " + getArtistString(currentArtistList);
       $(trackHeaderDiv).html(trackheaderHTML);
     }).fail(function() {
       console.error("Error retrieving current track.");
