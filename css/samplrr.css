@@ -1,0 +1,148 @@
+/*bg grey  #ecebe8
+bg fade #d4d3d0
+samplrr green #abc100
+*/
+
+/* Main Elements */
+body{
+	width: auto;
+}
+
+.navbar{
+	height: 60px;
+	width: 100%;
+	background-image: url(../img/nav.png);
+	background-size: auto;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 1000;
+}
+
+.footer{
+	width: 100%;
+	height: 40px;
+	background-image: url(../img/footer.png);
+	background-size: auto;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 1000;
+}
+
+.refresh{
+	width: 100%;
+	height: 50%;
+	position: absolute;
+	top:10;
+	text-align:center;
+}
+
+.wrapper{
+	position: absolute;
+	bottom: 40px;
+	top: 60px;
+	left: 0;
+	right: 0;
+	overflow: auto;
+}
+
+p {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 1.1em;
+	padding-top: 7px;
+	padding-bottom: 7px;
+}
+
+a:link {text-decoration:none;}
+a:visited {text-decoration:none;}
+a:hover {text-decoration:underline;}
+a:active {text-decoration:underline;}
+a:link {color: #111;}      /* unvisited link */
+
+.section {
+	position: relative;
+}
+
+.graph{
+	position: absolute;
+	width: 85%;
+	overflow: hidden;
+}
+
+.description {
+	font-size:1.5em;
+	font-style:italic;
+	font-family:Georgia;
+	line-height:25px;
+	position: relative;
+}
+
+.sampleHeader,
+.graphHeader,
+.noSamples{
+	position: relative;
+	padding: 10px 10px 10px 10px;
+	font-size: 1.5em;
+	font-family: Arial;
+	color: #111;
+	z-index: 1000;
+}
+.graphHeader
+{
+	position: absolute;
+	width: 30%;
+}
+.noSamples
+{
+	color: #666;
+}
+
+.sample{
+	position : relative;
+	height: 220px;
+	width: 85%;
+	padding-top: 10px;
+}
+.sampled{
+	position : relative;
+	float: left;
+	padding-left: 10px;
+}
+.sampling{
+	position: relative;
+	float: right;
+	padding-right:10px;
+}
+
+.relationship{
+	position:absolute;
+	top:30%;
+	left:40%;
+	right:40%;
+	bottom:0;
+	padding-left: 10px;
+	padding-right: 10px;
+	font-family: Arial;
+	font-size: 1.5em;
+	text-align: center;
+	color: #111;
+}
+
+.right{
+	float: right;
+}
+.left{
+	float: left;
+}
+
+.icon {
+	width: 170px;
+	height: 170px;
+	border-radius: 10px;
+	margin-bottom: 20px;
+	margin-left: 20px;
+	box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.5);
+}

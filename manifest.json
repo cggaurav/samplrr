@@ -1,19 +1,19 @@
 {
 	"AppDescription": {
-		"en": "Samplify helps you discover samples, covers and remixes!"
+		"en": "Samplrr helps you discover samples, covers and remixes!"
 	},
 	"AppIcon": {
-		"36x18": "samplify36x18.png",
-		"64x64": "samplify64x64.png",
-		"128x128": "samplify128x128.png"
+		"36x18": "samplrr36x18.png",
+		"64x64": "samplrr64x64.png",
+		"128x128": "samplrr128x128.png"
 	},
 	"AppName": {
-		"en": "Samplify"
+		"en": "Samplrr"
 	},
 	"AppURL": {
-		"en" : "http://www.samplify.info"
+		"en" : "http://www.samplrr.info"
 	},
-	"BundleIdentifier": "samplify",
+	"BundleIdentifier": "samplrr",
 	"BundleType": "Application",
 	"BundleVersion": "0.1",
 	"DefaultTabs": [
@@ -42,7 +42,7 @@
 	},
 	"RequiredInterface": 1,
 	"RequiredPermissions": [
-		"http://samplifybackend.herokuapp.com/",
+		"http://samplrrbackend.herokuapp.com/",
 	    "https://graph.facebook.com",
 	    "http://ws.audioscrobbler.com/",
 	    "http://developer.echonest.com"
@@ -50,5 +50,5 @@
 	"SupportedLanguages": [
 		"en"
 	],
-	"VendorIdentifier": "co.samplify"
+	"VendorIdentifier": "co.samplrr"
 }
