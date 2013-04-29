@@ -7,14 +7,9 @@
     @import url('$views/css/tabbar.css');
     @import url('$views/css/throbber.css');
 
-<<<<<<< HEAD
-   /* @import url(http://fonts.googleapis.com/css?family=Chela+One);
-    @import url(http://fonts.googleapis.com/css?family=Belgrano);
-    @import url(http://fonts.googleapis.com/css?family=Englebert);*/
-
     @import url('sp://samplrr/css/samplrr.css');
     @import url('sp://samplrr/css/circle-pack.css');
-    @import url('sp://samplrr/css/caroufredsel.css');
+    @import url('sp://samplrr/css/jquery.bxslider.css');
     @import url('sp://samplrr/css/jquery.ui.css');
     @import url('sp://samplrr/css/bootstrap.responsive.css');
     </style>
@@ -24,7 +19,7 @@
     <script src="sp://samplrr/js/external_libs/jquery.ui.js"></script>
     <script src="sp://samplrr/js/external_libs/d3.js"></script>
     <script src="sp://samplrr/js/external_libs/d3.layout.js"></script>
-    <script src="sp://samplrr/js/external_libs/caroufredsel.js"></script>
+    <script src="sp://samplrr/js/external_libs/jquery.bxslider.js"></script>
     <script src="sp://samplrr/js/external_libs/rainbow-custom.min.js"></script>
     <script src="sp://samplrr/js/custom-tooltip.js"></script>
 </head>
@@ -33,62 +28,41 @@
     <div class="navbar">
         <div align="center">
             <img src="samplrr_transparent.png" width="200" height="60"/>
-=======
-    @import url('sp://samplify/css/samplify.css');
-    @import url('sp://samplify/css/circle-pack.css');
-    @import url('sp://samplify/css/caroufredsel.css');
-    @import url('sp://samplify/css/jquery.ui.css');
-    @import url('sp://samplify/css/bootstrap.responsive.css');
-    </style>
-
-    <!-- Load external javascripts -->
-    <script src="sp://samplify/js/external_libs/jquery.js"></script>
-    <script src="sp://samplify/js/external_libs/jquery.ui.js"></script>
-    <script src="sp://samplify/js/external_libs/d3.js"></script>
-    <script src="sp://samplify/js/external_libs/d3.layout.js"></script>
-    <script src="sp://samplify/js/external_libs/rainbow-custom.min.js"></script>
-</head>
-<body>
-    <header>
-        <div class="navbar">
-            <div align="center">
-                <img src="samplify_transparent.png" width="200" height="60"/>
-            </div>
->>>>>>> Added link from images in sample tab and cleanup.
         </div>
     </header>
     <div id = "wrapper" class="wrapper">
         <!-- Home tab -->
-        <div id="index" class="section">
-            <div class="image_carousel">
-                <div class="carouselContent" id="carouselSample"></div>
-            </div>
+        <div id="home" class="section">
+            <div class='carouselHeader'>Recommended songs with remixes</div>
+            <ul id="carousel-remix" class="bxslider"></ul>
+            <div class='carouselHeader'>Recommended songs with samples</div>
+            <ul id="carousel-sample" class="bxslider"></ul>
+            <div class='carouselHeader'>Recommended songs with covers</div>
+            <ul id="carousel-cover" class="bxslider"> </ul>
+        </div>
+
+        <!-- Remix Tab -->
+        <div id="remix" class="section">
+            <div id="trackHeaderRemix" class="graphHeader"></div>
+            <div id="graphRemix" class="graph"></div>
+        </div>
+
+        <!-- Samples tab -->
+        <div id="samples" class="section">
             <div id="trackHeaderSamples" class="sampleHeader"></div>
             <div id="trackSamples"></div>
             <div id="artistHeaderList"></div>
         </div>
 
-        <!-- Remix Tab -->
-        <div id="remix" class="section">
-            <div class="image_carousel">
-                <div class="carouselContent" id="carouselRemix"></div>
-            </div>
-            <div id="trackHeaderRemix" class="graphHeader"></div>
-            <div id="graphRemix" class="graph"></div>
-        </div>
-
         <!-- Cover Tab -->
         <div id="cover" class="section">
-            <div class="image_carousel">
-                <div class="carouselContent" id="carouselCover"></div>
-            </div>
             <div id="trackHeaderCover" class="graphHeader"></div>
             <div id="graphCover" class="graph"></div>
         </div>
-
     </div><!-- /wrapper -->
     <footer>      
-        <div class="footer">  
+        <div class="footer">
+             <div class="copyright">© Samplrr 2013  <a href="http://www.samplrr.com">www.samplrr.com</a></div>
             <div class="refresh" id="refresh">
            <!--  <div class="right">
                 <img src="/img/twitter.png"/ width="30" height="30" />
@@ -99,12 +73,5 @@
 </body>
 
 <!-- Load all scripts now -->
-<<<<<<< HEAD
 <script src="sp://samplrr/js/circle-pack.js"></script>
 <script src="sp://samplrr/js/samplrr.js"></script>
-=======
-<script src="sp://samplify/js/custom-tooltip.js"></script>
-<script src="sp://samplify/js/external_libs/caroufredsel.js"></script>
-<script src="sp://samplify/js/circle-pack.js"></script>
-<script src="sp://samplify/js/samplify.js"></script>
->>>>>>> Added link from images in sample tab and cleanup.

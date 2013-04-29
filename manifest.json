@@ -18,17 +18,23 @@
 	"BundleVersion": "0.1",
 	"DefaultTabs": [
 		{
-			"arguments": "index",
+			"arguments": "home",
 			"title": {
-				"en": "Samples"
+				"en": "Home"
 			}
 		},
-        {
+		{
 			"arguments": "remix",
             "title": {
 				"en": "Remixes"
 	  		}
         },
+		{
+			"arguments": "samples",
+			"title": {
+				"en": "Samples"
+			}
+		},
         {
 			"arguments": "cover",
             "title": {

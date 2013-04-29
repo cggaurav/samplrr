@@ -26,7 +26,7 @@ function(models, Search, Image, Throbber, Toplist) {
   // as the track has loaded. Can this be done without a global variable?
 
   // Setup throbbers in the middle of the app window (a throbber is 80x80 px)
-  var throbber_samples = Throbber.forElement($("#index")[0]);
+  var throbber_samples = Throbber.forElement($("#samples")[0]);
   throbber_samples.setPosition($("#wrapper").width() / 2 - 40, $("#wrapper").height() / 2 - 40);
   var throbber_remix = Throbber.forElement($("#remix")[0]);
   throbber_remix.setPosition($("#wrapper").width() / 2 - 40, $("#wrapper").height() / 2 - 40);
@@ -64,7 +64,6 @@ function(models, Search, Image, Throbber, Toplist) {
       $(this).hide(); // hide all tabs...
     });
     current.show(); // ... and show the current one
-    initAllCarousels();
   }
 
   function refreshInterface() {
@@ -87,7 +86,7 @@ function(models, Search, Image, Throbber, Toplist) {
   });
 
   function doneResizing() {
-    initAllCarousels();
+    // If you want to rearrange any views, do it here
   }
   // Called when the window is 'fully'resized
   $(window).resize(function() {
@@ -98,6 +97,7 @@ function(models, Search, Image, Throbber, Toplist) {
 
   function addPlaylistToCarousel(playlist, divName) {
     playlist.tracks.snapshot().done(function(snapshot) {
+      var nbrAddedItems = 0;
       for (var i = 0; i < snapshot.length; i++) {
         var collabTrack = snapshot.get(i);
         if (collabTrack.album === null) continue; // sometimes bogus tracks appear in the playlist
@@ -110,10 +110,12 @@ function(models, Search, Image, Throbber, Toplist) {
           models.Album.fromURI(curTrack.album.uri).load('name').done(function(album) {
             // Load image for current track to place in carousel
             var image = Image.forTrack(curTrack, {
-              width: 100,
-              height: 100,
+              width: 150,
+              height: 150,
               placeholder: "track",
-              style: "plain"
+              style: "plain",
+              player: true,
+              link: "auto"
             });
 
             // Add attributes in order to be able to interact with it later
@@ -121,7 +123,14 @@ function(models, Search, Image, Throbber, Toplist) {
             $(image.node).attr('name', curTrack.name);
             $(image.node).attr('artist', getArtistString(curTrack.artists));
             $(image.node).attr('album', album.name);
-            $(divName).trigger("insertItem", [image.node, 0, true, 0]);
+
+            $(divName).append(image.node);
+            $(divName).append(image.node);
+
+            // Init the carousel when all elemenents have been added
+            if (++nbrAddedItems == snapshot.length ) {
+              initCarousel(divName);
+            }
           });
         })(collabTrack, i);
       }
@@ -132,55 +141,44 @@ function(models, Search, Image, Throbber, Toplist) {
 
   function loadCarouselPlaylists() {
     models.Playlist.fromURI(SAMPLIFY_COLLAB_PLAYLIST_SAMPLES).load('tracks').done(function(playlist) {
-      addPlaylistToCarousel(playlist, "#carouselSample");
-      initCarousel("#carouselSample");
+      addPlaylistToCarousel(playlist, "#carousel-sample");
     }).fail(function() {
       console.error("Error retrieving sample carousel playlist");
     });
     models.Playlist.fromURI(SAMPLIFY_COLLAB_PLAYLIST_REMIXES).load('tracks').done(function(playlist) {
-      addPlaylistToCarousel(playlist, "#carouselRemix");
-      initCarousel("#carouselRemix");
+      addPlaylistToCarousel(playlist, "#carousel-remix");
     }).fail(function() {
       console.error("Error retrieving sample carousel playlist");
     });
     models.Playlist.fromURI(SAMPLIFY_COLLAB_PLAYLIST_COVERS).load('tracks').done(function(playlist) {
-      addPlaylistToCarousel(playlist, "#carouselCover");
-      initCarousel("#carouselCover");
+      addPlaylistToCarousel(playlist, "#carousel-cover");
     }).fail(function() {
       console.error("Error retrieving sample carousel playlist");
     });
   }
 
   function initAllCarousels() {
-    $(".carouselContent").each(function() {
+    $(".bxslider").each(function() {
       initCarousel('#' + $(this).attr("id").toString());
     });
   }
 
   function initCarousel(divName) {
-    $(divName).carouFredSel({
-      direction: "up",
-      height: $("#wrapper").height(),
-      width: 150,
-      items: {
-        visible: {
-          min: 3,
-          max: 10
-        },
-        height: "auto",
-        width: 150
-      },
-      scroll: {
-        items: 1,
-        easing: "swing",
-        pauseOnHover: true
-      }
+    $(divName).bxSlider({
+      maxSlides: 100, // way more than necessary
+      slideWidth: 150,
+      slideMargin: 5,
+      pager: true,
+      infiniteLoop: false,
+      hideControlOnEnd: true
     });
+
+
     // Say that we should play song and refresh ui when an image in the carousel is clicked on
-    $(divName + " .sp-image").click(function() {
-      refreshFlag = true; // tells the ui to refresh when the new song has loaded
-      models.player.playTrack(models.Track.fromURI($(this).attr("uri")));
-    });
+  //  $(divName + " .sp-image").click(function() {
+   //   refreshFlag = true; // tells the ui to refresh when the new song has loaded
+   //   models.player.playTrack(models.Track.fromURI($(this).attr("uri")));
+   // });
 
     // create tooltip
     var tooltip = CustomTooltip(divName.substring(1) + "tooltip", 300,
