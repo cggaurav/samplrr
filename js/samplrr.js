@@ -26,7 +26,7 @@ function(models, Search, Image, Throbber, Toplist) {
   // as the track has loaded. Can this be done without a global variable?
 
   // Setup throbbers in the middle of the app window (a throbber is 80x80 px)
-  var throbber_samples = Throbber.forElement($("#samples")[0]);
+  var throbber_samples = Throbber.forElement($("#sample")[0]);
   throbber_samples.setPosition($("#wrapper").width() / 2 - 40, $("#wrapper").height() / 2 - 40);
   var throbber_remix = Throbber.forElement($("#remix")[0]);
   throbber_remix.setPosition($("#wrapper").width() / 2 - 40, $("#wrapper").height() / 2 - 40);
@@ -86,8 +86,8 @@ function(models, Search, Image, Throbber, Toplist) {
   });
 
   function doneResizing() {
-    // If you want to rearrange any views, do it here
   }
+
   // Called when the window is 'fully'resized
   $(window).resize(function() {
     clearTimeout(windowResize);
@@ -114,8 +114,7 @@ function(models, Search, Image, Throbber, Toplist) {
               height: 150,
               placeholder: "track",
               style: "plain",
-              player: true,
-              link: "auto"
+              player: true
             });
 
             // Add attributes in order to be able to interact with it later
@@ -124,7 +123,6 @@ function(models, Search, Image, Throbber, Toplist) {
             $(image.node).attr('artist', getArtistString(curTrack.artists));
             $(image.node).attr('album', album.name);
 
-            $(divName).append(image.node);
             $(divName).append(image.node);
 
             // Init the carousel when all elemenents have been added
@@ -175,13 +173,21 @@ function(models, Search, Image, Throbber, Toplist) {
 
 
     // Say that we should play song and refresh ui when an image in the carousel is clicked on
-  //  $(divName + " .sp-image").click(function() {
-   //   refreshFlag = true; // tells the ui to refresh when the new song has loaded
-   //   models.player.playTrack(models.Track.fromURI($(this).attr("uri")));
-   // });
+    $(divName + " .sp-image").click(function() {
+      refreshFlag = true; // tells the ui to refresh when the new song has loaded
+      models.player.playTrack(models.Track.fromURI($(this).attr("uri")));
+
+      // Navigate to the corresponding tab
+      var tabToNavigateTo;
+      if (divName == "#carousel-remix") tabToNavigateTo = "remix";
+      if (divName == "#carousel-cover") tabToNavigateTo = "cover";
+      if (divName == "#carousel-sample") tabToNavigateTo = "sample";
+
+      window.location = "spotify:app:samplrr:" + tabToNavigateTo;
+    });
 
     // create tooltip
-    var tooltip = CustomTooltip(divName.substring(1) + "tooltip", 300,
+    var tooltip = CustomTooltip(divName.substring(1) + "tooltip", 200,
       '#' + $(divName).closest('div[class^="section"]').attr('id').toString()); // insert tooltip in section
     $(divName + " .sp-image").mouseover(function(event) {
       var title = $(this).attr("name");
@@ -226,7 +232,7 @@ function(models, Search, Image, Throbber, Toplist) {
         var count = result.samples.length;
 
         if (count > 0) {
-          for (var i = 0; i < count; i++) {
+          for (var i = 0; i < Math.max(MAXIMUM_RESULT_SIZE, count); i++) {
             $("#trackSamples").append(setupSampleContent(result.samples[i]));
           }
         } else noSamplesForTrack();

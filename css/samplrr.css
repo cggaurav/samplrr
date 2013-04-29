@@ -91,6 +91,9 @@ a:active {text-decoration:underline;}
 {
 	padding: 10px 10px 0 40px;
 }
+.bxslider .sp-image{
+	cursor: pointer;
+}
 
 .copyright {
 	position: relative;
