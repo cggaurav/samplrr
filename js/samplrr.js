@@ -8,7 +8,8 @@ function(models, Search, Image, Throbber, Toplist) {
   // When arguments change, run tabs function
   models.application.addEventListener('arguments', tabs);
 
-  var root = 'spotify:app:' + window.location.hostname + ":";
+  var root = 'spotify:app:samplrr:';
+
   // var server = 'http://samplify.herokuapp.com/';
   var server = 'http://samplifybackend.herokuapp.com/';
 
@@ -85,53 +86,45 @@ function(models, Search, Image, Throbber, Toplist) {
     refreshInterface();
   });
 
-  function doneResizing() {
-  }
+  function doneResizing() {}
 
   // Called when the window is 'fully'resized
   $(window).resize(function() {
     clearTimeout(windowResize);
-    windowResize = setTimeout(doneResizing, 1000);
+    windowResize = setTimeout(doneResizing, 500);
   });
 
+  // Loads the information for a track shown in the tooltip for that track (async)
+
+  function loadTooltipForPlayer(player, uri) {
+    models.Track.fromURI(uri).load(['name', 'artists', 'album']).done(function(track) {
+      $(player.node).attr('uri', track.uri);
+      $(player.node).attr('name', track.name);
+      $(player.node).attr('artist', getArtistString(track.artists));
+      models.Album.fromURI(track.album.uri).load('name').done(function(album) {
+        $(player.node).attr('album', album ? album.name : "");
+      });
+    });
+  }
 
   function addPlaylistToCarousel(playlist, divName) {
     playlist.tracks.snapshot().done(function(snapshot) {
-      var nbrAddedItems = 0;
       for (var i = 0; i < snapshot.length; i++) {
         var collabTrack = snapshot.get(i);
         if (collabTrack.album === null) continue; // sometimes bogus tracks appear in the playlist
+        if (collabTrack.playable === false) continue; // Do not add the track if it is not playable
 
-        // Do not add the track if it is not playable
-        if (collabTrack.playable === false) continue;
-
-        // Load album name
-        (function(curTrack, j) {
-          models.Album.fromURI(curTrack.album.uri).load('name').done(function(album) {
-            // Load image for current track to place in carousel
-            var image = Image.forTrack(curTrack, {
-              width: 150,
-              height: 150,
-              placeholder: "track",
-              style: "plain",
-              player: true
-            });
-
-            // Add attributes in order to be able to interact with it later
-            $(image.node).attr('uri', curTrack.uri);
-            $(image.node).attr('name', curTrack.name);
-            $(image.node).attr('artist', getArtistString(curTrack.artists));
-            $(image.node).attr('album', album.name);
-
-            $(divName).append(image.node);
-
-            // Init the carousel when all elemenents have been added
-            if (++nbrAddedItems == snapshot.length ) {
-              initCarousel(divName);
-            }
-          });
-        })(collabTrack, i);
+        var image = Image.forTrack(collabTrack, {
+          width: 150,
+          height: 150,
+          placeholder: "track",
+          style: "plain",
+          player: true
+        });
+        loadTooltipForPlayer(image, collabTrack.uri);
+        $(divName).append(image.node);
       }
+      initCarousel(divName);
     }).fail(function() {
       console.error('Error retrieving snapshot');
     });
@@ -171,7 +164,6 @@ function(models, Search, Image, Throbber, Toplist) {
       hideControlOnEnd: true
     });
 
-
     // Say that we should play song and refresh ui when an image in the carousel is clicked on
     $(divName + " .sp-image").click(function() {
       refreshFlag = true; // tells the ui to refresh when the new song has loaded
@@ -183,13 +175,15 @@ function(models, Search, Image, Throbber, Toplist) {
       if (divName == "#carousel-cover") tabToNavigateTo = "cover";
       if (divName == "#carousel-sample") tabToNavigateTo = "sample";
 
-      window.location = "spotify:app:samplrr:" + tabToNavigateTo;
+      window.location = root + tabToNavigateTo; // navigate to new tab
     });
+    setupTooltip();
+  }
 
-    // create tooltip
-    var tooltip = CustomTooltip(divName.substring(1) + "tooltip", 200,
-      '#' + $(divName).closest('div[class^="section"]').attr('id').toString()); // insert tooltip in section
-    $(divName + " .sp-image").mouseover(function(event) {
+  // Makes sure every (currently loaded) player image has its corresponding tooltip
+
+  function setupTooltip() {
+    $(".sp-image").mouseover(function(event) {
       var title = $(this).attr("name");
       var artist = $(this).attr("artist");
       var album = $(this).attr("album");
@@ -199,10 +193,10 @@ function(models, Search, Image, Throbber, Toplist) {
         "<br /><span class=\"title\">Album </span>" + album;
       tooltip.showTooltip(tooltipHTML, event);
     });
-    $(divName + " .sp-image").mouseout(function() {
+    $(".sp-image").mouseout(function() {
       tooltip.hideTooltip();
     });
-    $(divName + " .sp-image").mousemove(function(event) {
+    $(".sp-image").mousemove(function(event) {
       tooltip.updatePosition(event);
     });
   }
@@ -227,15 +221,18 @@ function(models, Search, Image, Throbber, Toplist) {
       if (currentTrack === null || currentTrack.isAd === true) return null; // no track playing
 
       var currentTrackURI = currentTrack.uri;
-      $.getJSON(getSampleURLForTrack(currentTrackURI), function(result) {
+      $.getJSON(getSampleURLForTrack(currentTrackURI)).done(function(result) {
         $("#trackSamples").empty(); // clear current context
         var count = result.samples.length;
 
         if (count > 0) {
-          for (var i = 0; i < Math.max(MAXIMUM_RESULT_SIZE, count); i++) {
+          for (var i = 0; i < Math.min(MAXIMUM_RESULT_SIZE, count); i++) {
             $("#trackSamples").append(setupSampleContent(result.samples[i]));
           }
+          setupTooltip();
         } else noSamplesForTrack();
+      }).fail(function() {
+        serverError(trackSamples);
       });
       updateSampleArtists();
     }).fail(function() {
@@ -252,21 +249,26 @@ function(models, Search, Image, Throbber, Toplist) {
 
     for (var j = 0; j < artistList.length; j++) {
       (function(uri, name, j) {
-        $.getJSON(getSampleURLForArtist(uri), function(result) {
-
+        $.getJSON(getSampleURLForArtist(uri)).done(function(result) {
           var count = result.samples.length;
           // in case this header was created before, remove it and add the new result (might lead to sync issues otherwise)
           $('#artist' + j).remove();
           if (count > 0) {
             // Setup artist sample list
-            var currentArtistHTML = $("<div></div>").addClass("sampleHeader").attr('id', 'artist' + j);
-            currentArtistHTML.append("► " + "<a href='" + uri + "'>" + name + "</a>");
-            $("#artistHeaderList").append(currentArtistHTML);
+            var currentArtistDiv = $("<div></div>");
+            var currentArtistHeader = $("<div></div>").addClass("sampleHeader").attr('id', 'artist' + j);
+            currentArtistHeader.append("► " + "<a href='" + uri + "'>" + name + "</a>");
+            currentArtistDiv.append(currentArtistHeader);
 
-            for (var i = 0; i < count; i++) {
-              $("#artistHeaderList").append(setupSampleContent(result.samples[i]));
-            }
+            for (var i = 0; i < Math.min(MAXIMUM_RESULT_SIZE, count); i++)
+            currentArtistDiv.append(setupSampleContent(result.samples[i]));
+
+            $("#artistHeaderList").append(currentArtistDiv);
+            setupTooltip();
           }
+        }).fail(function() {
+          // Server error
+          // We dont show anything here (nothing for this artist)
         });
       })(artistList[j].uri, artistList[j].name, j);
     }
@@ -292,18 +294,17 @@ function(models, Search, Image, Throbber, Toplist) {
     var sampling_track = models.Track.fromURI(sample.sampling_track);
     var sampled_track = models.Track.fromURI(sample.sampled_track);
 
-    var sampling_image = Image.forTrack(sampling_track, {
+    var playerOptions = {
       player: true,
       placeholder: "track",
       style: "embossed",
       link: "auto" // links image to track
-    });
-    var sampled_image = Image.forTrack(sampled_track, {
-      player: true,
-      placeholder: "track",
-      style: "embossed",
-      link: "auto" // links image to track
-    });
+    };
+
+    var sampling_image = Image.forTrack(sampling_track, playerOptions);
+    var sampled_image = Image.forTrack(sampled_track, playerOptions);
+    loadTooltipForPlayer(sampling_image, sampling_track.uri);
+    loadTooltipForPlayer(sampled_image, sampled_track.uri);
 
     var samplingDiv = $("<div></div>").addClass("sampled");
     samplingDiv.append(sampling_image.node);
@@ -329,7 +330,15 @@ function(models, Search, Image, Throbber, Toplist) {
 
   function noSamplesForTrack() {
     throbber_samples.hide();
-    $("#trackSamples").addClass("noSamples").append("No samples for this track found!");
+    $("#trackSamples").addClass("noSamples").html("No samples for this track found!");
+  }
+
+  // Called when we can not, for some reason, retrieve data from the server
+  // we show an error message in the div with the given name
+
+  function serverError(divName) {
+    throbber_samples.hide();
+    $(divName).addClass("noSamples").html("The server is unavailable now. Please try again later.");
   }
 
   // Checks whether string s contains any of the tags in the given array

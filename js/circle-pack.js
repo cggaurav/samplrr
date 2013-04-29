@@ -13,6 +13,9 @@ var TAGS = [
   ["Other", []]
 ];
 
+// Shows information about objects on hover
+var tooltip = CustomTooltip("tooltip", "#wrapper");
+
 // Returns a string with all the artists of a track, joined by a comma
 
 function getArtistString(artistList) {
@@ -103,8 +106,7 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
     x = d3.scale.linear().range([0, w]),
     y = d3.scale.linear().range([0, h]),
     node,
-    root,
-    tooltip = CustomTooltip("posts_tooltip_" + divName.substring(1), 300, divName); // name should be unique
+    root;
 
   var pack = d3.layout.pack()
     .size([w, h])
