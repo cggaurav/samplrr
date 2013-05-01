@@ -4,6 +4,12 @@ samplrr green #abc100
 */
 
 /* Main Elements */
+
+@font-face {
+    font-family: "Lobster";
+    src: url(/css/fonts/lobster.otf);
+}
+
 body{
 	width: auto;
 }
@@ -73,7 +79,7 @@ a:active {text-decoration:underline;}
 	position: relative;
 	padding: 10px 10px 10px 10px;
 	font-size: 1.2em;
-	font-family: Verdana;
+	font-family: Lobster;
 	color: #444;
 	z-index: 100;
 	text-shadow: 0 2px 2px #fff;
@@ -99,7 +105,7 @@ a:active {text-decoration:underline;}
 	position: relative;
 	padding: 15px;
 	font-size: 0.8em;
-	font-family: Verdana;
+	font-family: Lobster;
 	color: #777;
 	z-index: 200;
 }

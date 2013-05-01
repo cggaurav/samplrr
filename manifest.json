@@ -15,7 +15,7 @@
 	},
 	"BundleIdentifier": "samplrr",
 	"BundleType": "Application",
-	"BundleVersion": "0.1",
+	"BundleVersion": "0.2",
 	"DefaultTabs": [
 		{
 			"arguments": "home",
