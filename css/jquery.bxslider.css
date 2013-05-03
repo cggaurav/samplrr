@@ -21,7 +21,7 @@
 	padding-bottom: 20px;
 	/*left: 30px;
 	right: 30px*/
-	width: 90%;
+	width: 85%;
 	*zoom: 1;
 }
 
@@ -107,12 +107,12 @@ ul.bxslider {
 /* DIRECTION CONTROLS (NEXT / PREV) */
 
 .bx-wrapper .bx-prev {
-	left: 10px;
+	left: -45px;
 	background: url(../img/bxslider/controls.png) no-repeat 0 -32px;
 }
 
 .bx-wrapper .bx-next {
-	right: 10px;
+	right: -45px;
 	background: url(../img/bxslider/controls.png) no-repeat -43px -32px;
 }
 
