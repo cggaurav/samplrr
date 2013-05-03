@@ -27,11 +27,6 @@ g.parent:hover {
   stroke-width: 3px;
 }
 
-g.child:hover {
- /* stroke: #5d6916;
-  stroke-width: 3px;*/
-}
-
 .tooltip {
     position: absolute;
     top: 0;

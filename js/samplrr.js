@@ -65,6 +65,15 @@ function(models, Search, Image, Throbber, Toplist) {
       $(this).hide(); // hide all tabs...
     });
     current.show(); // ... and show the current one
+
+    // Only display twitter button on the front page
+    if (args[0] == 'home') {
+      $("#twitter").show();
+      $("#refresh").hide();
+    } else {
+      $("#twitter").hide();
+      $("#refresh").show();
+    }
   }
 
   function refreshInterface() {
