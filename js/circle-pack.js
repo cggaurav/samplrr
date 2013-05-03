@@ -13,15 +13,22 @@ var TAGS = [
   ["Other", []]
 ];
 
+
+var SQUARE_RATIO_TO_CIRCLES_SONGS = 1.42; // sqrt(2), Largest ratio to guarantee that we don't have any overlapa
+var SQUARE_RATIO_TO_CIRCLES_CATEGORIES = 2.0;
+
 // Shows information about objects on hover
 var tooltip = CustomTooltip("tooltip", "#wrapper");
 
 // Returns a string with all the artists of a track, joined by a comma
 
-function getArtistString(artistList) {
+function getArtistString(artistList, includeURL) {
   var artists_array = [];
   for (i = 0; i < artistList.length; i++) {
-    artists_array.push("<a href='" + artistList[i].uri + "'>" + artistList[i].name + "</a>");
+    if (includeURL)
+      artists_array.push("<a href='" + artistList[i].uri + "'>" + artistList[i].name + "</a>");
+    else
+      artists_array.push(artistList[i].name);
   }
   return artists_array.join(', ');
 }
@@ -50,10 +57,10 @@ function formatDataForGraph(data, type) {
       for (var j = 0; j < data[i].length; j++) {
         curTag[j] = {
           'title': data[i][j].name,
-          'artist': getArtistString(data[i][j].artists),
+          'artist': getArtistString(data[i][j].artists, false),
           'album': data[i][j].album.name,
           'albumArt': data[i][j].album.image,
-          'size': scale(data[i][j].popularity),
+          'size': scale(1),//scale(data[i][j].popularity),
           'uri': data[i][j].uri,
           'randX': generateRandomPoint(),
           'randY': generateRandomPoint()
@@ -132,10 +139,10 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
 
   // change circle size for asthetics
   pack.nodes(root).forEach(function(d, i) {
-    if (!d.children) {
+    //if (!d.children) {
       // make sure the circles are not too small or too big
       //d.r = Math.min(400, Math.min(r, Math.max(60, d.r)));
-    } else if (d.parent) d.r *= 1.1;
+   // } else if (d.parent) d.r *= 1.1;
   });
   // inits a SVG image for the corresponding track bubble
   // implemented as a SVG pattern enclosing an image object
@@ -145,41 +152,47 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
   })
     .attr('patternUnits', 'userSpaceOnUse')
     .attr('width', function(d) {
-    return d.r * 2;
+    return getSizeOfSquare(d);
   })
     .attr('height', function(d) {
-    return d.r * 2;
+    return getSizeOfSquare(d);
   })
-    .attr('x', function(d) {
-    return !d.children ? d.randX - d.r : generateRandomPoint(); // init at the same place as its corresponding circle
+    .attr("x", function(d) {
+    return getXForSquare(d, true);
   })
-    .attr('y', function(d) {
-    return !d.children ? d.randY - d.r : generateRandomPoint();
+    .attr("y", function(d) {
+    return getYForSquare(d, true);
   })
     .append('svg:image')
     .attr('xlink:href', function(d) {
     return !d.children ? d.albumArt : "";
   })
     .attr('width', function(d) {
-    return d.r * 2;
+    return getSizeOfSquare(d);
   })
     .attr('height', function(d) {
-    return d.r * 2;
+    return getSizeOfSquare(d);
   });
 
   // init squares (randomize starting positions for animation)
   nodes.append("svg:rect")
     .attr("x", function(d) {
-    return !d.children ? d.randX - d.r : generateRandomPoint();
+    return getXForSquare(d, true);
   })
     .attr("y", function(d) {
-    return !d.children ? d.randY - d.r : generateRandomPoint();
+    return getYForSquare(d, true);
+  })
+    .attr("rx", function(d) { // rounded corners
+    return getSizeOfSquare(d) * 0.1;
+  })
+    .attr("ry", function(d) { // rounded corners
+    return getSizeOfSquare(d) * 0.1;
   })
     .attr("height", function(d) {
-    return d.r * 2;
+    return getSizeOfSquare(d);
   })
     .attr("width", function(d) {
-    return d.r * 2;
+    return getSizeOfSquare(d);
   })
     .attr('fill', function(d) {
     return !d.children ? "url(#" + getUniqueId(d) + ")" : null; // the albumArt suffix is unique
@@ -209,42 +222,56 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
 
     t.selectAll("rect")
       .attr("x", function(d) {
-      return d.x - d.r;
+      return getXForSquare(d, false);
     })
       .attr("y", function(d) {
-      return d.y - d.r;
+      return getYForSquare(d, false);
     })
       .attr("width", function(d) {
-      return d.r * 2;
+      return getSizeOfSquare(d);
     })
       .attr("height", function(d) {
-      return d.r * 2;
+      return getSizeOfSquare(d);
     });
 
     t.selectAll("pattern")
       .attr("x", function(d) {
-      return d.x - d.r;
+      return getXForSquare(d, false);
     })
       .attr("y", function(d) {
-      return d.y - d.r;
+      return getYForSquare(d, false);
     })
       .attr('width', function(d) {
-      return d.r * 2;
+      return getSizeOfSquare(d);
     })
       .attr('height', function(d) {
-      return d.r * 2;
+      return getSizeOfSquare(d);
     });
 
     t.selectAll("image")
       .attr('width', function(d) {
-      return d.r * 2;
+      return getSizeOfSquare(d);
     })
       .attr('height', function(d) {
-      return d.r * 2;
+      return getSizeOfSquare(d);
     });
 
     node = d;
     if (d3.event) d3.event.stopPropagation();
+  }
+
+  function getSizeOfSquare(d)
+  {
+    return d.children ? d.r * SQUARE_RATIO_TO_CIRCLES_CATEGORIES : d.r * SQUARE_RATIO_TO_CIRCLES_SONGS;
+  }
+  function getXForSquare(d, rand) {
+    if (rand) return !d.children ? d.randX - d.r : generateRandomPoint();
+    else return d.x - (d.children ? d.r * SQUARE_RATIO_TO_CIRCLES_CATEGORIES / 2 : d.r * SQUARE_RATIO_TO_CIRCLES_SONGS / 2);
+  }
+
+  function getYForSquare(d, rand) {
+    if (rand) return !d.children ? d.randY - d.r : generateRandomPoint();
+    else return d.y - (d.children ? d.r * SQUARE_RATIO_TO_CIRCLES_CATEGORIES / 2 : d.r * SQUARE_RATIO_TO_CIRCLES_SONGS / 2);
   }
 
   // returns a unique string for a track object that can be used as an ID

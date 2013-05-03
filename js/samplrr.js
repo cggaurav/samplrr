@@ -109,7 +109,7 @@ function(models, Search, Image, Throbber, Toplist) {
     models.Track.fromURI(uri).load(['name', 'artists', 'album']).done(function(track) {
       $(player.node).attr('uri', track.uri);
       $(player.node).attr('name', track.name);
-      $(player.node).attr('artist', getArtistString(track.artists));
+      $(player.node).attr('artist', getArtistString(track.artists, false));
       models.Album.fromURI(track.album.uri).load('name').done(function(album) {
         $(player.node).attr('album', album ? album.name : "");
       });
@@ -197,9 +197,9 @@ function(models, Search, Image, Throbber, Toplist) {
       var artist = $(this).attr("artist");
       var album = $(this).attr("album");
 
-      var tooltipHTML = "<span class=\"title\">Title </span>" + title +
-        "<br /><span class=\"title\">Artist </span>" + artist +
-        "<br /><span class=\"title\">Album </span>" + album;
+      var tooltipHTML = "<span class='title'>Title </span>" + title +
+        "<br /><span class='title'>Artist </span>" + artist +
+        "<br /><span class='title'>Album </span>" + album;
       tooltip.showTooltip(tooltipHTML, event);
     });
     $(".sp-image").mouseout(function() {
@@ -565,7 +565,7 @@ function(models, Search, Image, Throbber, Toplist) {
       var currentTrackName = currentTrack.name;
       var currentArtistList = currentTrack.artists;
 
-      var trackheaderHTML = "♫ " + "<a href='" + currentTrack.uri + "'>" + currentTrackName + "</a>" + " by " + getArtistString(currentArtistList);
+      var trackheaderHTML = "♫ " + "<a href='" + currentTrack.uri + "'>" + currentTrackName + "</a>" + " by " + getArtistString(currentArtistList, true);
       $(trackHeaderDiv).html(trackheaderHTML);
     }).fail(function() {
       console.error("Error retrieving current track.");
