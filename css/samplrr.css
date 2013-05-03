@@ -110,38 +110,28 @@ a:active {text-decoration:underline;}
 	z-index: 200;
 }
 
-.sample{
-	position : relative;
-	height: 220px;
-	width: 100%;
-	padding-top: 10px;
-}
-.sampled{
-	position : relative;
-	float: left;
-	padding-left: 10px;
-}
-.sampling{
+.sample {
 	position: relative;
-	float: right;
-	padding-right:10px;
+	height: 280px;
+	width: 100%;
+	min-width: 700px;
 }
 
-.relationship{
-	position:absolute;
-	top:30%;
-	left:40%;
-	right:40%;
-	bottom:0;
-	padding: 0 10px 0 10px;
+.sampled {
+	position: absolute;
+	right: 60%
+}
+.sampling {
+	position: absolute;
+	left: 60%
+}
+
+.relationship {
+	position: absolute;
 	text-align: center;
-}
-
-.right{
-	float: right;
-}
-.left{
-	float: left;
+	left: 10%;
+	right: 10%;
+	top: 30%;
 }
 
 .icon {

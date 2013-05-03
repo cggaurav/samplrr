@@ -298,6 +298,8 @@ function(models, Search, Image, Throbber, Toplist) {
       player: true,
       placeholder: "track",
       style: "embossed",
+      width: 250,
+      height: 250,
       link: "auto" // links image to track
     };
 
