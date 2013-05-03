@@ -37,6 +37,9 @@ function(models, Search, Image, Throbber, Toplist) {
   throbber_remix.showContent();
   throbber_cover.showContent();
 
+  // Carousels on the home page
+  var carousel_sample = null, carousel_remix = null, carousel_cover = null;
+
   // Called when a new song starts playing. If the global flag is set to true then we
   // refresh the UI. Is this the best solution?
   models.player.addEventListener('change', function() {
@@ -116,30 +119,57 @@ function(models, Search, Image, Throbber, Toplist) {
     });
   }
 
-  function addPlaylistToCarousel(playlist, divName) {
-    playlist.tracks.snapshot().done(function(snapshot) {
-      for (var i = 0; i < snapshot.length; i++) {
-        var collabTrack = snapshot.get(i);
-        if (collabTrack.album === null) continue; // sometimes bogus tracks appear in the playlist
-        if (collabTrack.playable === false) continue; // Do not add the track if it is not playable
+  // Adds a track to the carousel specified with divName. Remeber to init the carousel if it is not done.
+  function addTrackToCarousel(track, divName)
+  {
+      if (track.album === null) return; // sometimes bogus tracks appear in the playlist
+      if (track.playable === false) return; // Do not add the track if it is not playable
 
-        var image = Image.forTrack(collabTrack, {
+      var image = Image.forTrack(track, {
           width: 150,
           height: 150,
           placeholder: "track",
           style: "plain",
           player: true
         });
-        loadTooltipForPlayer(image, collabTrack.uri);
-        $(divName).append(image.node);
+      loadTooltipForPlayer(image, track.uri);
+      $(divName).append(image.node);
+  }
+
+  function addPlaylistToCarousel(playlist, divName) {
+    playlist.tracks.snapshot().done(function(snapshot) {
+      for (var i = 0; i < snapshot.length; i++) {
+        var collabTrack = snapshot.get(i);
+        addTrackToCarousel(collabTrack, divName);
       }
-      initCarousel(divName);
+      reloadCarousel(divName);
     }).fail(function() {
       console.error('Error retrieving snapshot');
     });
   }
 
+  function loadToplistTracksIntoCarousels(divName) {
+    // Load toplist of track for the current user
+    var toplist = Toplist.forCurrentUser();
+    toplist.tracks.snapshot().done(function(snapshot) {
+      for (var i = 0; i < snapshot.length; i++) {
+        var track = snapshot.get(i);
+        addTrackToCarousel(track, divName);
+      }
+      reloadCarousel(divName);
+    }).fail(function() {
+      console.error("Error retrieving toplist snapshot");
+    });
+  }
+
   function loadCarouselPlaylists() {
+    // We want to populate the carousels with relevant matches from the current users toplist
+    // TODO: Only add relevant songs
+    loadToplistTracksIntoCarousels("#carousel-remix", carousel_remix);
+    loadToplistTracksIntoCarousels("#carousel-sample", carousel_cover);
+    loadToplistTracksIntoCarousels("#carousel-cover", carousel_sample);
+
+    // Fill up with "safe songs" from our own playlist
     models.Playlist.fromURI(SAMPLIFY_COLLAB_PLAYLIST_SAMPLES).load('tracks').done(function(playlist) {
       addPlaylistToCarousel(playlist, "#carousel-sample");
     }).fail(function() {
@@ -157,16 +187,24 @@ function(models, Search, Image, Throbber, Toplist) {
     });
   }
 
-  function initAllCarousels() {
-    $(".bxslider").each(function() {
-      initCarousel('#' + $(this).attr("id").toString());
-    });
+  function reloadCarousel(divName) {
+    if (divName == "#carousel-remix") {
+      if (carousel_remix !== null) carousel_remix.destroySlider();
+      carousel_remix = initCarousel("#carousel-remix");
+    } else if (divName == "#carousel-sample") {
+      if (carousel_sample !== null) carousel_sample.destroySlider();
+      carousel_sample = initCarousel("#carousel-sample");
+    } else if (divName == "#carousel-cover") {
+      if (carousel_cover !== null) carousel_cover.destroySlider();
+      carousel_cover = initCarousel("#carousel-cover");
+    }
   }
 
   function initCarousel(divName) {
-    $(divName).bxSlider({
-      maxSlides: 100, // way more than necessary
+    var slider = $(divName).bxSlider({
+      maxSlides: 30,
       slideWidth: 150,
+      slideHeight: 150,
       slideMargin: 5,
       pager: true,
       infiniteLoop: false,
@@ -187,6 +225,7 @@ function(models, Search, Image, Throbber, Toplist) {
       window.location = root + tabToNavigateTo; // navigate to new tab
     });
     setupTooltip();
+    return slider;
   }
 
   // Makes sure every (currently loaded) player image has its corresponding tooltip

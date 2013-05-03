@@ -99,6 +99,7 @@ a:active {text-decoration:underline;}
 }
 .bxslider .sp-image{
 	cursor: pointer;
+	height: 150px;
 }
 
 .copyright {
