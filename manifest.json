@@ -49,8 +49,9 @@
 	"RequiredInterface": 1,
 	"RequiredPermissions": [
 		"http://samplrrbackend.herokuapp.com/",
-	    "https://graph.facebook.com",
-	    "http://ws.audioscrobbler.com/",
+		"http://samplifybackend.herokuapp.com/",
+	    "http://fonts.googleapis.com/",
+	    "http://platform.twitter.com",
 	    "http://developer.echonest.com"
 	],
 	"SupportedLanguages": [

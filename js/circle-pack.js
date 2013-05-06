@@ -15,7 +15,8 @@ var TAGS = [
 
 
 var SQUARE_RATIO_TO_CIRCLES_SONGS = 1.42; // sqrt(2), Largest ratio to guarantee that we don't have any overlapa
-var SQUARE_RATIO_TO_CIRCLES_CATEGORIES = 2.0;
+// I don't think it shouldn't overlap but can't be too small  | http://cl.ly/image/1K2x2F0j2m2S
+var SQUARE_RATIO_TO_CIRCLES_CATEGORIES = 1.8;
 
 // Shows information about objects on hover
 var tooltip = CustomTooltip("tooltip", "#wrapper");
@@ -183,10 +184,10 @@ function loadCircleGraph(data, divName, pickedSongCallback) {
     return getYForSquare(d, true);
   })
     .attr("rx", function(d) { // rounded corners
-    return getSizeOfSquare(d) * 0.1;
+    return getSizeOfSquare(d) * 0.05;
   })
     .attr("ry", function(d) { // rounded corners
-    return getSizeOfSquare(d) * 0.1;
+    return getSizeOfSquare(d) * 0.05;
   })
     .attr("height", function(d) {
     return getSizeOfSquare(d);

@@ -22,10 +22,10 @@ g.child {
   cursor: pointer;
 }
 
-g.parent:hover {
+/*g.parent:hover {
   stroke: #5d6916;
   stroke-width: 3px;
-}
+}*/
 
 .tooltip {
     position: absolute;

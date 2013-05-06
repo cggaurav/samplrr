@@ -6,7 +6,7 @@ samplrr green #abc100
 /* Main Elements */
 
 @font-face {
-    font-family: "Lobster";
+    font-family: "LobsterOriginal";
     src: url(/css/fonts/lobster.otf);
 }
 
@@ -28,7 +28,7 @@ body{
 
 footer{
 	width: 100%;
-	height: 40px;
+	height: 43px;
 	background-image: url(../img/footer.png);
 	background-size: auto;
 	position: fixed;
@@ -78,8 +78,9 @@ a:active {text-decoration:underline;}
 .carouselHeader{
 	position: relative;
 	padding: 10px 10px 10px 10px;
-	font-size: 1.2em;
-	font-family: 'Lobster';
+	font-size: 1.4em;
+	font-weight: bold;
+	font-family: Arial, Helvetica, sans-serif;
 	color: #444;
 	z-index: 100;
 	text-shadow: 0 2px 2px #fff;
@@ -105,9 +106,9 @@ a:active {text-decoration:underline;}
 .copyright {
 	position: relative;
 	padding: 15px;
-	font-size: 0.8em;
-	font-family: 'Lobster';
-	color: #777;
+	font-size: 1em;
+	font-family: 'Lobster', cursive;
+	color: black;
 	z-index: 200;
 }
 
@@ -120,11 +121,11 @@ a:active {text-decoration:underline;}
 
 .sampled {
 	position: absolute;
-	right: 60%
+	right: 65%;
 }
 .sampling {
 	position: absolute;
-	left: 60%
+	left: 65%;
 }
 
 .relationship {
@@ -142,4 +143,15 @@ a:active {text-decoration:underline;}
 	margin-bottom: 20px;
 	margin-left: 20px;
 	box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.5);
+}
+
+#twitter_image{
+	position: absolute;
+	top: 8px;
+	left: 96%;
+	z-index: 200;
+}
+#twitter_image img{
+	width: 26px;
+	height: 26px;
 }
