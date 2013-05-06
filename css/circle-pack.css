@@ -2,7 +2,7 @@ g.parent {
   fill: #abc100;
   fill-opacity: 0.2;
   stroke: #777777;
-  stroke-width: 1px;
+  /*stroke-width: 1px;*/
   stroke-opacity: 1.0;
   cursor: pointer;
 }
@@ -17,8 +17,8 @@ g.root {
 }
 
 g.child {
-  stroke: #777777;
-  stroke-width: 1px;
+  /*stroke: #777777;*/
+  /*stroke-width: 1px;*/
   cursor: pointer;
 }
 
