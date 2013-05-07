@@ -376,11 +376,12 @@ function(models, Search, Image, Throbber, Toplist) {
     $("#trackSamples").empty();
     $("#trackHeaderSamples").empty();
     $("#artistHeaderList").empty();
+    $("#noSamples").empty();
   }
 
   function noSamplesForTrack() {
     throbber_samples.hide();
-    $("#trackSamples").addClass("noSamples").html("No samples for this track found!");
+    $("#noSamples").html("No samples were found for this track.");
   }
 
   // Called when we can not, for some reason, retrieve data from the server
@@ -543,6 +544,7 @@ function(models, Search, Image, Throbber, Toplist) {
 
   function updateRemix() {
     throbber_remix.show();
+    $("#noRemixes").empty();
     throbber_remix.showContent();
     animateOutGraph("#graphRemix", function() {
       updateTrackHeader("#trackHeaderRemix");
@@ -552,6 +554,7 @@ function(models, Search, Image, Throbber, Toplist) {
 
   function updateCover() {
     throbber_cover.show();
+    $("#noCovers").empty();
     throbber_cover.showContent();
     animateOutGraph("#graphCover", function() {
       updateTrackHeader("#trackHeaderCover");
@@ -561,12 +564,12 @@ function(models, Search, Image, Throbber, Toplist) {
 
   function noSamplesRemix() {
     throbber_remix.hide();
-    $("#trackHeaderRemix").append("<br /> No remixes found! :(");
+    $("#noRemixes").html("No remixes were found for this track.");
   }
 
   function noSamplesCover() {
     throbber_cover.hide();
-    $("#trackHeaderCover").append("<br /> No covers found! :(");
+    $("#noCovers").html("No covers were found for this track.");
   }
 
   function noTrackPlaying() {

@@ -29,18 +29,18 @@
 				"en": "Remixes"
 	  		}
         },
-		{
-			"arguments": "sample",
-			"title": {
-				"en": "Samples"
-			}
-		},
         {
 			"arguments": "cover",
             "title": {
 				"en": "Covers"
             }
-        }
+        },
+        {
+			"arguments": "sample",
+			"title": {
+				"en": "Samples"
+			}
+		}
 	],
 	"Dependencies": {
 	  "api": "1.10.2",
