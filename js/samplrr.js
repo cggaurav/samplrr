@@ -49,11 +49,25 @@ function(models, Search, Image, Throbber, Toplist) {
     }
   });
 
+  models.session.addEventListener('change', function() {
+    updateOfflineStatus();
+  });
+
+  function updateOfflineStatus() {
+    if (models.session.online === false) {
+      showOfflineError();
+    } else {
+      hideOfflineError();
+    }
+  }
+
   // Setup refresh button
   require('$views/buttons', function(buttons) {
     var refreshButton = buttons.Button.withLabel('Refresh');
     $('#refresh').append(refreshButton.node);
   });
+
+  updateOfflineStatus();
 
   //First time use
   refreshInterface();
@@ -62,20 +76,22 @@ function(models, Search, Image, Throbber, Toplist) {
   loadCarouselPlaylists();
 
   function tabs() {
-    var args = models.application.arguments;
-    var current = $('#' + args[0]); // current tab
-    $(".section").each(function() {
-      $(this).hide(); // hide all tabs...
-    });
-    current.show(); // ... and show the current one
+    if (models.session.online) { // this should only work when we are online
+      var args = models.application.arguments;
+      var current = $('#' + args[0]); // current tab
+      $(".section").each(function() {
+        $(this).hide(); // hide all tabs...
+      });
+      current.show(); // ... and show the current one
 
-    // Only display twitter button on the front page
-    if (args[0] == 'home') {
-      $("#twitter").show();
-      $("#refresh").hide();
-    } else {
-      $("#twitter").hide();
-      $("#refresh").show();
+      // Only display twitter button on the front page
+      if (args[0] == 'home') {
+  //      $("#twitter").show();
+        $("#refresh").hide();
+      } else {
+  //      $("#twitter").hide();
+        $("#refresh").show();
+      }
     }
   }
 
@@ -92,6 +108,23 @@ function(models, Search, Image, Throbber, Toplist) {
         updateCover();
       }
     });
+  }
+
+  function showOfflineError() {
+    $(".section").each(function() {
+      $(this).hide(); // hide all tabs...
+    });
+    $("#refresh").hide(); // hide refresh button in offline mode
+    $("#offlineError").show();
+  }
+
+  function hideOfflineError() {
+    tabs(); // makes us show the correct tab again
+    if (refreshFlag === true) {
+      refreshFlag = false;
+      refreshInterface();
+    }
+    $("#offlineError").hide();
   }
 
   $("#refresh").click(function() {
@@ -280,7 +313,7 @@ function(models, Search, Image, Throbber, Toplist) {
           setupTooltip();
         } else noSamplesForTrack();
       }).fail(function() {
-        serverError(trackSamples);
+        serverError("#noSamples");
       });
       updateSampleArtists();
     }).fail(function() {
@@ -389,7 +422,7 @@ function(models, Search, Image, Throbber, Toplist) {
 
   function serverError(divName) {
     throbber_samples.hide();
-    $(divName).addClass("noSamples").html("The server is unavailable now. Please try again later.");
+    $(divName).html("The server is unavailable now. Please try again later.");
   }
 
   // Checks whether string s contains any of the tags in the given array
