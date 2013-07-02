@@ -29,7 +29,7 @@
     "pl": "Samplrr in Polish",
     "zh-Hant": "Samplrr in Chinese"
   },
-  "BundleIdentifier": "samplrrv2",
+  "BundleIdentifier": "samplrr",
   "BundleType": "Application",
   "BundleVersion": "0.0.1",
   "Dependencies": {
