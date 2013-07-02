@@ -1,0 +1,11 @@
+  var TAGS = [
+    ["Instrumental", ["instrumental", "karaoke"]],
+    ["Dubstep", ["dubstep"]],
+    ["Electronic", ["electronic", "trance", "synth"]],
+    ["Country", ["country", "western"]],
+    ["Acoustic", ["acoustic", "unplugged"]],
+    ["Workout", ["workout", "cardio", "training", "exercise", "gym"]],
+    ["Lullabye", ["lullabye", "baby", "kid", "child"]],
+    ["Orchestra", ["orchestra", "symphony"]],
+    ["Other", []]
+  ];

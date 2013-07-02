@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Samplrr</title>
+    <!-- Include the stylesheets you need for the Views components -->
+    <!-- See https://developer.spotify.com/technologies/apps/docs/preview/views/ -->
+    <link rel="stylesheet" href="css/samplrr.css">
+    <link rel="stylesheet" href="css/samplrr_visualization.css">
+    <link rel="stylesheet" href="$views/css/buttons.css">
+    <link rel="stylesheet" href="$views/css/image.css">
+    <link rel="stylesheet" href="$views/css/list.css">
+    <link rel="stylesheet" href="$views/css/popup.css">
+    <link rel="stylesheet" href="$views/css/scrollbar.css">
+    <link rel="stylesheet" href="$views/css/tabbar.css">
+    <link rel="stylesheet" href="$views/css/throbber.css">
+
+    <!-- If you are using the preview SDK for webplayer then uncomment the script below -->
+    <!--script src="http://d1hza3lyffsoht.cloudfront.net/preview-sdk/bootstrap.js"></script-->
+  </head>
+  <body>
+    <div class="header">
+        <img src="/images/samplrr_transparent.png" width="200" height="60"/>
+    </div>
+    <div class="samplrr">
+        <div class="section" id="remixes">
+            <div id="remixes_viz"></div>
+        </div>
+        <div class="section" id="covers">
+            <div id="covers_viz"></div>
+        </div>
+        <div class="section" id="samples">
+            <div id="samples_viz"></div>
+        </div>
+    </div>
+    <div class="footer">
+        <div class="refreshButton"></div>
+    </div>
+    <script src="js/jquery.min.js"></script>
+    <script src="http://d3js.org/d3.v3.js" charset="utf-8"></script>
+    <script src="scripts/remix.js"></script>
+    <script src="scripts/cover.js"></script>
+    <script src="scripts/samplrr.js"></script>
+  </body>
+</html>

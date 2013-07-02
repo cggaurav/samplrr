@@ -1,0 +1,69 @@
+html {
+  overflow: auto;
+}
+
+body{
+	width: auto;
+}
+
+.samplrr{
+	position: absolute;
+	bottom: 40px;
+	top: 60px;
+	left: 0;
+	right: 0;
+	/*overflow: auto;*/
+}
+
+.header{
+	height: 60px;
+	width: 100%;
+	background-image: url(../images/nav.png);
+	background-size: auto;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: 1000;
+	text-align: center;
+}
+
+.footer{
+	width: 100%;
+	height: 40px;
+	background-image: url(../images/footer.png);
+	background-size: auto;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	z-index: 1000;
+}
+
+.refreshButton{
+	padding-top: 10px;
+	position: relative;
+	text-align:center;
+}
+
+#remix_viz #covers_viz #samples_viz{
+	height: 750px;
+	width: 100%;
+}
+
+#remixes #covers #samples{
+	height: 800px;
+	width: 100%;
+}
+
+.no{
+	position: relative;
+	padding: 10px 10px 10px 10px;
+	font-size: 1.4em;
+	font-weight: bold;
+	font-family: Arial, Helvetica, sans-serif;
+	color: #777;
+	z-index: 100;
+	text-shadow: 0 2px 2px #fff;
+}
+

@@ -1,0 +1,16 @@
+/*bg grey  #ecebe8
+bg fade #d4d3d0
+samplrr green #abc100
+*/
+
+circle.node {
+  cursor: pointer;
+  stroke: #3182bd;
+  stroke-width: 1px;
+}
+
+line.link {
+  fill: none;
+  stroke: #abc100;
+  stroke-width: 2px;
+}

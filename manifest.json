@@ -1,0 +1,79 @@
+{
+  "AppDescription": {
+    "de": "Description of My Samplrr in German",
+    "en": "Samplrr helps you discover samples, covers and remixes",
+    "es": "Description of My Samplrr in Spanish",
+    "es-419": "Description of My Samplrr in LA Spanish",
+    "fr": "Description of My Samplrr in French",
+    "it": "Description of My Samplrr in Italian",
+    "nl": "Description of My Samplrr in Dutch",
+    "pl": "Description of My Samplrr in Polish",
+    "zh-Hant": "Description of My Samplrr in Chinese"
+  },
+  "AppIcon": {
+    "18x18": "images/samplrr18x18.png",
+    "36x18": "images/samplrr36x18.png",
+    "32x32": "images/samplrr32x32.png",
+    "64x64": "images/samplrr64x64.png",
+    "128x128": "images/samplrr128x128.png",
+    "300x300": "images/samplrr300x300.png"
+  },
+  "AppName": {
+    "de": "Samplrr in German",
+    "en": "Samplrr",
+    "es": "Samplrr in Spanish",
+    "es-419": "Samplrr in LA Spanish",
+    "fr": "Samplrr in French",
+    "it": "Samplrr in Italian",
+    "nl": "Samplrr in Dutch",
+    "pl": "Samplrr in Polish",
+    "zh-Hant": "Samplrr in Chinese"
+  },
+  "BundleIdentifier": "samplrrv2",
+  "BundleType": "Application",
+  "BundleVersion": "0.0.1",
+  "Dependencies": {
+    "api": "1.0.0",
+    "views": "1.10.0"
+  },
+  "RequiredPermissions": [
+    "http://samplrrbackend.herokuapp.com/",
+    "http://mbostock.github.io/"
+  ],
+  "DefaultTabs": [
+    {
+      "arguments": "remixes",
+      "title": {
+        "en": "Remix"
+      }
+    },
+    {
+      "arguments": "covers",
+      "title": {
+        "en": "Covers"
+      }
+    },
+    {
+      "arguments": "samples",
+      "title": {
+        "en": "Samples"
+      }
+    }
+  ],
+  "SupportedDeviceClasses": [
+    "Web",
+    "Desktop"
+  ],
+  "SupportedLanguages": [
+    "de",
+    "en",
+    "es",
+    "es-419",
+    "fr",
+    "it",
+    "nl",
+    "pl",
+    "zh-Hant"
+  ],
+  "VendorIdentifier": "com.samplrr"
+}
