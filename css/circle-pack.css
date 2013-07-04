@@ -1,0 +1,50 @@
+g.parent {
+  fill: #abc100;
+  fill-opacity: 0.2;
+  stroke: #777777;
+  /*stroke-width: 1px;*/
+  stroke-opacity: 1.0;
+  cursor: pointer;
+}
+
+g.root {
+  fill: #abc100;
+  fill-opacity: 0.0;
+  stroke: #777777;
+  stroke-width: 1px;
+  stroke-opacity: 0.0;
+  cursor: pointer;
+}
+
+g.child {
+  /*stroke: #777777;*/
+  /*stroke-width: 1px;*/
+  cursor: pointer;
+}
+
+/*g.parent:hover {
+  stroke: #5d6916;
+  stroke-width: 3px;
+}*/
+
+.tooltip {
+    position: absolute;
+    top: 0;
+    left: 100px;
+    border: 1px solid #e0e0e0;
+    background-color: #fefefe;
+    opacity: .9;
+    color: black;
+    padding: 10px;
+    width: 300px;
+    font-size: 9pt;
+    z-index: 2000;
+}
+
+.tooltip .title {
+    font-size: 9pt;
+    font-weight: bold;
+    color: #abc100;
+    display: inline;
+}
+
