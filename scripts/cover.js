@@ -2,6 +2,13 @@ require(['$api/models', 'scripts/samplrr_utils', 'scripts/throbber'],
 
 function(Models, samplrr, throbber) {
 
+
+  // When application has loaded, run pages function
+  Models.application.load('arguments').done(showCovers);
+
+  // When arguments change, run pages function
+  Models.application.addEventListener('arguments', showCovers);
+
   //D3 specific constants
   var w = $(window).width(),
       h = $(window).height(),
@@ -11,12 +18,13 @@ function(Models, samplrr, throbber) {
       force,
       viz;
 
-  console.log("Width is ",w);
-  console.log("Height is ",h);
+  // console.log("Width is ",w);
+  // console.log("Height is ",h);
+  var MAIN_TRACK_SIZE = 150;
+  var SMALL_TRACK_SIZE = 120;
 
-  function getUniqueId(d) {
-    return d.uri;
-  }
+  // console.log("Width is ",w);
+  // console.log("Height is ",h);
 
   function drawUI(graph){
 
@@ -24,17 +32,17 @@ function(Models, samplrr, throbber) {
         .on("tick", tick)
         // .charge(function(d) { return d._children ? -d.size / 100 : -30; })
         // .linkDistance(function(d) { return d.target._children ? 80 : 30; })
-        .linkDistance(function(d){ return 100;})
+        .linkDistance(function(d){ return 250;})
         .charge(function(d){ return -150;})
-        .size([w, h - 160]);
+        .size([w, h - 200]);
 
     vis = d3.select("#covers_viz").append("svg:svg")
-        .attr("viewBox","0 0 " + w + " " +(h - 100))
+        .attr("viewBox","0 0 " + w + " " +(h - 200))
 
     root = graph;
     root.fixed = true;
     root.x = w / 2;
-    root.y = h / 2 - 80;
+    root.y = h / 2 - 120;
     update();
   }
 
@@ -65,61 +73,50 @@ function(Models, samplrr, throbber) {
     link.exit().remove();
 
     // Update the nodes…
-    node = vis.selectAll("rect.node")
+    node = vis.selectAll("image.node")
         .data(nodes, function(d) { return d.id; })
         .style("fill", color);
 
     node.transition()
-        .attr("width", function(d) { return d.children ? 25 : square_size(d); })
-        .attr("height", function(d) { return d.children ? 25 : square_size(d); })
+        .attr("width", function(d) { return d.children ? MAIN_TRACK_SIZE : square_size(d); })
+        .attr("height", function(d) { return d.children ? MAIN_TRACK_SIZE : square_size(d); })
 
     // Enter any new nodes.
-
-    node.enter().append('svg:pattern')
-      .attr('id', function(d) { return getUniqueId(d);}) // substring to get rid of problematic prefix})
-      // .attr('patternUnits', 'userSpaceOnUse')
-      .attr('width', function(d) { return d.children ? 25 : square_size(d);})
-      .attr('height', function(d) { return d.children ? 25 : square_size(d);;})
-      .append('svg:image')
-      .attr('xlink:href', function(d) { return d.albumArt;})
-      .attr('width', function(d) { return d.children ? 25 : square_size(d);;})
-      .attr('height', function(d) { return d.children ? 25 : square_size(d);;});
-
-    node.enter().append("svg:rect")
+    node.enter().append("svg:image")
         .attr("class", "node")
         .attr("x", function(d) { return d.x; })
         .attr("y", function(d) { return d.y; })
-        .attr("width", function(d) { return d.children ? 25 : square_size(d); })
-        .attr("height", function(d) { return d.children ? 25 : square_size(d); })
+        .attr("width", function(d) { return d.children ? MAIN_TRACK_SIZE : square_size(d); })
+        .attr("height", function(d) { return d.children ? MAIN_TRACK_SIZE : square_size(d); })
+        .attr("xlink:href", function(d) { return d.albumArt;})
         .on("click", click)
-        .attr('fill', function(d) { return "url(#" + getUniqueId(d) + ")";})
         .call(force.drag);
 
 
     // Exit any old nodes.
     node.exit().remove();
   }
+
   function square_size(d)
   {
-    return 25;
+    // return d.size;
+    return d.children ? MAIN_TRACK_SIZE : d.size;
   }
 
-  function albumArt(d){
-  }
   function tick() {
     link.attr("x1", function(d) { return d.source.x; })
         .attr("y1", function(d) { return d.source.y; })
         .attr("x2", function(d) { return d.target.x; })
         .attr("y2", function(d) { return d.target.y; });
 
-    node.attr("x", function(d) { return d.x; })
-        .attr("y", function(d) { return d.y; });
+    node.attr("x", function(d) { return (d.x - square_size(d)/2); })
+        .attr("y", function(d) { return (d.y - square_size(d)/2); });
+
   }
 
   // Color leaf nodes orange, and packages white or blue.
   function color(d) {
-    // return d._children ? "#cba213" : d.children ? "#c6dbef" : "#fd8d3c";
-    return "url(" + d.albumArt + ")";
+    return d._children ? "#cba213" : d.children ? "#c6dbef" : "#fd8d3c";
   }
 
   // Toggle children on click.
@@ -150,18 +147,25 @@ function(Models, samplrr, throbber) {
     return nodes;
   }
 
-  throbber.showSamplesThrobber();
-  samplrr.getGraph("cover", function(err, graph){
-    console.log("cover",err, graph);
-    if(err === null)
+  function showCovers() {
+    var args = Models.application.arguments;
+    if(args[0] === "covers")
     {
-      throbber.hideCoversThrobber();
-      $('#covers_viz').append("<p>No Covers Found</p>").addClass("no");
+      throbber.showSamplesThrobber();
+      samplrr.getGraph("cover", function(err, graph){
+        console.log("cover",err, graph);
+        if(graph === null)
+        {
+          throbber.hideCoversThrobber();
+          $('#covers_viz').html("<p>No Covers Found</p>").addClass("no");
+        }
+        else{
+          throbber.hideCoversThrobber();
+          drawUI(graph);
+        }
+      });
     }
-    else{
-      throbber.hideCoversThrobber();
-      drawUI(graph);
-    }
-  });
+  }
+
 
 });

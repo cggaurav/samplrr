@@ -4,10 +4,10 @@ function(Models, samplrr, throbber) {
 
 
   // When application has loaded, run pages function
-  Models.application.load('arguments').done(showRemix);
+  Models.application.load('arguments').done(showSamples);
 
   // When arguments change, run pages function
-  Models.application.addEventListener('arguments', showRemix);
+  Models.application.addEventListener('arguments', showSamples);
 
   //D3 specific constants
   var w = $(window).width(),
@@ -18,8 +18,12 @@ function(Models, samplrr, throbber) {
       force,
       viz;
 
-  var MAIN_TRACK_SIZE = 150;
-  var SMALL_TRACK_SIZE = 100;
+  // console.log("Width is ",w);
+  // console.log("Height is ",h);
+// console.log("Width is ",w);
+  // console.log("Height is ",h);
+  var MAIN_TRACK_SIZE = 90;
+  var SMALL_TRACK_SIZE = 30;
 
   // console.log("Width is ",w);
   // console.log("Height is ",h);
@@ -34,7 +38,7 @@ function(Models, samplrr, throbber) {
         .charge(function(d){ return -150;})
         .size([w, h - 200]);
 
-    vis = d3.select("#remixes_viz").append("svg:svg")
+    vis = d3.select("#samples_viz").append("svg:svg")
         .attr("viewBox","0 0 " + w + " " +(h - 200))
 
     root = graph;
@@ -84,10 +88,10 @@ function(Models, samplrr, throbber) {
         .attr("class", "node")
         .attr("x", function(d) { return d.x; })
         .attr("y", function(d) { return d.y; })
-        .attr("xlink:href", function(d){return d.albumArt;})
         .attr("width", function(d) { return d.children ? MAIN_TRACK_SIZE : square_size(d); })
         .attr("height", function(d) { return d.children ? MAIN_TRACK_SIZE : square_size(d); })
         .on("click", click)
+        .attr("xlink:href", function(d) { return d.albumArt;})
         .call(force.drag);
 
 
@@ -145,20 +149,21 @@ function(Models, samplrr, throbber) {
     return nodes;
   }
 
-  function showRemix() {
+
+  function showSamples() {
     var args = Models.application.arguments;
-    if(args[0] === "remixes")
+    if(args[0] === "samples")
     {
-      throbber.showRemixThrobber();
-      samplrr.getGraph("remix", function(err, graph){
-        console.log("remix",err, graph);
-        if(graph === null){
-          throbber.hideRemixThrobber();
-          $('#remixes_viz').html("<p>No Remixes Found</p>").addClass("no");
-        }
-        else
+      throbber.showSamplesThrobber();
+      samplrr.getGraph("samples", function(err, graph){
+        if(graph === null)
         {
-          throbber.hideRemixThrobber();
+          throbber.hideSamplesThrobber();
+          $('#samples_viz').html("<p>No Samples Found</p>").addClass("no");
+        }
+        else{
+          console.log("Samples here we go", graph);
+          throbber.hideSamplesThrobber();
           drawUI(graph);
         }
       });

@@ -14,6 +14,7 @@ require(['$views/throbber#Throbber'], function(Throbber) {
 	// throbber_covers.hide();
 
 	var showRemixThrobber = function() {
+		throbber_remix.setSize('small');
 		throbber_remix.show();
 	}
 
@@ -22,6 +23,7 @@ require(['$views/throbber#Throbber'], function(Throbber) {
 	}
 
 	var showSamplesThrobber = function() {
+		throbber_samples.setSize('small');
 		throbber_samples.show();
 	}
 
@@ -30,6 +32,7 @@ require(['$views/throbber#Throbber'], function(Throbber) {
 	}
 
 	var showCoversThrobber = function() {
+		throbber_covers.setSize('small');
 		throbber_covers.show();
 	}
 

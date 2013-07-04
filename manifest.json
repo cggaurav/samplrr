@@ -37,8 +37,7 @@
     "views": "1.10.0"
   },
   "RequiredPermissions": [
-    "http://samplrrbackend.herokuapp.com/",
-    "http://mbostock.github.io/"
+    "http://samplrrbackend.herokuapp.com/"
   ],
   "DefaultTabs": [
     {

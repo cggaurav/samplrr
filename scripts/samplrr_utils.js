@@ -10,6 +10,8 @@ require([
   var MAXIMUM_RESULT_SIZE = 25; // The maximum number of songs to show in our cover and remix graphs
   var currentTrack;
 
+  var server = 'http://samplifybackend.herokuapp.com/';
+
   //D3 CONSTANTS
   var scale = d3.scale.linear().domain([0, 100]).range([10, 90]);
 
@@ -45,13 +47,63 @@ require([
     return false;
   }
 
+  function loadTracks(tracks){
+
+  }
+
+  function samplesGraph(result,callback){
+    currentTrack = Models.player.track;
+    console.log("Samples Result", result);
+    var tracks = [];
+    var graph = {
+      'name': currentTrack.name,
+      // 'artist': currentTrack.artists.name,
+      // Fix this as well
+      // 'album': currentTrack.name,
+      'albumArt': currentTrack.image,
+      'size': scale(currentTrack.popularity),
+      'uri': currentTrack.uri,
+      'children': []
+    };
+    if(result.length > 0){
+      for (var i = 0; i < result.length; i++) {
+        tracks.push(result[i].sampling_track);
+        tracks.push(result[i].sampled_track);
+      };
+      for (var i = 0; i < tracks.length; i++) {
+        (function(track) {
+          Models.Track.fromURI(track).load('name', 'duration', 'image', 'album').done(function(track) {
+            // console.log(track);
+            graph['children'].push(
+              {
+                'name': track.name,
+                // 'artist': track.artists.name,
+                // Fix album Name
+                // 'album': track.name,
+                'albumArt': track.image,
+                'size': scale(track.popularity),
+                'uri': track.uri
+              });
+          });
+         })(tracks[i]);
+         callback(null,graph);
+      };
+      //
+    }
+    else
+    {
+      console.log("No Samples!");
+      callback(null,null);
+    }
+
+  }
 
   function remixGraph(searchResults,callback) {
     // Get current artist list
     Models.player.load('track').done(function() {
       var result = [];
 
-      for (var i = 1; i < searchResults.length; i++) {
+      for (var i = 0; i < searchResults.length; i++) {
         // Check so that we have not found enough tracks already
         if (result.length >= MAXIMUM_RESULT_SIZE) break;
 
@@ -182,7 +234,29 @@ require([
     });
   }
 
+  function getSamples(callback){
+    Models.player.load('track').done(function() {
+      if (Models.player.track === null || Models.player.track.isAd === true) return; // no track playing
+
+      // Get the track name
+      currentTrack = Models.player.track;
+      var currentTrackURI = getCleanTrackName(currentTrack.uri);
+      console.log("Current Track URI is ", currentTrackURI);
+      $.ajax({
+          url: server + 'track?id=' + currentTrackURI,
+          type: 'get',
+          success: function (data) {
+            var dataJSON = $.parseJSON(data);
+            samplesGraph(dataJSON.samples, callback);
+          }
+        });
+    });
+  }
+
   exports.getGraph = function(type, callback){
-    searchSpotify(type, callback);
+    if(type === 'samples')
+      getSamples(callback);
+    else
+      searchSpotify(type, callback);
   }
 });
