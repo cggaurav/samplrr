@@ -34,6 +34,7 @@ function(Models, samplrr, throbber) {
         .charge(function(d){ return -150;})
         .size([w, h - 200]);
 
+    $("#remixes_viz").empty();
     vis = d3.select("#remixes_viz").append("svg:svg")
         .attr("viewBox","0 0 " + w + " " +(h - 200))
 

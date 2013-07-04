@@ -37,7 +37,8 @@ function(Models, samplrr, throbber) {
         .charge(function(d){ return -150;})
         .size([w, h - 200]);
 
-    vis = d3.select("#samples_viz").append("svg:svg")
+    $("#samples_viz").empty();
+    vis = d3.select("#samples_viz").html("svg:svg")
         .attr("viewBox","0 0 " + w + " " +(h - 200))
 
     root = graph;
