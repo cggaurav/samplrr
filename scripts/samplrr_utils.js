@@ -13,7 +13,7 @@ require([
   var server = 'http://samplifybackend.herokuapp.com/';
 
   //D3 CONSTANTS
-  var scale = d3.scale.linear().domain([0, 100]).range([10, 90]);
+  var scale = d3.scale.linear().domain([0, 100]).range([35, 90]);
 
   // COVER
   var COVER_FILTER = ["cover", "made famous by", "tribute", "instrumental", "karaoke", "in the style of", "version", "originally by", "originally performed"];
@@ -47,10 +47,6 @@ require([
     return false;
   }
 
-  function loadTracks(tracks){
-
-  }
-
   function samplesGraph(result,callback){
     currentTrack = Models.player.track;
     console.log("Samples Result", result);
@@ -71,24 +67,24 @@ require([
         tracks.push(result[i].sampled_track);
       };
       for (var i = 0; i < tracks.length; i++) {
-        (function(track) {
-          Models.Track.fromURI(track).load('name', 'duration', 'image', 'album').done(function(track) {
-            // console.log(track);
-            graph['children'].push(
-              {
-                'name': track.name,
-                // 'artist': track.artists.name,
-                // Fix album Name
-                // 'album': track.name,
-                'albumArt': track.image,
-                'size': scale(track.popularity),
-                'uri': track.uri
-              });
-          });
-         })(tracks[i]);
-         callback(null,graph);
-      };
-      //
+        var trackCount = 0;
+        Models.Track.fromURI(tracks[i]).load('name', 'duration', 'image', 'album').done(function(track) {
+          // console.log(track);
+          graph['children'].push(
+            {
+              'name': track.name,
+              // 'artist': track.artists.name,
+              // Fix album Name
+              // 'album': track.name,
+              'albumArt': track.image,
+              'size': scale(track.popularity),
+              'uri': track.uri
+            });
+          trackCount +=1;
+          if(trackCount === tracks.length)
+            callback(null,graph);
+        });
+      }
     }
     else
     {

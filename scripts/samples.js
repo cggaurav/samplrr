@@ -20,8 +20,7 @@ function(Models, samplrr, throbber) {
 
   // console.log("Width is ",w);
   // console.log("Height is ",h);
-// console.log("Width is ",w);
-  // console.log("Height is ",h);
+
   var MAIN_TRACK_SIZE = 90;
   var SMALL_TRACK_SIZE = 30;
 
