@@ -5,7 +5,7 @@ you are listening to.
 
 ## Screenshots
 
-![Remixes](http://f.cl.ly/items/2b1I2G022P2l3F190X2N/Screen%20Shot%202013-10-23%20at%204.14.38%20PM.png)
+![Remixes](http://f.cl.ly/items/0E3Q2g2h1v2a2G2m373M/Screen%20Shot%202013-10-23%20at%204.14.28%20PM.png)
 
 ![Covers](http://f.cl.ly/items/2b1I2G022P2l3F190X2N/Screen%20Shot%202013-10-23%20at%204.14.38%20PM.png)
 
